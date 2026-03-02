@@ -293,6 +293,7 @@ Makefile: ../../project_testing_0203.pro ../../../../QT_install/6.10.2/mingw_64/
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/qt_config.prf \
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/win32-g++/qmake.conf \
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/exclusive_builds.prf \
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/toolchain.prf \
 		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/default_pre.prf \
@@ -322,8 +323,8 @@ Makefile: ../../project_testing_0203.pro ../../../../QT_install/6.10.2/mingw_64/
 		../../../../QT_install/6.10.2/mingw_64/lib/Qt6Gui.prl \
 		../../../../QT_install/6.10.2/mingw_64/lib/Qt6Core.prl \
 		../../../../QT_install/6.10.2/mingw_64/lib/Qt6EntryPoint.prl \
-		.qmake.stash \
-		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/build_pass.prf
+		../../../../QT_install/6.10.2/mingw_64/mkspecs/features/build_pass.prf \
+		../../resouce.qrc
 	$(QMAKE) -o Makefile ../../project_testing_0203.pro -spec win32-g++ CONFIG+=debug CONFIG+=qml_debug
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/spec_pre.prf:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/device_config.prf:
@@ -548,6 +549,7 @@ Makefile: ../../project_testing_0203.pro ../../../../QT_install/6.10.2/mingw_64/
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/qt_config.prf:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/win32-g++/qmake.conf:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/exclusive_builds.prf:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/toolchain.prf:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/default_pre.prf:
@@ -577,8 +579,8 @@ Makefile: ../../project_testing_0203.pro ../../../../QT_install/6.10.2/mingw_64/
 ../../../../QT_install/6.10.2/mingw_64/lib/Qt6Gui.prl:
 ../../../../QT_install/6.10.2/mingw_64/lib/Qt6Core.prl:
 ../../../../QT_install/6.10.2/mingw_64/lib/Qt6EntryPoint.prl:
-.qmake.stash:
 ../../../../QT_install/6.10.2/mingw_64/mkspecs/features/build_pass.prf:
+../../resouce.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../../project_testing_0203.pro -spec win32-g++ CONFIG+=debug CONFIG+=qml_debug
 

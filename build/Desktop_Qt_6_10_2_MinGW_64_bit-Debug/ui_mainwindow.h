@@ -11,11 +11,14 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
@@ -25,12 +28,19 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QLabel *label;
+    QGridLayout *gridLayout;
+    QFrame *loginCard;
+    QLabel *Password;
+    QLabel *Username;
     QLineEdit *lineEdit;
     QLineEdit *lineEdit_2;
-    QLabel *Username;
-    QLabel *Password;
     QPushButton *pushButton;
+    QLabel *label;
+    QPushButton *pushButton_2;
+    QSpacerItem *horizontalSpacer_2;
+    QSpacerItem *verticalSpacer;
+    QSpacerItem *verticalSpacer_2;
+    QSpacerItem *horizontalSpacer;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -39,6 +49,11 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
         MainWindow->resize(800, 480);
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
+        MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setStyleSheet(QString::fromUtf8("/* =========================================\n"
 "   \345\205\250\345\261\200\345\237\272\347\241\200\350\256\276\347\275\256 (\350\203\214\346\231\257\344\270\216\345\255\227\344\275\223)\n"
 "========================================= */\n"
@@ -191,30 +206,91 @@ public:
 "    background-color: #F5F7FA;\n"
 "    color: #909399;\n"
 "    border-color: #E4E7ED;\n"
+"}\n"
+"\n"
+"/* \347\231\273\345\275\225\345\215\241\347\211\207\347\232\204\344\270\273\344\275\223\346\240\267\345\274\217 */\n"
+"#loginCard {\n"
+"    background-color: #FFFFFF;      /* \347\272\257\347\231\275\350\203\214\346\231\257 */\n"
+"    border: 1px solid #DCDFE6;      /* \346\265\205\347\201\260\350\211\262\350\276\271\346\241\206 */\n"
+"    border-radius: 12px;            /* \345\234\206\350\247\222\346\225\210\346\236\234 */\n"
+"}\n"
+"\n"
+"/* \345\242\236\345\212\240\346\202\254\346\265\256\346\204\237\357\274\210\345\217\257\351\200\211\357\274\232\351\274\240\346\240\207\346\224\276\344\270\212\345\216\273\350\276\271\346\241\206\345\217\230\350\223\235\357\274\211 */\n"
+"#loginCard:hover {\n"
+"    border: 1px solid #409EFF;\n"
+"}\n"
+"\n"
+"/*"
+                        " \345\234\250\344\275\240\347\232\204\346\240\267\345\274\217\350\241\250\351\207\214\346\211\276\345\210\260 QLabel \347\232\204\351\203\250\345\210\206\357\274\214\346\210\226\350\200\205\347\233\264\346\216\245\347\273\231\351\202\243\344\270\252\346\240\207\351\242\230\350\256\276\347\275\256 */\n"
+"QLabel {\n"
+"    background-color: transparent; /* \350\256\276\347\275\256\350\203\214\346\231\257\344\270\272\351\200\217\346\230\216 */\n"
+"    border: none;                 /* \347\241\256\344\277\235\346\262\241\346\234\211\350\276\271\346\241\206\347\272\277 */\n"
+"}\n"
+"\n"
+"QMainWindow #centralwidget {\n"
+"    border-image: url(:/pic/Login_menu.jpg);\n"
 "}"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
-        label = new QLabel(centralwidget);
+        gridLayout = new QGridLayout(centralwidget);
+        gridLayout->setObjectName("gridLayout");
+        loginCard = new QFrame(centralwidget);
+        loginCard->setObjectName("loginCard");
+        sizePolicy.setHeightForWidth(loginCard->sizePolicy().hasHeightForWidth());
+        loginCard->setSizePolicy(sizePolicy);
+        loginCard->setMinimumSize(QSize(400, 240));
+        loginCard->setFrameShape(QFrame::Shape::StyledPanel);
+        loginCard->setFrameShadow(QFrame::Shadow::Raised);
+        Password = new QLabel(loginCard);
+        Password->setObjectName("Password");
+        Password->setGeometry(QRect(110, 90, 49, 14));
+        Username = new QLabel(loginCard);
+        Username->setObjectName("Username");
+        Username->setGeometry(QRect(110, 60, 49, 14));
+        lineEdit = new QLineEdit(loginCard);
+        lineEdit->setObjectName("lineEdit");
+        lineEdit->setGeometry(QRect(150, 50, 113, 31));
+        lineEdit_2 = new QLineEdit(loginCard);
+        lineEdit_2->setObjectName("lineEdit_2");
+        lineEdit_2->setGeometry(QRect(150, 90, 113, 31));
+        pushButton = new QPushButton(loginCard);
+        pushButton->setObjectName("pushButton");
+        pushButton->setGeometry(QRect(130, 130, 71, 31));
+        label = new QLabel(loginCard);
         label->setObjectName("label");
-        label->setGeometry(QRect(330, 70, 151, 71));
+        label->setGeometry(QRect(100, 0, 200, 40));
+        QSizePolicy sizePolicy1(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy1);
         QFont font;
         font.setFamilies({QString::fromUtf8("Microsoft YaHei")});
         label->setFont(font);
-        lineEdit = new QLineEdit(centralwidget);
-        lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(330, 140, 113, 31));
-        lineEdit_2 = new QLineEdit(centralwidget);
-        lineEdit_2->setObjectName("lineEdit_2");
-        lineEdit_2->setGeometry(QRect(330, 180, 113, 31));
-        Username = new QLabel(centralwidget);
-        Username->setObjectName("Username");
-        Username->setGeometry(QRect(260, 140, 49, 14));
-        Password = new QLabel(centralwidget);
-        Password->setObjectName("Password");
-        Password->setGeometry(QRect(260, 180, 49, 14));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName("pushButton");
-        pushButton->setGeometry(QRect(317, 220, 141, 91));
+        label->setMidLineWidth(-1);
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        pushButton_2 = new QPushButton(loginCard);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setGeometry(QRect(210, 130, 71, 31));
+
+        gridLayout->addWidget(loginCard, 1, 1, 2, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(185, 114, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 1, 2, 2, 1);
+
+        verticalSpacer = new QSpacerItem(398, 80, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 3, 1, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(398, 81, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        gridLayout->addItem(verticalSpacer_2, 0, 1, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(185, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 1, 0, 2, 1);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -232,11 +308,12 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "\350\200\203\350\257\225\347\225\214\351\235\242", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "\346\254\242\350\277\216\350\277\233\345\205\245\350\200\203\350\257\225\351\241\265\351\235\242", nullptr));
-        lineEdit_2->setText(QString());
-        Username->setText(QCoreApplication::translate("MainWindow", "\350\264\246\345\217\267", nullptr));
         Password->setText(QCoreApplication::translate("MainWindow", "\345\257\206\347\240\201", nullptr));
+        Username->setText(QCoreApplication::translate("MainWindow", "\350\264\246\345\217\267", nullptr));
+        lineEdit_2->setText(QString());
         pushButton->setText(QCoreApplication::translate("MainWindow", "\347\231\273\345\275\225", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "\346\254\242\350\277\216\350\277\233\345\205\245\350\200\203\350\257\225\351\241\265\351\235\242", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("MainWindow", "\346\263\250\345\206\214", nullptr));
     } // retranslateUi
 
 };
