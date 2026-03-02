@@ -15,6 +15,10 @@ public:
     explicit LoginWidget(QWidget *parent = nullptr);
     ~LoginWidget();
 
+signals:
+    // --- 只需要添加这一行 ---
+    void signal_showRegister();
+
 private:
     Ui::LoginWidget *ui;
 };

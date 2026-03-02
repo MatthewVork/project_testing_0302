@@ -29,10 +29,11 @@ public:
     QSpacerItem *horizontalSpacer;
     QFrame *frame;
     QGridLayout *gridLayout_2;
-    QLabel *label;
-    QLineEdit *lineEdit;
-    QLineEdit *lineEdit_2;
-    QPushButton *pushButton;
+    QLabel *Laber_Login;
+    QLineEdit *Username;
+    QLineEdit *Password;
+    QPushButton *pushButton_Login;
+    QPushButton *pushButton_Register;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer_2;
 
@@ -140,27 +141,34 @@ public:
         frame->setFrameShadow(QFrame::Shadow::Raised);
         gridLayout_2 = new QGridLayout(frame);
         gridLayout_2->setObjectName("gridLayout_2");
-        label = new QLabel(frame);
-        label->setObjectName("label");
-        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        Laber_Login = new QLabel(frame);
+        Laber_Login->setObjectName("Laber_Login");
+        Laber_Login->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+        gridLayout_2->addWidget(Laber_Login, 0, 0, 1, 2);
 
-        lineEdit = new QLineEdit(frame);
-        lineEdit->setObjectName("lineEdit");
+        Username = new QLineEdit(frame);
+        Username->setObjectName("Username");
 
-        gridLayout_2->addWidget(lineEdit, 1, 0, 1, 1);
+        gridLayout_2->addWidget(Username, 1, 0, 1, 2);
 
-        lineEdit_2 = new QLineEdit(frame);
-        lineEdit_2->setObjectName("lineEdit_2");
-        lineEdit_2->setEchoMode(QLineEdit::EchoMode::Password);
+        Password = new QLineEdit(frame);
+        Password->setObjectName("Password");
+        Password->setEchoMode(QLineEdit::EchoMode::Password);
 
-        gridLayout_2->addWidget(lineEdit_2, 2, 0, 1, 1);
+        gridLayout_2->addWidget(Password, 2, 0, 1, 2);
 
-        pushButton = new QPushButton(frame);
-        pushButton->setObjectName("pushButton");
+        pushButton_Login = new QPushButton(frame);
+        pushButton_Login->setObjectName("pushButton_Login");
+        pushButton_Login->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_2->addWidget(pushButton, 3, 0, 1, 1);
+        gridLayout_2->addWidget(pushButton_Login, 3, 0, 1, 1);
+
+        pushButton_Register = new QPushButton(frame);
+        pushButton_Register->setObjectName("pushButton_Register");
+        pushButton_Register->setMaximumSize(QSize(100, 16777215));
+
+        gridLayout_2->addWidget(pushButton_Register, 3, 1, 1, 1);
 
 
         gridLayout->addWidget(frame, 1, 1, 1, 1);
@@ -182,10 +190,11 @@ public:
     void retranslateUi(QWidget *LoginWidget)
     {
         LoginWidget->setWindowTitle(QCoreApplication::translate("LoginWidget", "Form", nullptr));
-        label->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225\347\225\214\351\235\242", nullptr));
-        lineEdit->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\350\264\246\345\217\267", nullptr));
-        lineEdit_2->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\345\257\206\347\240\201", nullptr));
-        pushButton->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225", nullptr));
+        Laber_Login->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225\347\225\214\351\235\242", nullptr));
+        Username->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\350\264\246\345\217\267", nullptr));
+        Password->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\345\257\206\347\240\201", nullptr));
+        pushButton_Login->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225", nullptr));
+        pushButton_Register->setText(QCoreApplication::translate("LoginWidget", "\346\263\250\345\206\214", nullptr));
     } // retranslateUi
 
 };
