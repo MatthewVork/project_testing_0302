@@ -21,6 +21,6 @@ private:
     Ui::MainWindow *ui;
     // 定义成员变量，方便后续切换页面
     LoginWidget *loginPage;
-    registerwidget *regPage;
+    RegisterWidget *regPage;
 };
 #endif

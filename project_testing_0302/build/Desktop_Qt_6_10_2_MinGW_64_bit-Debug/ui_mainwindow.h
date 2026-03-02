@@ -23,8 +23,6 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QStackedWidget *stackedWidget;
-    QWidget *page_3;
-    QWidget *page_4;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -37,12 +35,6 @@ public:
         stackedWidget = new QStackedWidget(centralwidget);
         stackedWidget->setObjectName("stackedWidget");
         stackedWidget->setGeometry(QRect(0, 0, 800, 500));
-        page_3 = new QWidget();
-        page_3->setObjectName("page_3");
-        stackedWidget->addWidget(page_3);
-        page_4 = new QWidget();
-        page_4->setObjectName("page_4");
-        stackedWidget->addWidget(page_4);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -50,7 +42,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(0);
+        stackedWidget->setCurrentIndex(-1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

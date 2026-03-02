@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>registerwidget</class>
- <widget class="QWidget" name="registerwidget">
+ <class>RegisterWidget</class>
+ <widget class="QWidget" name="RegisterWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +12,87 @@
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* --- 1. 全局基础设定 --- */
+QWidget {
+    font-family: &quot;SF Pro Display&quot;, &quot;Helvetica Neue&quot;, &quot;Segoe UI&quot;, &quot;Microsoft YaHei&quot;;
+    color: #1d1d1f; /* 苹果标准深灰色文本 */
+    outline: none;  /* 去掉点击时的虚线框 */
+}
+
+/* --- 2. 通用容器 (如你的 loginCard) --- */
+/* 只要是 QFrame 都会自动变成这种半透明磨砂质感 */
+QFrame {
+    background-color: rgba(255, 255, 255, 0.7); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 18px;
+}
+
+/* --- 3. 通用输入框 (QLineEdit, QTextEdit) --- */
+QLineEdit, QTextEdit {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+/* 输入框聚焦效果：标志性的蓝色光晕 */
+QLineEdit:focus, QTextEdit:focus {
+    border: 2px solid #007AFF;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* --- 4. 通用按钮 (QPushButton) --- */
+QPushButton {
+    background-color: #007AFF; /* 苹果蓝 */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+/* 鼠标悬停：颜色略微加深 */
+QPushButton:hover {
+    background-color: #0063CC;
+}
+
+/* 按下：明显的反馈感 */
+QPushButton:pressed {
+    background-color: #0051A8;
+}
+
+/* 禁用状态：变灰 */
+QPushButton:disabled {
+    background-color: #d2d2d7;
+    color: #86868b;
+}
+
+/* --- 5. 标签与文本 (QLabel) --- */
+QLabel {
+    background-color: transparent;
+    font-size: 14px;
+}
+
+/* --- 6. 滚动条美化 (QScrollBar) --- */
+/* 让滚动条像 iOS 一样简洁 */
+QScrollBar:vertical {
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(0, 0, 0, 0.3);
+}</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">

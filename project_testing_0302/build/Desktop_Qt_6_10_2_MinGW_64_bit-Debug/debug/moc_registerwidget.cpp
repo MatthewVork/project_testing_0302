@@ -31,14 +31,14 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 QT_WARNING_DISABLE_GCC("-Wuseless-cast")
 namespace {
-struct qt_meta_tag_ZN14registerwidgetE_t {};
+struct qt_meta_tag_ZN14RegisterWidgetE_t {};
 } // unnamed namespace
 
-template <> constexpr inline auto registerwidget::qt_create_metaobjectdata<qt_meta_tag_ZN14registerwidgetE_t>()
+template <> constexpr inline auto RegisterWidget::qt_create_metaobjectdata<qt_meta_tag_ZN14RegisterWidgetE_t>()
 {
     namespace QMC = QtMocConstants;
     QtMocHelpers::StringRefStorage qt_stringData {
-        "registerwidget"
+        "RegisterWidget"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -47,42 +47,42 @@ template <> constexpr inline auto registerwidget::qt_create_metaobjectdata<qt_me
     };
     QtMocHelpers::UintData qt_enums {
     };
-    return QtMocHelpers::metaObjectData<registerwidget, qt_meta_tag_ZN14registerwidgetE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+    return QtMocHelpers::metaObjectData<RegisterWidget, qt_meta_tag_ZN14RegisterWidgetE_t>(QMC::MetaObjectFlag{}, qt_stringData,
             qt_methods, qt_properties, qt_enums);
 }
-Q_CONSTINIT const QMetaObject registerwidget::staticMetaObject = { {
+Q_CONSTINIT const QMetaObject RegisterWidget::staticMetaObject = { {
     QMetaObject::SuperData::link<QWidget::staticMetaObject>(),
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14registerwidgetE_t>.stringdata,
-    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14registerwidgetE_t>.data,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14RegisterWidgetE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14RegisterWidgetE_t>.data,
     qt_static_metacall,
     nullptr,
-    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN14registerwidgetE_t>.metaTypes,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN14RegisterWidgetE_t>.metaTypes,
     nullptr
 } };
 
-void registerwidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void RegisterWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    auto *_t = static_cast<registerwidget *>(_o);
+    auto *_t = static_cast<RegisterWidget *>(_o);
     (void)_t;
     (void)_c;
     (void)_id;
     (void)_a;
 }
 
-const QMetaObject *registerwidget::metaObject() const
+const QMetaObject *RegisterWidget::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *registerwidget::qt_metacast(const char *_clname)
+void *RegisterWidget::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14registerwidgetE_t>.strings))
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN14RegisterWidgetE_t>.strings))
         return static_cast<void*>(this);
     return QWidget::qt_metacast(_clname);
 }
 
-int registerwidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int RegisterWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QWidget::qt_metacall(_c, _id, _a);
     return _id;
