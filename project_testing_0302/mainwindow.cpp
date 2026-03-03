@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // 1. 实例化你的“积木”
+    // 1. 实例化
     loginPage = new LoginWidget(this);
     regPage = new RegisterWidget(this);
     menuPage = new MainMenuWidget(this);
