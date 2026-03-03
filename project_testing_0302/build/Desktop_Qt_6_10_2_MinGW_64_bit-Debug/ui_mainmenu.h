@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -18,12 +19,20 @@ QT_BEGIN_NAMESPACE
 class Ui_MainMenu
 {
 public:
+    QPushButton *pushButtonCallbackLoginMenu;
+    QPushButton *pushButton_2;
 
     void setupUi(QWidget *MainMenu)
     {
         if (MainMenu->objectName().isEmpty())
             MainMenu->setObjectName("MainMenu");
-        MainMenu->resize(400, 300);
+        MainMenu->resize(800, 500);
+        pushButtonCallbackLoginMenu = new QPushButton(MainMenu);
+        pushButtonCallbackLoginMenu->setObjectName("pushButtonCallbackLoginMenu");
+        pushButtonCallbackLoginMenu->setGeometry(QRect(440, 410, 68, 21));
+        pushButton_2 = new QPushButton(MainMenu);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setGeometry(QRect(440, 370, 68, 21));
 
         retranslateUi(MainMenu);
 
@@ -33,6 +42,8 @@ public:
     void retranslateUi(QWidget *MainMenu)
     {
         MainMenu->setWindowTitle(QCoreApplication::translate("MainMenu", "Form", nullptr));
+        pushButtonCallbackLoginMenu->setText(QCoreApplication::translate("MainMenu", "\351\200\200\345\207\272", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("MainMenu", "PushButton", nullptr));
     } // retranslateUi
 
 };

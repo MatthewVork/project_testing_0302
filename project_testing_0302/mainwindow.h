@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include "loginwidget.h"    // 包含你的独立界面头文件
 #include "registerwidget.h"
+#include "mainmenuwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,5 +23,6 @@ private:
     // 定义成员变量，方便后续切换页面
     LoginWidget *loginPage;
     RegisterWidget *regPage;
+    MainMenuWidget *menuPage;
 };
 #endif

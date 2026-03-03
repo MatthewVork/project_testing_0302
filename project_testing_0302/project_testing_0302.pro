@@ -11,7 +11,7 @@ CONFIG += c++17
 SOURCES += \
     loginwidget.cpp \
     main.cpp \
-    mainmenu.cpp \
+    mainmenuwidget.cpp \
     mainwindow.cpp \
     registerwidget.cpp \
     scorereport.cpp \
@@ -19,7 +19,7 @@ SOURCES += \
 
 HEADERS += \
     loginwidget.h \
-    mainmenu.h \
+    mainmenuwidget.h \
     mainwindow.h \
     registerwidget.h \
     scorereport.h \
@@ -27,7 +27,7 @@ HEADERS += \
 
 FORMS += \
     loginwidget.ui \
-    mainmenu.ui \
+    mainmenuwidget.ui \
     mainwindow.ui \
     registerwidget.ui \
     scorereport.ui \

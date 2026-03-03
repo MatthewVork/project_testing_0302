@@ -11,10 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     // 1. 实例化你的“积木”
     loginPage = new LoginWidget(this);
     regPage = new RegisterWidget(this);
+    menuPage = new MainMenuWidget(this);
 
     // 2. 塞进 Stacked Widget
     ui->stackedWidget->addWidget(loginPage); // 索引为 0
     ui->stackedWidget->addWidget(regPage);   // 索引为 1
+    ui->stackedWidget->addWidget(menuPage);
 
     // 3. 设置初始页
     ui->stackedWidget->setCurrentIndex(0);
@@ -26,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(regPage, &RegisterWidget::signal_CallbackLoginwidget, this, [this](){
+        ui->stackedWidget->setCurrentIndex(0);
+    });
+
+    connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
     });
 }
