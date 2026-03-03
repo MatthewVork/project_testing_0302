@@ -20,6 +20,7 @@ public slots:
 signals:
     // --- 只需要添加这一行 ---
     void signal_showRegister();
+    void signal_LoginSuccess();
 
 
 private:
