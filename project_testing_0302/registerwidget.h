@@ -15,6 +15,9 @@ public:
     explicit RegisterWidget(QWidget *parent = nullptr);
     ~RegisterWidget();
 
+signals:
+    void signal_CallbackLoginwidget();
+
 private:
     Ui::RegisterWidget *ui;
 };

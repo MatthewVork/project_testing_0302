@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(loginPage, &LoginWidget::signal_showRegister, this, [this]() {
         ui->stackedWidget->setCurrentIndex(1);
     });
+
+    connect(regPage, &RegisterWidget::signal_CallbackLoginwidget, this, [this](){
+        ui->stackedWidget->setCurrentIndex(0);
+    });
 }
 
 MainWindow::~MainWindow() {

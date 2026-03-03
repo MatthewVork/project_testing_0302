@@ -11,7 +11,6 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
@@ -26,21 +25,21 @@ class Ui_RegisterWidget
 {
 public:
     QGridLayout *gridLayout;
-    QSpacerItem *verticalSpacer;
+    QSpacerItem *verticalSpacer_2;
+    QSpacerItem *horizontalSpacer_2;
     QSpacerItem *horizontalSpacer;
+    QSpacerItem *verticalSpacer;
     QFrame *frame;
-    QFormLayout *formLayout;
-    QLabel *label;
+    QGridLayout *gridLayout_2;
     QLabel *label_2;
     QLineEdit *lineEdit;
     QLabel *label_3;
     QLineEdit *lineEdit_2;
     QLabel *label_4;
     QLineEdit *lineEdit_3;
+    QLabel *label;
     QPushButton *pushButton;
-    QPushButton *pushButton_2;
-    QSpacerItem *horizontalSpacer_2;
-    QSpacerItem *verticalSpacer_2;
+    QPushButton *pushButton_callback_loginwidget;
 
     void setupUi(QWidget *RegisterWidget)
     {
@@ -131,76 +130,77 @@ public:
 "}"));
         gridLayout = new QGridLayout(RegisterWidget);
         gridLayout->setObjectName("gridLayout");
-        verticalSpacer = new QSpacerItem(20, 75, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+        verticalSpacer_2 = new QSpacerItem(20, 75, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
-        gridLayout->addItem(verticalSpacer, 0, 1, 1, 1);
+        gridLayout->addItem(verticalSpacer_2, 2, 1, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(256, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 1, 2, 1, 1);
 
         horizontalSpacer = new QSpacerItem(256, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         gridLayout->addItem(horizontalSpacer, 1, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 75, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 0, 1, 1, 1);
 
         frame = new QFrame(RegisterWidget);
         frame->setObjectName("frame");
         frame->setMinimumSize(QSize(240, 320));
         frame->setFrameShape(QFrame::Shape::StyledPanel);
         frame->setFrameShadow(QFrame::Shadow::Raised);
-        formLayout = new QFormLayout(frame);
-        formLayout->setObjectName("formLayout");
-        label = new QLabel(frame);
-        label->setObjectName("label");
-
-        formLayout->setWidget(0, QFormLayout::ItemRole::SpanningRole, label);
-
+        gridLayout_2 = new QGridLayout(frame);
+        gridLayout_2->setObjectName("gridLayout_2");
         label_2 = new QLabel(frame);
         label_2->setObjectName("label_2");
 
-        formLayout->setWidget(2, QFormLayout::ItemRole::LabelRole, label_2);
+        gridLayout_2->addWidget(label_2, 1, 0, 1, 1);
 
         lineEdit = new QLineEdit(frame);
         lineEdit->setObjectName("lineEdit");
 
-        formLayout->setWidget(2, QFormLayout::ItemRole::FieldRole, lineEdit);
+        gridLayout_2->addWidget(lineEdit, 1, 1, 1, 2);
 
         label_3 = new QLabel(frame);
         label_3->setObjectName("label_3");
 
-        formLayout->setWidget(4, QFormLayout::ItemRole::LabelRole, label_3);
+        gridLayout_2->addWidget(label_3, 2, 0, 1, 1);
 
         lineEdit_2 = new QLineEdit(frame);
         lineEdit_2->setObjectName("lineEdit_2");
 
-        formLayout->setWidget(4, QFormLayout::ItemRole::FieldRole, lineEdit_2);
+        gridLayout_2->addWidget(lineEdit_2, 2, 1, 1, 2);
 
         label_4 = new QLabel(frame);
         label_4->setObjectName("label_4");
 
-        formLayout->setWidget(6, QFormLayout::ItemRole::LabelRole, label_4);
+        gridLayout_2->addWidget(label_4, 3, 0, 1, 1);
 
         lineEdit_3 = new QLineEdit(frame);
         lineEdit_3->setObjectName("lineEdit_3");
 
-        formLayout->setWidget(6, QFormLayout::ItemRole::FieldRole, lineEdit_3);
+        gridLayout_2->addWidget(lineEdit_3, 3, 1, 1, 2);
+
+        label = new QLabel(frame);
+        label->setObjectName("label");
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+
+        gridLayout_2->addWidget(label, 0, 0, 1, 3);
 
         pushButton = new QPushButton(frame);
         pushButton->setObjectName("pushButton");
 
-        formLayout->setWidget(8, QFormLayout::ItemRole::SpanningRole, pushButton);
+        gridLayout_2->addWidget(pushButton, 4, 0, 1, 1);
 
-        pushButton_2 = new QPushButton(frame);
-        pushButton_2->setObjectName("pushButton_2");
+        pushButton_callback_loginwidget = new QPushButton(frame);
+        pushButton_callback_loginwidget->setObjectName("pushButton_callback_loginwidget");
 
-        formLayout->setWidget(9, QFormLayout::ItemRole::FieldRole, pushButton_2);
+        gridLayout_2->addWidget(pushButton_callback_loginwidget, 4, 2, 1, 1);
 
 
         gridLayout->addWidget(frame, 1, 1, 1, 1);
-
-        horizontalSpacer_2 = new QSpacerItem(256, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_2, 1, 2, 1, 1);
-
-        verticalSpacer_2 = new QSpacerItem(20, 75, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
-
-        gridLayout->addItem(verticalSpacer_2, 2, 1, 1, 1);
 
 
         retranslateUi(RegisterWidget);
@@ -211,12 +211,12 @@ public:
     void retranslateUi(QWidget *RegisterWidget)
     {
         RegisterWidget->setWindowTitle(QCoreApplication::translate("RegisterWidget", "Form", nullptr));
-        label->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\347\225\214\351\235\242", nullptr));
         label_2->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\350\264\246\345\217\267", nullptr));
         label_3->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\345\257\206\347\240\201", nullptr));
         label_4->setText(QCoreApplication::translate("RegisterWidget", "\347\241\256\350\256\244\345\257\206\347\240\201", nullptr));
+        label->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\347\225\214\351\235\242", nullptr));
         pushButton->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("RegisterWidget", "\345\217\226\346\266\210", nullptr));
+        pushButton_callback_loginwidget->setText(QCoreApplication::translate("RegisterWidget", "\345\217\226\346\266\210", nullptr));
     } // retranslateUi
 
 };

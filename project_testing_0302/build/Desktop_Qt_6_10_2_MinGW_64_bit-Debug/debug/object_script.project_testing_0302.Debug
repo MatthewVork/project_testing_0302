@@ -1,0 +1,13 @@
+debug/loginwidget.o
+debug/main.o
+debug/mainmenu.o
+debug/mainwindow.o
+debug/registerwidget.o
+debug/scorereport.o
+debug/testingroom.o
+debug/moc_loginwidget.o
+debug/moc_mainmenu.o
+debug/moc_mainwindow.o
+debug/moc_registerwidget.o
+debug/moc_scorereport.o
+debug/moc_testingroom.o
