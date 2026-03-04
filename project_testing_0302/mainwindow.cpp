@@ -1,4 +1,6 @@
 // mainwindow.cpp
+#include <QTcpSocket>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -7,6 +9,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // 1. 创建套接字对象
+    tcpSocket = new QTcpSocket(this);
+
+    // 下面的信号槽也全都要改成 tcpSocket
+    tcpSocket->connectToHost("192.168.172.26", 9999);
+
+    connect(tcpSocket, &QTcpSocket::connected, this, [this]() {
+        qDebug() << "成功连接到服务器！";
+        tcpSocket->write("Hello Server, this is Teacher Client!");
+    });
+
+    connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
+        qDebug() << "连接出错：" << tcpSocket->errorString();
+    });
 
     // 1. 实例化
     loginPage = new LoginWidget(this);

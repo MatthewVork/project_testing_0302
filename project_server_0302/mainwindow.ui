@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -39,7 +39,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="startBtn">
            <property name="text">
             <string>确认</string>
            </property>
@@ -65,7 +65,7 @@
          <item>
           <widget class="QPushButton" name="pushButton_3">
            <property name="text">
-            <string>清楚输入</string>
+            <string>清除输入</string>
            </property>
           </widget>
          </item>

@@ -12,3 +12,12 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::on_startBtn_Clicked()
+{
+    if(mserver.isListening())
+    {
+        mserver.close();
+        ui->startBtn
+    }
+}

@@ -3,6 +3,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTcpSocket>
 #include "loginwidget.h"    // 包含你的独立界面头文件
 #include "registerwidget.h"
 #include "mainmenuwidget.h"
@@ -24,5 +25,7 @@ private:
     LoginWidget *loginPage;
     RegisterWidget *regPage;
     MainMenuWidget *menuPage;
+
+    QTcpSocket *tcpSocket;
 };
 #endif
