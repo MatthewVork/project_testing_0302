@@ -42,6 +42,8 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         "signal_showRegister",
         "",
         "signal_LoginSuccess",
+        "SecureData",
+        "data",
         "check_login"
     };
 
@@ -50,8 +52,12 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'signal_LoginSuccess'
         QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'SecureData'
+        QtMocHelpers::SignalData<void(const QByteArray &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QByteArray, 5 },
+        }}),
         // Slot 'check_login'
-        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -77,7 +83,8 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         switch (_id) {
         case 0: _t->signal_showRegister(); break;
         case 1: _t->signal_LoginSuccess(); break;
-        case 2: _t->check_login(); break;
+        case 2: _t->SecureData((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
+        case 3: _t->check_login(); break;
         default: ;
         }
     }
@@ -85,6 +92,8 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)()>(_a, &LoginWidget::signal_showRegister, 0))
             return;
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)()>(_a, &LoginWidget::signal_LoginSuccess, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)(const QByteArray & )>(_a, &LoginWidget::SecureData, 2))
             return;
     }
 }
@@ -108,14 +117,14 @@ int LoginWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }
@@ -130,5 +139,11 @@ void LoginWidget::signal_showRegister()
 void LoginWidget::signal_LoginSuccess()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
+}
+
+// SIGNAL 2
+void LoginWidget::SecureData(const QByteArray & _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
 }
 QT_WARNING_POP

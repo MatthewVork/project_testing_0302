@@ -3,6 +3,7 @@
 
 #include <QTcpServer>
 #include <QWidget>
+#include "../project_testing_0302/NetProtocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,13 +22,15 @@ public:
 protected slots:
     void new_client();
     void read_data();
+
 private slots:
     void on_startBtn_clicked();
     void on_clearSendBtn_clicked();
     void on_clearRecvBtn_clicked();
-
     void on_sendBtn_clicked();
-
+    void init_Database();
+    void handleRegister(const QJsonObject &data);
+    bool verifyLogin(QString user, QString pwd);
 private:
     Ui::TcpServer *ui;
     //创建QTcpServer对象

@@ -18,6 +18,7 @@ SOURCES += \
     testingroom.cpp
 
 HEADERS += \
+    NetProtocol.h \
     loginwidget.h \
     mainmenuwidget.h \
     mainwindow.h \

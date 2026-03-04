@@ -1,11 +1,13 @@
 #include "tcpserver.h"
 #include "ui_tcpserver.h"
-
+#include "qtcpsocket.h"
+#include <QTcpServer>
 #include <QMessageBox>
-#include <QTcpSocket>
-#include <QUdpSocket>
 #include <QHostAddress>
 #include <QString>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 TcpServer::TcpServer(QWidget *parent)
     : QWidget(parent)
@@ -13,11 +15,8 @@ TcpServer::TcpServer(QWidget *parent)
 {
     ui->setupUi(this);
     //关联客户端连接信号
-    qDebug()<<getRealIP();
     connect(&mserver, &QTcpServer::newConnection, this, &TcpServer::new_client);
 }
-
-
 
 TcpServer::~TcpServer()
 {
@@ -84,13 +83,49 @@ void TcpServer::new_client()
     });
 }
 
-void TcpServer::read_data() //这个函数不能直接调用
-{
-    //获取信号发送者对象
-    QTcpSocket* msocket = (QTcpSocket*)sender();
-    QString msg = msocket->readAll();
-    ui->textBrowser->append(msg);
+static QByteArray decrypt(const QByteArray &base64Cipher) {
+    QByteArray cipher = QByteArray::fromBase64(base64Cipher); // Base64 解码
+    const char key = 'K';
+    for(int i = 0; i < cipher.size(); ++i) {
+        cipher[i] = cipher[i] ^ key; // 异或还原
+    }
+    return cipher;
 }
+
+void TcpServer::read_data() {
+    QTcpSocket* msocket = qobject_cast<QTcpSocket*>(sender());
+    if (!msocket) return;
+
+    // 重点：这里改用 QByteArray，不要用 QString msg
+    QByteArray rawData = msocket->readAll();
+
+    // 先解密，再转成字符串显示，否则会出现 image_e7128b 中的乱码
+    QByteArray plainData = decrypt(rawData);
+
+    // UI 显示逻辑
+    ui->textBrowser->append("收到密文: " + QString(rawData));
+    ui->textBrowser->append("解密明文: " + QString::fromUtf8(plainData));
+
+    QJsonDocument doc = QJsonDocument::fromJson(plainData);
+    if (!doc.isNull() && doc.isObject())
+    {
+        QJsonObject rootObj = doc.object();
+        int msgType = rootObj["type"].toInt();
+        qDebug() << "收到的消息类型编号为：" << msgType;
+
+        switch(msgType)
+        {
+            case MSG_LOGIN: break;
+            case MSG_REGISTER: break;
+            case MSG_LOGOUT: break;
+            case MSG_ADD_QUESTION: break;
+            case MSG_GET_QUESTION: break;
+            case MSG_SUBMIT_EXAM: break;
+            case MSG_GET_PAPER: break;
+        }
+    }
+}
+
 
 void TcpServer::on_clearSendBtn_clicked()
 {
@@ -118,26 +153,57 @@ void TcpServer::on_sendBtn_clicked()
     //获取发送数据的套接字
     QTcpSocket* msocket = clients.at(row);
     msocket->write(data.toUtf8());
-
 }
 
-QString TcpServer::getRealIP()
-{
-    QString realIp = "127.0.0.1"; // 默认保底
+void TcpServer::init_Database() {
+    // 1. 添加 SQLite 驱动并设置数据库文件名
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("exam_system.db"); // 运行后你会看到这个文件
 
-    QUdpSocket udpSocket;
-    // 假装连接谷歌的 DNS 服务器 (8.8.8.8)，端口 53
-    // 这一步操作系统会自动筛选出唯一一个通向外网的真实网卡 IP
-    udpSocket.connectToHost(QHostAddress("8.8.8.8"), 53);
-
-    // 等待连接（通常瞬间就能完成）
-    if (udpSocket.waitForConnected(1000))
-    {
-        // 获取操作系统分配给这个 socket 的本地 IP
-        realIp = udpSocket.localAddress().toString();
+    if (!db.open()) {
+        qDebug() << "数据库打开失败：" << db.lastError().text();
+        return;
     }
 
-    udpSocket.close();
-    return realIp;
+    // 2. 创建用户表 (如果不存在的话)
+    QSqlQuery query;
+    // username 设置为 UNIQUE，这样同名用户注册就会报错，非常省心
+    QString sql = "CREATE TABLE IF NOT EXISTS users ("
+                  "username TEXT PRIMARY KEY, "
+                  "password TEXT NOT NULL)";
+
+    if(!query.exec(sql)) {
+        qDebug() << "建表失败：" << query.lastError().text();
+    } else {
+        qDebug() << "数据库准备就绪！";
+    }
 }
 
+void TcpServer::handleRegister(const QJsonObject &data) {
+    QString user = data["username"].toString();
+    QString pwd = data["password"].toString();
+
+    QSqlQuery query;
+    // 使用占位符 :user 和 :pwd 防止 SQL 注入，这是专业写法
+    query.prepare("INSERT INTO users (username, password) VALUES (:user, :pwd)");
+    query.bindValue(":user", user);
+    query.bindValue(":pwd", pwd);
+
+    if (query.exec()) {
+        qDebug() << "注册成功：" << user;
+        // 这里你可以通过 socket 发回一个 "注册成功" 的 JSON 包
+    } else {
+        qDebug() << "注册失败，可能是账号已存在：" << query.lastError().text();
+        // 发回 "注册失败" 的包
+    }
+}
+
+bool TcpServer::verifyLogin(QString user, QString pwd) {
+    QSqlQuery query;
+    query.prepare("SELECT * FROM users WHERE username = :user AND password = :pwd");
+    query.bindValue(":user", user);
+    query.bindValue(":pwd", pwd);
+
+    query.exec();
+    return query.next(); // 如果查到了结果，说明账号密码匹配，返回 true
+}

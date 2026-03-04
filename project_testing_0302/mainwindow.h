@@ -25,7 +25,7 @@ private:
     LoginWidget *loginPage;
     RegisterWidget *regPage;
     MainMenuWidget *menuPage;
-
     QTcpSocket *tcpSocket;
+private:
 };
 #endif

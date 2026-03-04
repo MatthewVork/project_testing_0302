@@ -1,8 +1,10 @@
 // mainwindow.cpp
 #include <QTcpSocket>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "NetProtocol.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(tcpSocket, &QTcpSocket::connected, this, [this]() {
         qDebug() << "成功连接到服务器！";
-        tcpSocket->write("Hello Server, this is Teacher Client!");
+        //tcpSocket->write("Hello Server, this is Teacher Client!");
     });
 
     connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
@@ -55,10 +57,21 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(0);
     });
 
+    //收到传输JSON信号
+    connect(loginPage, &LoginWidget::SecureData, this, [this](const QByteArray &data){
 
+        // 调用你之前在 NetProtocol 里写好的静态发送函数
+        // 填入主窗口维护的那个物理套接字 tcpSocket
+        NetProtocol::sendSecureData(this->tcpSocket, data);
+
+        qDebug() << "主窗口已拦截到登录信号，正在通过 Socket 发送加密数据包...";
+    });
 
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
+
+
+

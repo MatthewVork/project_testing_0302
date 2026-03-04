@@ -6,6 +6,7 @@
 
 #include "loginwidget.h"
 #include "ui_loginwidget.h"
+#include "NetProtocol.h"
 
 LoginWidget::LoginWidget(QWidget *parent)
     : QWidget(parent)
@@ -30,6 +31,12 @@ LoginWidget::~LoginWidget()
 
 void LoginWidget::check_login()
 {
+    QByteArray data1 = NetProtocol::packData(1001, ui->Username->text(), ui->Password->text());
+
+    emit SecureData(data1); // 发出信号，由 MainWindow 接收并发送
+
+    //这里用来赋值比较
+
     if(ui->Username->text().isEmpty())
     {
         qDebug()<<"username is empty";
@@ -61,7 +68,6 @@ void LoginWidget::check_login()
             emit signal_LoginSuccess(); //发送信号通知主窗口切换屏幕
             return;
         }
-
         else
         {
             qDebug()<<"password is false";
