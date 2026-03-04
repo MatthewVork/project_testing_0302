@@ -12,8 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 1. 创建套接字对象
     tcpSocket = new QTcpSocket(this);
-
-    // 下面的信号槽也全都要改成 tcpSocket
     tcpSocket->connectToHost("192.168.172.26", 9999);
 
     connect(tcpSocket, &QTcpSocket::connected, this, [this]() {
@@ -23,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
         qDebug() << "连接出错：" << tcpSocket->errorString();
+        QMessageBox::information(this, "连接服务器错误","请检查网络或服务器是否启动"); return;
     });
 
     // 1. 实例化
