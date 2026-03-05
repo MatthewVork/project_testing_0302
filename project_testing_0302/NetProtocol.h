@@ -3,6 +3,7 @@
 
 #include <QTcpsocket>
 #include <QJsonObject>
+#include <QMessageBox>
 
 class NetProtocol
 {
@@ -27,7 +28,8 @@ public:
         MSG_HEARTBEAT      = 4003,
     };
 
-    static QByteArray packData(int msgtype, QString username, QString password) //做重载函数
+    // 1. 打包函数：将类型和数据组合成 JSON 字节流
+    static QByteArray packUserAndPass(int msgtype, QString username, QString password) //做重载函数
     {
         QJsonObject dataObj;
         dataObj["username"] = username;
@@ -43,11 +45,10 @@ public:
         return doc.toJson(QJsonDocument::Compact);
     }
 
-
-
+    // 2. 加密函数：先异或 (XOR) 再转 Base64
     static QByteArray encrypt(const QByteArray &plainData) {
         QByteArray cipher = plainData;
-        const char key = 'K'; // 简单示例：异或加密
+        const char key = 'K'; //异或加密
         for(int i=0; i<cipher.size(); ++i) {
             cipher[i] = cipher[i] ^ key;
         }
@@ -55,14 +56,37 @@ public:
         return cipher.toBase64(); // 转为 Base64 确保传输安全
     }
 
-    static void sendSecureData(QTcpSocket *socket, const QByteArray &plainData) {
-        if (!socket || socket->state() != QAbstractSocket::ConnectedState) return;
+    // 3. 解密函数：先 Base64 解码再异或还原
+    static QByteArray decrypt(const QByteArray &base64Cipher) {
+        QByteArray cipher = QByteArray::fromBase64(base64Cipher); // Base64 解码
+        const char key = 'K';
+        for(int i = 0; i < cipher.size(); ++i) {
+            cipher[i] = cipher[i] ^ key; // 异或还原
+        }
+        return cipher;
+    }
 
-        // 调用上面的加密函数
-        QByteArray secureData = encrypt(plainData);
+    // 4. 发送函数：负责物理写入套接字
+    static void sendSecureData(QTcpSocket *socket, const QByteArray &data) {
+        if (socket && socket->state() == QAbstractSocket::ConnectedState) {
+            socket->write(data);
+            socket->flush(); // 确保数据立即发出
+        }
+    }
 
-        // 物理发送
-        socket->write(secureData);
+    // 5. 一键解析函数：直接从加密字节流变成可用的 JSON 对象
+    static QJsonObject parseSecureData(const QByteArray &cipherData) {
+        // 第一步：调用内部的解密函数
+        QByteArray plain = decrypt(cipherData);
+
+        // 第二步：转换为 JSON 文档
+        QJsonDocument doc = QJsonDocument::fromJson(plain);
+
+        // 第三步：如果是合法的对象，直接返回；否则返回空对象
+        if (!doc.isNull() && doc.isObject()) {
+            return doc.object();
+        }
+        return QJsonObject();
     }
 };
 

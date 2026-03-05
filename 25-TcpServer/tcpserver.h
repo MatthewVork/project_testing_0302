@@ -28,9 +28,10 @@ private slots:
     void on_clearSendBtn_clicked();
     void on_clearRecvBtn_clicked();
     void on_sendBtn_clicked();
-    void init_Database();
     void handleRegister(const QJsonObject &data);
-    bool verifyLogin(QString user, QString pwd);
+
+    bool verifyLogin(const QJsonObject &data);
+    bool init_Database();
 private:
     Ui::TcpServer *ui;
     //创建QTcpServer对象

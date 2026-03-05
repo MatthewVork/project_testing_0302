@@ -45,7 +45,12 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         "on_startBtn_clicked",
         "on_clearSendBtn_clicked",
         "on_clearRecvBtn_clicked",
-        "on_sendBtn_clicked"
+        "on_sendBtn_clicked",
+        "handleRegister",
+        "QJsonObject",
+        "data",
+        "verifyLogin",
+        "init_Database"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -61,6 +66,16 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_sendBtn_clicked'
         QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'handleRegister'
+        QtMocHelpers::SlotData<void(const QJsonObject &)>(8, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 },
+        }}),
+        // Slot 'verifyLogin'
+        QtMocHelpers::SlotData<bool(const QJsonObject &)>(11, 2, QMC::AccessPrivate, QMetaType::Bool, {{
+            { 0x80000000 | 9, 10 },
+        }}),
+        // Slot 'init_Database'
+        QtMocHelpers::SlotData<bool()>(12, 2, QMC::AccessPrivate, QMetaType::Bool),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -90,10 +105,14 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 3: _t->on_clearSendBtn_clicked(); break;
         case 4: _t->on_clearRecvBtn_clicked(); break;
         case 5: _t->on_sendBtn_clicked(); break;
+        case 6: _t->handleRegister((*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[1]))); break;
+        case 7: { bool _r = _t->verifyLogin((*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[1])));
+            if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
+        case 8: { bool _r = _t->init_Database();
+            if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     }
-    (void)_a;
 }
 
 const QMetaObject *TcpServer::metaObject() const
@@ -115,14 +134,14 @@ int TcpServer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 9;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 9)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 6;
+        _id -= 9;
     }
     return _id;
 }

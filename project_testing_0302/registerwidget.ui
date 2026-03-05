@@ -170,7 +170,7 @@ QScrollBar::handle:vertical:hover {
        </widget>
       </item>
       <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="userEdit"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -180,7 +180,7 @@ QScrollBar::handle:vertical:hover {
        </widget>
       </item>
       <item row="2" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit_2"/>
+       <widget class="QLineEdit" name="pwdEdit"/>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_4">
@@ -190,7 +190,7 @@ QScrollBar::handle:vertical:hover {
        </widget>
       </item>
       <item row="3" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEdit_3"/>
+       <widget class="QLineEdit" name="pwdConfirmEdit"/>
       </item>
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="label">
@@ -203,14 +203,14 @@ QScrollBar::handle:vertical:hover {
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="registerBtn">
         <property name="text">
          <string>注册</string>
         </property>
        </widget>
       </item>
       <item row="4" column="2">
-       <widget class="QPushButton" name="pushButton_callback_loginwidget">
+       <widget class="QPushButton" name="backBtn">
         <property name="text">
          <string>取消</string>
         </property>

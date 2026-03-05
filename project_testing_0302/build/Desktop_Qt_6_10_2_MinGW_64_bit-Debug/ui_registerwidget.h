@@ -32,14 +32,14 @@ public:
     QFrame *frame;
     QGridLayout *gridLayout_2;
     QLabel *label_2;
-    QLineEdit *lineEdit;
+    QLineEdit *userEdit;
     QLabel *label_3;
-    QLineEdit *lineEdit_2;
+    QLineEdit *pwdEdit;
     QLabel *label_4;
-    QLineEdit *lineEdit_3;
+    QLineEdit *pwdConfirmEdit;
     QLabel *label;
-    QPushButton *pushButton;
-    QPushButton *pushButton_callback_loginwidget;
+    QPushButton *registerBtn;
+    QPushButton *backBtn;
 
     void setupUi(QWidget *RegisterWidget)
     {
@@ -158,30 +158,30 @@ public:
 
         gridLayout_2->addWidget(label_2, 1, 0, 1, 1);
 
-        lineEdit = new QLineEdit(frame);
-        lineEdit->setObjectName("lineEdit");
+        userEdit = new QLineEdit(frame);
+        userEdit->setObjectName("userEdit");
 
-        gridLayout_2->addWidget(lineEdit, 1, 1, 1, 2);
+        gridLayout_2->addWidget(userEdit, 1, 1, 1, 2);
 
         label_3 = new QLabel(frame);
         label_3->setObjectName("label_3");
 
         gridLayout_2->addWidget(label_3, 2, 0, 1, 1);
 
-        lineEdit_2 = new QLineEdit(frame);
-        lineEdit_2->setObjectName("lineEdit_2");
+        pwdEdit = new QLineEdit(frame);
+        pwdEdit->setObjectName("pwdEdit");
 
-        gridLayout_2->addWidget(lineEdit_2, 2, 1, 1, 2);
+        gridLayout_2->addWidget(pwdEdit, 2, 1, 1, 2);
 
         label_4 = new QLabel(frame);
         label_4->setObjectName("label_4");
 
         gridLayout_2->addWidget(label_4, 3, 0, 1, 1);
 
-        lineEdit_3 = new QLineEdit(frame);
-        lineEdit_3->setObjectName("lineEdit_3");
+        pwdConfirmEdit = new QLineEdit(frame);
+        pwdConfirmEdit->setObjectName("pwdConfirmEdit");
 
-        gridLayout_2->addWidget(lineEdit_3, 3, 1, 1, 2);
+        gridLayout_2->addWidget(pwdConfirmEdit, 3, 1, 1, 2);
 
         label = new QLabel(frame);
         label->setObjectName("label");
@@ -189,15 +189,15 @@ public:
 
         gridLayout_2->addWidget(label, 0, 0, 1, 3);
 
-        pushButton = new QPushButton(frame);
-        pushButton->setObjectName("pushButton");
+        registerBtn = new QPushButton(frame);
+        registerBtn->setObjectName("registerBtn");
 
-        gridLayout_2->addWidget(pushButton, 4, 0, 1, 1);
+        gridLayout_2->addWidget(registerBtn, 4, 0, 1, 1);
 
-        pushButton_callback_loginwidget = new QPushButton(frame);
-        pushButton_callback_loginwidget->setObjectName("pushButton_callback_loginwidget");
+        backBtn = new QPushButton(frame);
+        backBtn->setObjectName("backBtn");
 
-        gridLayout_2->addWidget(pushButton_callback_loginwidget, 4, 2, 1, 1);
+        gridLayout_2->addWidget(backBtn, 4, 2, 1, 1);
 
 
         gridLayout->addWidget(frame, 1, 1, 1, 1);
@@ -215,8 +215,8 @@ public:
         label_3->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\345\257\206\347\240\201", nullptr));
         label_4->setText(QCoreApplication::translate("RegisterWidget", "\347\241\256\350\256\244\345\257\206\347\240\201", nullptr));
         label->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214\347\225\214\351\235\242", nullptr));
-        pushButton->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214", nullptr));
-        pushButton_callback_loginwidget->setText(QCoreApplication::translate("RegisterWidget", "\345\217\226\346\266\210", nullptr));
+        registerBtn->setText(QCoreApplication::translate("RegisterWidget", "\346\263\250\345\206\214", nullptr));
+        backBtn->setText(QCoreApplication::translate("RegisterWidget", "\345\217\226\346\266\210", nullptr));
     } // retranslateUi
 
 };

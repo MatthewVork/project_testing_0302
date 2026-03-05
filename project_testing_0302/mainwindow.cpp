@@ -53,6 +53,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(0);
     });
 
+    connect(regPage, &RegisterWidget::signal_RegisterData, this, [this](const QByteArray &data){
+        NetProtocol::sendSecureData(this->tcpSocket, data);
+    });
+
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
     });

@@ -1,6 +1,7 @@
 #include "tcpserver.h"
 #include "ui_tcpserver.h"
 #include "qtcpsocket.h"
+#include "../project_testing_0302/NetProtocol.h"
 #include <QTcpServer>
 #include <QMessageBox>
 #include <QHostAddress>
@@ -15,6 +16,7 @@ TcpServer::TcpServer(QWidget *parent)
 {
     ui->setupUi(this);
     //关联客户端连接信号
+    if(!init_Database()) return;
     connect(&mserver, &QTcpServer::newConnection, this, &TcpServer::new_client);
 }
 
@@ -83,14 +85,7 @@ void TcpServer::new_client()
     });
 }
 
-static QByteArray decrypt(const QByteArray &base64Cipher) {
-    QByteArray cipher = QByteArray::fromBase64(base64Cipher); // Base64 解码
-    const char key = 'K';
-    for(int i = 0; i < cipher.size(); ++i) {
-        cipher[i] = cipher[i] ^ key; // 异或还原
-    }
-    return cipher;
-}
+
 
 void TcpServer::read_data() {
     QTcpSocket* msocket = qobject_cast<QTcpSocket*>(sender());
@@ -100,7 +95,7 @@ void TcpServer::read_data() {
     QByteArray rawData = msocket->readAll();
 
     // 先解密，再转成字符串显示，否则会出现 image_e7128b 中的乱码
-    QByteArray plainData = decrypt(rawData);
+    QByteArray plainData = NetProtocol::decrypt(rawData);
 
     // UI 显示逻辑
     ui->textBrowser->append("收到密文: " + QString(rawData));
@@ -115,13 +110,13 @@ void TcpServer::read_data() {
 
         switch(msgType)
         {
-            case MSG_LOGIN: break;
-            case MSG_REGISTER: break;
-            case MSG_LOGOUT: break;
-            case MSG_ADD_QUESTION: break;
-            case MSG_GET_QUESTION: break;
-            case MSG_SUBMIT_EXAM: break;
-            case MSG_GET_PAPER: break;
+            case NetProtocol::MSG_LOGIN: verifyLogin(rootObj); break;
+            case NetProtocol::MSG_REGISTER: handleRegister(rootObj); break;
+            case NetProtocol::MSG_LOGOUT: break;
+            case NetProtocol::MSG_ADD_QUESTION: break;
+            case NetProtocol::MSG_GET_QUESTION: break;
+            case NetProtocol::MSG_SUBMIT_EXAM: break;
+            case NetProtocol::MSG_GET_PAPER: break;
         }
     }
 }
@@ -155,14 +150,14 @@ void TcpServer::on_sendBtn_clicked()
     msocket->write(data.toUtf8());
 }
 
-void TcpServer::init_Database() {
+bool TcpServer::init_Database() {
     // 1. 添加 SQLite 驱动并设置数据库文件名
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("exam_system.db"); // 运行后你会看到这个文件
 
     if (!db.open()) {
         qDebug() << "数据库打开失败：" << db.lastError().text();
-        return;
+        return false;
     }
 
     // 2. 创建用户表 (如果不存在的话)
@@ -173,9 +168,9 @@ void TcpServer::init_Database() {
                   "password TEXT NOT NULL)";
 
     if(!query.exec(sql)) {
-        qDebug() << "建表失败：" << query.lastError().text();
+        qDebug() << "建表失败：" << query.lastError().text(); return false;
     } else {
-        qDebug() << "数据库准备就绪！";
+        qDebug() << "数据库准备就绪！"; return true;
     }
 }
 
@@ -198,7 +193,9 @@ void TcpServer::handleRegister(const QJsonObject &data) {
     }
 }
 
-bool TcpServer::verifyLogin(QString user, QString pwd) {
+bool TcpServer::verifyLogin(const QJsonObject &data) {
+    QString user = data["username"].toString();
+    QString pwd = data["password"].toString();
     QSqlQuery query;
     query.prepare("SELECT * FROM users WHERE username = :user AND password = :pwd");
     query.bindValue(":user", user);

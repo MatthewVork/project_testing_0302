@@ -31,7 +31,7 @@ LoginWidget::~LoginWidget()
 
 void LoginWidget::check_login()
 {
-    QByteArray data1 = NetProtocol::packData(1001, ui->Username->text(), ui->Password->text());
+    QByteArray data1 = NetProtocol::packUserAndPass(1001, ui->Username->text(), ui->Password->text());
 
     emit SecureData(data1); // 发出信号，由 MainWindow 接收并发送
 

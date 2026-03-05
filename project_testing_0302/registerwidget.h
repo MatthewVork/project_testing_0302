@@ -15,8 +15,12 @@ public:
     explicit RegisterWidget(QWidget *parent = nullptr);
     ~RegisterWidget();
 
+public slots:
+    void on_registerBtn_clicked();
+    void on_backBtn_clicked();
 signals:
     void signal_CallbackLoginwidget();
+    void signal_RegisterData(QByteArray);
 
 private:
     Ui::RegisterWidget *ui;

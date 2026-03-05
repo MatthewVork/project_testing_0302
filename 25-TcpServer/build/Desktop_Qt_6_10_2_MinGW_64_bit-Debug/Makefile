@@ -293,6 +293,7 @@ Makefile: ../../25-TcpServer.pro D:/QT_install/6.10.2/mingw_64/mkspecs/win32-g++
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/qt_config.prf \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/win32-g++/qmake.conf \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/exclusive_builds.prf \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/toolchain.prf \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/default_pre.prf \
@@ -321,9 +322,9 @@ Makefile: ../../25-TcpServer.pro D:/QT_install/6.10.2/mingw_64/mkspecs/win32-g++
 		D:/QT_install/6.10.2/mingw_64/lib/Qt6Widgets.prl \
 		D:/QT_install/6.10.2/mingw_64/lib/Qt6Gui.prl \
 		D:/QT_install/6.10.2/mingw_64/lib/Qt6Network.prl \
+		D:/QT_install/6.10.2/mingw_64/lib/Qt6Sql.prl \
 		D:/QT_install/6.10.2/mingw_64/lib/Qt6Core.prl \
 		D:/QT_install/6.10.2/mingw_64/lib/Qt6EntryPoint.prl \
-		.qmake.stash \
 		D:/QT_install/6.10.2/mingw_64/mkspecs/features/build_pass.prf
 	$(QMAKE) -o Makefile ../../25-TcpServer.pro -spec win32-g++ CONFIG+=debug CONFIG+=qml_debug
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/spec_pre.prf:
@@ -549,6 +550,7 @@ D:/QT_install/6.10.2/mingw_64/mkspecs/features/qt_functions.prf:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/qt_config.prf:
 D:/QT_install/6.10.2/mingw_64/mkspecs/win32-g++/qmake.conf:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/exclusive_builds.prf:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/toolchain.prf:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/default_pre.prf:
@@ -577,9 +579,9 @@ D:/QT_install/6.10.2/mingw_64/mkspecs/features/lex.prf:
 D:/QT_install/6.10.2/mingw_64/lib/Qt6Widgets.prl:
 D:/QT_install/6.10.2/mingw_64/lib/Qt6Gui.prl:
 D:/QT_install/6.10.2/mingw_64/lib/Qt6Network.prl:
+D:/QT_install/6.10.2/mingw_64/lib/Qt6Sql.prl:
 D:/QT_install/6.10.2/mingw_64/lib/Qt6Core.prl:
 D:/QT_install/6.10.2/mingw_64/lib/Qt6EntryPoint.prl:
-.qmake.stash:
 D:/QT_install/6.10.2/mingw_64/mkspecs/features/build_pass.prf:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../../25-TcpServer.pro -spec win32-g++ CONFIG+=debug CONFIG+=qml_debug
