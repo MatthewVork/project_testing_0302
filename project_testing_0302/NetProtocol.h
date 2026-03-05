@@ -4,6 +4,7 @@
 #include <QTcpsocket>
 #include <QJsonObject>
 #include <QMessageBox>
+#include <QTimer>
 
 class NetProtocol
 {

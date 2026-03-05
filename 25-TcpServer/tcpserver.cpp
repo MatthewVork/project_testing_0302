@@ -110,7 +110,7 @@ void TcpServer::read_data() {
 
         switch(msgType)
         {
-            case NetProtocol::MSG_LOGIN: verifyLogin(rootObj); break;
+            case NetProtocol::MSG_LOGIN: handleLogin(msocket, rootObj["data"].toObject()); break;
             case NetProtocol::MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
             case NetProtocol::MSG_LOGOUT: break;
             case NetProtocol::MSG_ADD_QUESTION: break;
@@ -165,11 +165,13 @@ bool TcpServer::init_Database() {
     // username 设置为 UNIQUE，这样同名用户注册就会报错，非常省心
     QString sql = "CREATE TABLE IF NOT EXISTS users ("
                   "username TEXT PRIMARY KEY, "
-                  "password TEXT NOT NULL)";
+                  "password TEXT NOT NULL)，"
+                  "is_online INTEGER DEFAULT 0)";
 
     if(!query.exec(sql)) {
         qDebug() << "建表失败：" << query.lastError().text(); return false;
     } else {
+        query.exec("UPDATE users SET is_online = 0");   //所有在线状态清零
         qDebug() << "数据库准备就绪！"; return true;
     }
 }
@@ -202,14 +204,46 @@ void TcpServer::handleRegister(QTcpSocket* msocket, const QJsonObject &data) {
     qDebug() << "服务器已回送结果：" << message;
 }
 
-bool TcpServer::verifyLogin(const QJsonObject &data) {
+void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
+{
     QString user = data["username"].toString();
     QString pwd = data["password"].toString();
-    QSqlQuery query;
-    query.prepare("SELECT * FROM users WHERE username = :user AND password = :pwd");
-    query.bindValue(":user", user);
-    query.bindValue(":pwd", pwd);
 
+    QSqlQuery query;
+    // 第一步：只根据用户名查找
+    query.prepare("SELECT password, is_online FROM users WHERE username = :user");
+    query.bindValue(":user", user);
     query.exec();
-    return query.next(); // 如果查到了结果，说明账号密码匹配，返回 true
+
+    bool success = false;
+    QString message;
+
+    if (!query.next()) { success = false; message = "该账号不存在，请先注册"; }
+    else
+    {
+        QString db_pwd = query.value(0).toString(); //账号存在，对比数据库里的密码和在线状态
+        int is_online = query.value(1).toInt();
+
+        if (db_pwd == pwd)
+        {
+            success = (is_online == 0);
+            message = success ? "登录成功" : "登录失败：该账号已在别处登录！";
+        }
+        else
+        {
+            success = false;
+            message = "密码错误，请重新输入";
+        }
+    }
+
+    // 第二步：通过 NetProtocol 发送精准的报错信息
+    QJsonObject res;
+    res["success"] = success;
+    res["message"] = message;
+
+    QJsonObject root;
+    root["type"] = NetProtocol::MSG_LOGIN; // 1001
+    root["data"] = res;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }

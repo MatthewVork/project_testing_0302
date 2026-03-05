@@ -32,8 +32,8 @@ public:
     QLabel *Laber_Login;
     QLineEdit *Username;
     QLineEdit *Password;
-    QPushButton *pushButton_Login;
-    QPushButton *pushButton_Register;
+    QPushButton *loginBtn;
+    QPushButton *registerBtn;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer_2;
 
@@ -158,17 +158,17 @@ public:
 
         gridLayout_2->addWidget(Password, 2, 0, 1, 2);
 
-        pushButton_Login = new QPushButton(frame);
-        pushButton_Login->setObjectName("pushButton_Login");
-        pushButton_Login->setMaximumSize(QSize(100, 16777215));
+        loginBtn = new QPushButton(frame);
+        loginBtn->setObjectName("loginBtn");
+        loginBtn->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_2->addWidget(pushButton_Login, 3, 0, 1, 1);
+        gridLayout_2->addWidget(loginBtn, 3, 0, 1, 1);
 
-        pushButton_Register = new QPushButton(frame);
-        pushButton_Register->setObjectName("pushButton_Register");
-        pushButton_Register->setMaximumSize(QSize(100, 16777215));
+        registerBtn = new QPushButton(frame);
+        registerBtn->setObjectName("registerBtn");
+        registerBtn->setMaximumSize(QSize(100, 16777215));
 
-        gridLayout_2->addWidget(pushButton_Register, 3, 1, 1, 1);
+        gridLayout_2->addWidget(registerBtn, 3, 1, 1, 1);
 
 
         gridLayout->addWidget(frame, 1, 1, 1, 1);
@@ -193,8 +193,8 @@ public:
         Laber_Login->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225\347\225\214\351\235\242", nullptr));
         Username->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\350\264\246\345\217\267", nullptr));
         Password->setPlaceholderText(QCoreApplication::translate("LoginWidget", "\345\257\206\347\240\201", nullptr));
-        pushButton_Login->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225", nullptr));
-        pushButton_Register->setText(QCoreApplication::translate("LoginWidget", "\346\263\250\345\206\214", nullptr));
+        loginBtn->setText(QCoreApplication::translate("LoginWidget", "\347\231\273\345\275\225", nullptr));
+        registerBtn->setText(QCoreApplication::translate("LoginWidget", "\346\263\250\345\206\214", nullptr));
     } // retranslateUi
 
 };

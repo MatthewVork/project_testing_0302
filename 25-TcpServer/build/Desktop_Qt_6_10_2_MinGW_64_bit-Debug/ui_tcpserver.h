@@ -115,6 +115,7 @@ public:
     void retranslateUi(QWidget *TcpServer)
     {
         TcpServer->setWindowTitle(QCoreApplication::translate("TcpServer", "TcpServer", nullptr));
+        portEdit->setText(QCoreApplication::translate("TcpServer", "9999", nullptr));
         portEdit->setPlaceholderText(QCoreApplication::translate("TcpServer", "\347\233\221\345\220\254\347\253\257\345\217\243", nullptr));
         startBtn->setText(QCoreApplication::translate("TcpServer", "\345\220\257\345\212\250", nullptr));
         clearSendBtn->setText(QCoreApplication::translate("TcpServer", "\346\270\205\351\231\244\345\217\221\351\200\201", nullptr));

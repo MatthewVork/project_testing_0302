@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
+    connect(this, &MainWindow::signal_loginResult, loginPage, &LoginWidget::handleLoginResult);
 
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);

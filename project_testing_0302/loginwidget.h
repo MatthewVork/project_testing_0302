@@ -16,13 +16,14 @@ public:
     ~LoginWidget();
 
 public slots:
-    void check_login();
+    void handleLoginResult(bool success, QString msg);
+    void on_loginBtn_clicked();
+    void on_registerBtn_clicked();
+
 signals:
-    // --- 只需要添加这一行 ---
     void signal_showRegister();
     void signal_LoginSuccess();
     void SecureData(const QByteArray &data);
-
 
 private:
     Ui::LoginWidget *ui;

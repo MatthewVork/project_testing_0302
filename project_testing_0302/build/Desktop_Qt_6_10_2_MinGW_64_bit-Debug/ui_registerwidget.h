@@ -9,6 +9,7 @@
 #ifndef UI_REGISTERWIDGET_H
 #define UI_REGISTERWIDGET_H
 
+#include <QtCore/QLocale>
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFrame>
@@ -170,6 +171,9 @@ public:
 
         pwdEdit = new QLineEdit(frame);
         pwdEdit->setObjectName("pwdEdit");
+        pwdEdit->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        pwdEdit->setLocale(QLocale(QLocale::Chinese, QLocale::China));
+        pwdEdit->setEchoMode(QLineEdit::EchoMode::Password);
 
         gridLayout_2->addWidget(pwdEdit, 2, 1, 1, 2);
 
@@ -180,6 +184,7 @@ public:
 
         pwdConfirmEdit = new QLineEdit(frame);
         pwdConfirmEdit->setObjectName("pwdConfirmEdit");
+        pwdConfirmEdit->setEchoMode(QLineEdit::EchoMode::Password);
 
         gridLayout_2->addWidget(pwdConfirmEdit, 3, 1, 1, 2);
 

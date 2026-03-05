@@ -51,7 +51,7 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         "socket",
         "QJsonObject",
         "data",
-        "verifyLogin",
+        "handleLogin",
         "init_Database"
     };
 
@@ -72,9 +72,9 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(8, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
         }}),
-        // Slot 'verifyLogin'
-        QtMocHelpers::SlotData<bool(const QJsonObject &)>(13, 2, QMC::AccessPrivate, QMetaType::Bool, {{
-            { 0x80000000 | 11, 12 },
+        // Slot 'handleLogin'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(13, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
         }}),
         // Slot 'init_Database'
         QtMocHelpers::SlotData<bool()>(14, 2, QMC::AccessPrivate, QMetaType::Bool),
@@ -108,8 +108,7 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 4: _t->on_clearRecvBtn_clicked(); break;
         case 5: _t->on_sendBtn_clicked(); break;
         case 6: _t->handleRegister((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
-        case 7: { bool _r = _t->verifyLogin((*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[1])));
-            if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
+        case 7: _t->handleLogin((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
         case 8: { bool _r = _t->init_Database();
             if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
@@ -119,6 +118,13 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         switch (_id) {
         default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
         case 6:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 7:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
