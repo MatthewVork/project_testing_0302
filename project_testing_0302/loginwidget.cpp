@@ -25,17 +25,20 @@ void LoginWidget::handleLoginResult(bool success, QString msg)
         autoCloseBox->setWindowTitle("登录成功");
         autoCloseBox->setText("验证通过，正在进入系统...");
         autoCloseBox->setIcon(QMessageBox::Information);
-
         autoCloseBox->setStandardButtons(QMessageBox::NoButton);
         autoCloseBox->show();
 
+        emit signal_RecordUsername(ui->Username->text());   //将用户名记录下来
+
         QTimer::singleShot(1000, autoCloseBox, [autoCloseBox, this]() { //指向autoCloseBox
-            autoCloseBox->close();      // 关闭弹窗，销毁内存（非常重要！）
+            autoCloseBox->close();
             autoCloseBox->deleteLater();
-            emit signal_LoginSuccess(); return;//发送信号通知主窗口切换屏幕
+            emit signal_LoginSuccess();
+            ui->Username->clear();
+            ui->Password->clear(); return; //发送信号通知主窗口切换屏幕
         });
     }
-    else { QMessageBox::information(this, "登录失败", msg); return; }
+    else { QMessageBox::information(this, "登录失败", msg); ui->Password->clear(); return; }
 }
 
 void LoginWidget::on_loginBtn_clicked()

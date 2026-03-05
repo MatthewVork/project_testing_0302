@@ -55,26 +55,26 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(0);
     });
 
-    connect(regPage, &RegisterWidget::signal_RegisterData, this, [this](const QByteArray &data){
-        NetProtocol::sendSecureData(this->tcpSocket, data);
-    });
+
 
     connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
     connect(this, &MainWindow::signal_loginResult, loginPage, &LoginWidget::handleLoginResult);
+    connect(loginPage, &LoginWidget::signal_RecordUsername, menuPage, &MainMenuWidget::updateUserName);
 
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
     });
 
-    //收到传输JSON信号
+    //-----------------------传输数据到服务器-----------------------------//
     connect(loginPage, &LoginWidget::SecureData, this, [this](const QByteArray &data){
-
-        // 调用你之前在 NetProtocol 里写好的静态发送函数
-        // 填入主窗口维护的那个物理套接字 tcpSocket
         NetProtocol::sendSecureData(this->tcpSocket, data);
-
-        qDebug() << "主窗口已拦截到登录信号，正在通过 Socket 发送加密数据包...";
     });
+
+    connect(regPage, &RegisterWidget::signal_RegisterData, this, [this](const QByteArray &data){
+        NetProtocol::sendSecureData(this->tcpSocket, data);
+    });
+
+    //connect(menuPage, &MainMenuWidget::signal_LogoutData, this [this]())
 }
 
 MainWindow::~MainWindow() {
@@ -110,12 +110,11 @@ void MainWindow::on_clientReadData() {
         emit signal_registerResult(success, msg);
         break;
 
+    case NetProtocol::MSG_LOGOUT:
+        emit signal_logoutResult(success, msg);
+
     default:
         qDebug() << "收到未知业务类型的回执：" << type;
         break;
     }
 }
-
-
-
-

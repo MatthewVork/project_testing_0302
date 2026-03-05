@@ -24,6 +24,7 @@ signals:
     void signal_showRegister();
     void signal_LoginSuccess();
     void SecureData(const QByteArray &data);
+    void signal_RecordUsername(QString data);
 
 private:
     Ui::LoginWidget *ui;

@@ -6,13 +6,22 @@ MainMenuWidget::MainMenuWidget(QWidget *parent)
     , ui(new Ui::MainMenuWidget)
 {
     ui->setupUi(this);
-
-    connect(ui->pushButtonCallbackLoginMenu, &QPushButton::clicked, this, [this]{
-        emit signal_callbackLoginMenu();
-    });
 }
 
 MainMenuWidget::~MainMenuWidget()
 {
     delete ui;
 }
+
+void MainMenuWidget::updateUserName(QString name)
+{
+    ui->Username->setText(name);
+}
+
+
+void MainMenuWidget::on_logoutBtn_clicked()
+{
+    emit signal_LogoutData();
+    emit signal_callbackLoginMenu();
+}
+

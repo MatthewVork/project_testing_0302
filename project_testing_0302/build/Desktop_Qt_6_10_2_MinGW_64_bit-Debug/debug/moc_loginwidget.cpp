@@ -44,6 +44,7 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         "signal_LoginSuccess",
         "SecureData",
         "data",
+        "signal_RecordUsername",
         "handleLoginResult",
         "success",
         "msg",
@@ -60,14 +61,18 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         QtMocHelpers::SignalData<void(const QByteArray &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QByteArray, 5 },
         }}),
+        // Signal 'signal_RecordUsername'
+        QtMocHelpers::SignalData<void(QString)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
+        }}),
         // Slot 'handleLoginResult'
-        QtMocHelpers::SlotData<void(bool, QString)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 7 }, { QMetaType::QString, 8 },
+        QtMocHelpers::SlotData<void(bool, QString)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 8 }, { QMetaType::QString, 9 },
         }}),
         // Slot 'on_loginBtn_clicked'
-        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPublic, QMetaType::Void),
-        // Slot 'on_registerBtn_clicked'
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_registerBtn_clicked'
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -94,9 +99,10 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 0: _t->signal_showRegister(); break;
         case 1: _t->signal_LoginSuccess(); break;
         case 2: _t->SecureData((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
-        case 3: _t->handleLoginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
-        case 4: _t->on_loginBtn_clicked(); break;
-        case 5: _t->on_registerBtn_clicked(); break;
+        case 3: _t->signal_RecordUsername((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 4: _t->handleLoginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 5: _t->on_loginBtn_clicked(); break;
+        case 6: _t->on_registerBtn_clicked(); break;
         default: ;
         }
     }
@@ -106,6 +112,8 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)()>(_a, &LoginWidget::signal_LoginSuccess, 1))
             return;
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)(const QByteArray & )>(_a, &LoginWidget::SecureData, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)(QString )>(_a, &LoginWidget::signal_RecordUsername, 3))
             return;
     }
 }
@@ -129,14 +137,14 @@ int LoginWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }
@@ -157,5 +165,11 @@ void LoginWidget::signal_LoginSuccess()
 void LoginWidget::SecureData(const QByteArray & _t1)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
+}
+
+// SIGNAL 3
+void LoginWidget::signal_RecordUsername(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
 }
 QT_WARNING_POP

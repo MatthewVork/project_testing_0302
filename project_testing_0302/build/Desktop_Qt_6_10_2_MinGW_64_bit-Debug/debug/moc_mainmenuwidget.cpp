@@ -40,12 +40,24 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
     QtMocHelpers::StringRefStorage qt_stringData {
         "MainMenuWidget",
         "signal_callbackLoginMenu",
-        ""
+        "",
+        "signal_LogoutData",
+        "on_logoutBtn_clicked",
+        "updateUserName",
+        "name"
     };
 
     QtMocHelpers::UintData qt_methods {
         // Signal 'signal_callbackLoginMenu'
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'signal_LogoutData'
+        QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_logoutBtn_clicked'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'updateUserName'
+        QtMocHelpers::SlotData<void(QString)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 6 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -70,11 +82,16 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->signal_callbackLoginMenu(); break;
+        case 1: _t->signal_LogoutData(); break;
+        case 2: _t->on_logoutBtn_clicked(); break;
+        case 3: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_callbackLoginMenu, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_LogoutData, 1))
             return;
     }
 }
@@ -98,14 +115,14 @@ int MainMenuWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 4;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 4)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 4;
     }
     return _id;
 }
@@ -114,5 +131,11 @@ int MainMenuWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void MainMenuWidget::signal_callbackLoginMenu()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+}
+
+// SIGNAL 1
+void MainMenuWidget::signal_LogoutData()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
 }
 QT_WARNING_POP

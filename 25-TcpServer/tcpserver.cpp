@@ -160,17 +160,20 @@ bool TcpServer::init_Database() {
         return false;
     }
 
-    // 2. 创建用户表 (如果不存在的话)
-    QSqlQuery query;
     // username 设置为 UNIQUE，这样同名用户注册就会报错，非常省心
+    QSqlQuery query;
     QString sql = "CREATE TABLE IF NOT EXISTS users ("
                   "username TEXT PRIMARY KEY, "
-                  "password TEXT NOT NULL)，"
-                  "is_online INTEGER DEFAULT 0)";
+                  "password TEXT NOT NULL, "  // <--- 这里必须是逗号，不能有反括号
+                  "is_online INTEGER DEFAULT 0)"; // <--- 只有这最后一行才有反括号
 
     if(!query.exec(sql)) {
-        qDebug() << "建表失败：" << query.lastError().text(); return false;
-    } else {
+        // 打印出最详细的报错信息，如果还失败，看这里打印的是什么
+        qDebug() << "建表失败，原因：" << query.lastError().text();
+        return false;
+    }
+    else
+    {
         query.exec("UPDATE users SET is_online = 0");   //所有在线状态清零
         qDebug() << "数据库准备就绪！"; return true;
     }

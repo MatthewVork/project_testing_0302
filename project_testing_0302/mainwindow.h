@@ -31,8 +31,7 @@ private:
 
 signals:    //存放各个窗口内的信号
     void signal_loginResult(bool success, QString msg);
+    void signal_logoutResult(bool success, QString msg);
     void signal_registerResult(bool success, QString msg);
-    //void signal_questionsReceived(data["questions"].toArray());
-
 };
 #endif
