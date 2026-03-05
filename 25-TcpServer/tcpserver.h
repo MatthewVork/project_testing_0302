@@ -28,7 +28,7 @@ private slots:
     void on_clearSendBtn_clicked();
     void on_clearRecvBtn_clicked();
     void on_sendBtn_clicked();
-    void handleRegister(const QJsonObject &data);
+    void handleRegister(QTcpSocket* socket, const QJsonObject &data);
 
     bool verifyLogin(const QJsonObject &data);
     bool init_Database();

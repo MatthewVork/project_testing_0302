@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::information(this, "连接服务器错误","请检查网络或服务器是否启动"); return;
     });
 
+    connect(tcpSocket, &QTcpSocket::readyRead, this, &MainWindow::on_clientReadData);
+
     // 1. 实例化
     loginPage = new LoginWidget(this);
     regPage = new RegisterWidget(this);
@@ -57,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent)
         NetProtocol::sendSecureData(this->tcpSocket, data);
     });
 
+    connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
+
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
     });
@@ -70,12 +74,47 @@ MainWindow::MainWindow(QWidget *parent)
 
         qDebug() << "主窗口已拦截到登录信号，正在通过 Socket 发送加密数据包...";
     });
-
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
+
+void MainWindow::on_clientReadData() {
+    // 1. 拿到所有原始字节流
+    QByteArray raw = tcpSocket->readAll();
+
+    // 2. 调用你的工具函数：内部包含了“Base64解码 -> 异或还原 -> 转JSON对象”
+    QJsonObject root = NetProtocol::parseSecureData(raw);
+
+    // 如果解析出来的对象是空的，说明包有问题，直接拦截
+    if (root.isEmpty()) {
+        qDebug() << "解析失败或收到空包";
+        return;
+    }
+
+    // 3. 提取核心数据
+    int type = root["type"].toInt();
+    QJsonObject data = root["data"].toObject();
+    bool success = data["success"].toBool();
+    QString msg = data["message"].toString();
+
+    // 4. 根据类型发射不同的信号（即你说的分发）
+    switch (type) {
+    case NetProtocol::MSG_LOGIN: // 1001
+        emit signal_loginResult(success, msg);
+        break;
+
+    case NetProtocol::MSG_REGISTER: // 1002
+        emit signal_registerResult(success, msg);
+        break;
+
+    default:
+        qDebug() << "收到未知业务类型的回执：" << type;
+        break;
+    }
+}
+
 
 
 

@@ -7,6 +7,7 @@ RegisterWidget::RegisterWidget(QWidget *parent)
     , ui(new Ui::RegisterWidget)
 {
     ui->setupUi(this);
+
 }
 
 RegisterWidget::~RegisterWidget()
@@ -39,4 +40,15 @@ void RegisterWidget::on_registerBtn_clicked() {
 void RegisterWidget::on_backBtn_clicked()
 {
     emit signal_CallbackLoginwidget();
+}
+
+void RegisterWidget::handleRegisterResult(bool success, QString msg) {
+    if (success) {
+        QMessageBox::information(this, "注册成功", "您可以去登录了！");
+        // 注册成功后，可以发射信号让 MainWindow 切换回登录界面
+        emit signal_CallbackLoginwidget();
+    } else {
+        // 比如：用户名已存在
+        QMessageBox::warning(this, "注册失败", msg);
+    }
 }

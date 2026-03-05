@@ -19,6 +19,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void on_clientReadData();
 private:
     Ui::MainWindow *ui;
     // 定义成员变量，方便后续切换页面
@@ -26,6 +28,11 @@ private:
     RegisterWidget *regPage;
     MainMenuWidget *menuPage;
     QTcpSocket *tcpSocket;
-private:
+
+signals:    //存放各个窗口内的信号
+    void signal_loginResult(bool success, QString msg);
+    void signal_registerResult(bool success, QString msg);
+    //void signal_questionsReceived(data["questions"].toArray());
+
 };
 #endif

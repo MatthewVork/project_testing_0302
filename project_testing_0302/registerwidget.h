@@ -18,9 +18,12 @@ public:
 public slots:
     void on_registerBtn_clicked();
     void on_backBtn_clicked();
+    void handleRegisterResult(bool success, QString msg);
+
 signals:
     void signal_CallbackLoginwidget();
     void signal_RegisterData(QByteArray);
+
 
 private:
     Ui::RegisterWidget *ui;

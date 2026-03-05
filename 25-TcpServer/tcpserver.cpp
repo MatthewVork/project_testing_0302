@@ -111,7 +111,7 @@ void TcpServer::read_data() {
         switch(msgType)
         {
             case NetProtocol::MSG_LOGIN: verifyLogin(rootObj); break;
-            case NetProtocol::MSG_REGISTER: handleRegister(rootObj); break;
+            case NetProtocol::MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
             case NetProtocol::MSG_LOGOUT: break;
             case NetProtocol::MSG_ADD_QUESTION: break;
             case NetProtocol::MSG_GET_QUESTION: break;
@@ -174,23 +174,32 @@ bool TcpServer::init_Database() {
     }
 }
 
-void TcpServer::handleRegister(const QJsonObject &data) {
+void TcpServer::handleRegister(QTcpSocket* msocket, const QJsonObject &data) {
     QString user = data["username"].toString();
     QString pwd = data["password"].toString();
 
     QSqlQuery query;
-    // 使用占位符 :user 和 :pwd 防止 SQL 注入，这是专业写法
     query.prepare("INSERT INTO users (username, password) VALUES (:user, :pwd)");
     query.bindValue(":user", user);
     query.bindValue(":pwd", pwd);
 
-    if (query.exec()) {
-        qDebug() << "注册成功：" << user;
-        // 这里你可以通过 socket 发回一个 "注册成功" 的 JSON 包
-    } else {
-        qDebug() << "注册失败，可能是账号已存在：" << query.lastError().text();
-        // 发回 "注册失败" 的包
-    }
+    bool success = query.exec(); // 执行 SQL
+    QString message = success ? "注册成功！" : "注册失败，用户名可能已存在";
+
+    // --- 关键：构造并回发统一格式的 JSON ---
+    QJsonObject resData;
+    resData["success"] = success;
+    resData["message"] = message;
+
+    QJsonObject root;
+    root["type"] = NetProtocol::MSG_REGISTER; // 保持 1002 不变
+    root["data"] = resData;
+
+    // 打包、加密、发送
+    QByteArray reply = QJsonDocument(root).toJson(QJsonDocument::Compact);
+    NetProtocol::sendSecureData(msocket, NetProtocol::encrypt(reply));
+
+    qDebug() << "服务器已回送结果：" << message;
 }
 
 bool TcpServer::verifyLogin(const QJsonObject &data) {

@@ -43,7 +43,10 @@ template <> constexpr inline auto RegisterWidget::qt_create_metaobjectdata<qt_me
         "",
         "signal_RegisterData",
         "on_registerBtn_clicked",
-        "on_backBtn_clicked"
+        "on_backBtn_clicked",
+        "handleRegisterResult",
+        "success",
+        "msg"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -57,6 +60,10 @@ template <> constexpr inline auto RegisterWidget::qt_create_metaobjectdata<qt_me
         QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'on_backBtn_clicked'
         QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'handleRegisterResult'
+        QtMocHelpers::SlotData<void(bool, QString)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 7 }, { QMetaType::QString, 8 },
+        }}),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -84,6 +91,7 @@ void RegisterWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 1: _t->signal_RegisterData((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
         case 2: _t->on_registerBtn_clicked(); break;
         case 3: _t->on_backBtn_clicked(); break;
+        case 4: _t->handleRegisterResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
         default: ;
         }
     }
@@ -114,14 +122,14 @@ int RegisterWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }
