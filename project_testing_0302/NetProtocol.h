@@ -2,9 +2,12 @@
 #define NETPROTOCOL_H
 
 #include <QTcpsocket>
+#include <QJsonArray>
+#include <QJsonValue>
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDebug>
 
 class NetProtocol
 {

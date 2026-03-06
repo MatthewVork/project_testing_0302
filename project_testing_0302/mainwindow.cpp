@@ -28,11 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     tcpSocket = new QTcpSocket(this);
     tcpSocket->connectToHost("192.168.172.26", 9999);
 
-    connect(tcpSocket, &QTcpSocket::connected, this, [this]() {
-        qDebug() << "成功连接到服务器！";
-        //tcpSocket->write("Hello Server, this is Teacher Client!");
-    });
-
     connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
         qDebug() << "连接出错：" << tcpSocket->errorString();
         QMessageBox::information(this, "连接服务器错误","请检查网络或服务器是否启动"); return;
@@ -44,11 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
     loginPage = new LoginWidget(this);
     regPage = new RegisterWidget(this);
     menuPage = new MainMenuWidget(this);
+    testPage =  new TestingRoom(this);
 
     // 2. 塞进 Stacked Widget
     ui->stackedWidget->addWidget(loginPage); // 索引为 0
     ui->stackedWidget->addWidget(regPage);   // 索引为 1
     ui->stackedWidget->addWidget(menuPage);  // 索引为 2
+    ui->stackedWidget->addWidget (testPage); // 索引为 3
 
     // 3. 设置初始页
     ui->stackedWidget->setCurrentIndex(0);
@@ -67,7 +64,10 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(0);
     });
 
-
+    connect(menuPage, &MainMenuWidget::signal_gotoTestPage, this, [this](){
+        ui->stackedWidget->setCurrentIndex(3);
+        testPage->requestPaper("888888");
+    });
 
     connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
     connect(this, &MainWindow::signal_loginResult, loginPage, &LoginWidget::handleLoginResult);
@@ -75,6 +75,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::signal_broadcastTime, menuPage, &MainMenuWidget::updateTimeLabel);   //更新时间函数
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
+    });
+
+    connect(testPage, &TestingRoom::signal_sendData, this, [this](const QByteArray &data){
+        NetProtocol::sendSecureData(this->tcpSocket, data);
     });
 
     connect(this, &MainWindow::signal_joinExamResult, menuPage, &MainMenuWidget::handleJoinExamResult);
@@ -147,6 +151,10 @@ void MainWindow::on_clientReadData() {
         // 按照你的规矩，发射信号给 menuPage
         emit signal_joinExamResult(success, msg, subject, duration);
         break;}
+
+    case NetProtocol::MSG_GET_PAPER:
+        testPage->handlePaperResult(data);
+        break;
 
     default:
         qDebug() << "收到未知业务类型的回执：" << type;

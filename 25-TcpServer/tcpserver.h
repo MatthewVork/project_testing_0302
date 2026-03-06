@@ -32,6 +32,7 @@ private slots:
     void handleRegister(QTcpSocket* socket, const QJsonObject &data);
     void handleLogin(QTcpSocket *socket, const QJsonObject &data);
     void handleJoinExam(QTcpSocket *socket, const QJsonObject &data);
+    void handleGetPaper(QTcpSocket* socket, const QJsonObject &data);
 
     bool init_Database();
 private:

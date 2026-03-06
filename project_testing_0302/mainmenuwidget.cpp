@@ -56,6 +56,7 @@ void MainMenuWidget::handleJoinExamResult(bool success, QString msg, QString sub
                                  msg + "\n科目：" + subject + "\n考试时长：" + QString::number(duration) + "分钟");
 
         // 以后就在这里发射一个信号给 MainWindow，让它把 StackedWidget 切到第 3 页（答题页）
+        emit signal_gotoTestPage();
     } else {
         // 验证失败（比如输错了考试码）
         QMessageBox::warning(this, "进场失败", msg);

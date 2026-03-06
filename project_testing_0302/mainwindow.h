@@ -7,6 +7,7 @@
 #include "loginwidget.h"    // 包含你的独立界面头文件
 #include "registerwidget.h"
 #include "mainmenuwidget.h"
+#include "testingroom.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,6 +28,7 @@ private:
     LoginWidget *loginPage;
     RegisterWidget *regPage;
     MainMenuWidget *menuPage;
+    TestingRoom *testPage;
     QTcpSocket *tcpSocket;
 
 signals:    //存放各个窗口内的信号

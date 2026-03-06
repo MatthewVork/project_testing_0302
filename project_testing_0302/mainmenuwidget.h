@@ -26,6 +26,7 @@ signals:
     void signal_callbackLoginMenu();
     void signal_LogoutData();
     void signal_joinExamReq(QString code);
+    void signal_gotoTestPage();
 private:
     Ui::MainMenuWidget *ui;
 };

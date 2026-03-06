@@ -125,11 +125,10 @@ void TcpServer::read_data() {
             case NetProtocol::MSG_ADD_QUESTION: break;
             case NetProtocol::MSG_GET_QUESTION: break;
             case NetProtocol::MSG_SUBMIT_EXAM: break;
-            case NetProtocol::MSG_GET_PAPER: break;
+            case NetProtocol::MSG_GET_PAPER: handleGetPaper(msocket, rootObj["data"].toObject()); break;
         }
     }
 }
-
 
 void TcpServer::on_clearSendBtn_clicked()
 {
@@ -206,6 +205,40 @@ bool TcpServer::init_Database() {
 
     // 两张表都准备完毕
     qDebug() << "数据库准备就绪！(已加载 users 表 和 exams 表)";
+
+    // ==========================================
+    // 创建题库表 (questions) 并录入测试题目
+    // ==========================================
+    QString sqlQuestion = "CREATE TABLE IF NOT EXISTS questions ("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "exam_code TEXT NOT NULL, "
+                          "question_text TEXT NOT NULL, "
+                          "option_A TEXT NOT NULL, "
+                          "option_B TEXT NOT NULL, "
+                          "option_C TEXT NOT NULL, "
+                          "option_D TEXT NOT NULL, "
+                          "correct_answer TEXT NOT NULL)";
+
+    if(!query.exec(sqlQuestion)) {
+        qDebug() << "题库表建表失败：" << query.lastError().text();
+    } else {
+        // 先清空一下 888888 的旧题目（防止你以后重复运行塞进去几百道一样的题）
+        query.exec("DELETE FROM questions WHERE exam_code = '888888'");
+
+        // 录入第一题
+        query.exec("INSERT INTO questions (exam_code, question_text, option_A, option_B, option_C, option_D, correct_answer) "
+                   "VALUES ('888888', 'C++中，用于输出到控制台的标准流对象是？', 'cin', 'cout', 'cerr', 'clog', 'B')");
+
+        // 录入第二题
+        query.exec("INSERT INTO questions (exam_code, question_text, option_A, option_B, option_C, option_D, correct_answer) "
+                   "VALUES ('888888', '下列哪个关键字用于声明动态分配的内存？', 'malloc', 'alloc', 'new', 'create', 'C')");
+
+        // 录入第三题
+        query.exec("INSERT INTO questions (exam_code, question_text, option_A, option_B, option_C, option_D, correct_answer) "
+                   "VALUES ('888888', 'Qt中，用于实现对象间通信的核心机制是？', '回调函数', '信号与槽', '全局变量', '消息队列', 'B')");
+
+        qDebug() << "题库初始化完成！考试码 888888 已成功录入 3 道测试题。";
+    }
     return true;
 }
 
@@ -312,5 +345,37 @@ void TcpServer::handleJoinExam(QTcpSocket* socket, const QJsonObject &data) {
     QJsonObject root;
     root["type"] = NetProtocol::MSG_JOIN_EXAM;
     root["data"] = resData;
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleGetPaper(QTcpSocket* socket, const QJsonObject &data) {
+    QString code = data["exam_code"].toString();
+    QJsonArray questionArray;
+
+    QSqlQuery query;
+    query.prepare("SELECT question_text, option_A, option_B, option_C, option_D, correct_answer "
+                  "FROM questions WHERE exam_code = :code");
+    query.bindValue(":code", code);
+    query.exec();
+
+    while(query.next()) {
+        QJsonObject q;
+        q["text"] = query.value(0).toString();
+        q["A"] = query.value(1).toString();
+        q["B"] = query.value(2).toString();
+        q["C"] = query.value(3).toString();
+        q["D"] = query.value(4).toString();
+        q["answer"] = query.value(5).toString();
+        questionArray.append(q);
+    }
+
+    QJsonObject resData;
+    resData["questions"] = questionArray; // 先把题目装进内层信封
+
+    QJsonObject root;
+    root["type"] = NetProtocol::MSG_GET_PAPER;
+    root["data"] = resData; // 再把内层信封塞进外层包裹
+
+    // 加密发回
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }
