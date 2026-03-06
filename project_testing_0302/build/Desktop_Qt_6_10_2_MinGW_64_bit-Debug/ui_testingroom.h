@@ -40,7 +40,7 @@ public:
     QRadioButton *radio_C;
     QRadioButton *radio_D;
     QLabel *label_timer;
-    QWidget *widget1;
+    QWidget *layoutWidget;
     QHBoxLayout *horizontalLayout;
     QPushButton *btn_prev;
     QPushButton *btn_next;
@@ -85,39 +85,39 @@ public:
         buttonGroup->setObjectName("buttonGroup");
         buttonGroup->addButton(radio_A);
         radio_A->setObjectName("radio_A");
-        radio_A->setGeometry(QRect(280, 200, 85, 18));
+        radio_A->setGeometry(QRect(220, 210, 85, 18));
         radio_B = new QRadioButton(TestingRoom);
         buttonGroup->addButton(radio_B);
         radio_B->setObjectName("radio_B");
-        radio_B->setGeometry(QRect(280, 240, 85, 18));
+        radio_B->setGeometry(QRect(220, 250, 85, 18));
         radio_C = new QRadioButton(TestingRoom);
         buttonGroup->addButton(radio_C);
         radio_C->setObjectName("radio_C");
-        radio_C->setGeometry(QRect(280, 290, 85, 18));
+        radio_C->setGeometry(QRect(220, 290, 85, 18));
         radio_D = new QRadioButton(TestingRoom);
         buttonGroup->addButton(radio_D);
         radio_D->setObjectName("radio_D");
-        radio_D->setGeometry(QRect(280, 330, 85, 18));
+        radio_D->setGeometry(QRect(220, 330, 85, 18));
         label_timer = new QLabel(TestingRoom);
         label_timer->setObjectName("label_timer");
         label_timer->setGeometry(QRect(710, 240, 49, 14));
-        widget1 = new QWidget(TestingRoom);
-        widget1->setObjectName("widget1");
-        widget1->setGeometry(QRect(180, 412, 501, 41));
-        horizontalLayout = new QHBoxLayout(widget1);
+        layoutWidget = new QWidget(TestingRoom);
+        layoutWidget->setObjectName("layoutWidget");
+        layoutWidget->setGeometry(QRect(180, 412, 501, 41));
+        horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        btn_prev = new QPushButton(widget1);
+        btn_prev = new QPushButton(layoutWidget);
         btn_prev->setObjectName("btn_prev");
 
         horizontalLayout->addWidget(btn_prev);
 
-        btn_next = new QPushButton(widget1);
+        btn_next = new QPushButton(layoutWidget);
         btn_next->setObjectName("btn_next");
 
         horizontalLayout->addWidget(btn_next);
 
-        btn_submit = new QPushButton(widget1);
+        btn_submit = new QPushButton(layoutWidget);
         btn_submit->setObjectName("btn_submit");
 
         horizontalLayout->addWidget(btn_submit);

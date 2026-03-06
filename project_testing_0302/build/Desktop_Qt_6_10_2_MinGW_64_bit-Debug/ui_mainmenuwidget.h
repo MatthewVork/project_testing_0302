@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCalendarWidget>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -47,9 +48,17 @@ public:
     QPushButton *pushButton_4;
     QWidget *page4;
     QPushButton *pushButton_5;
+    QPushButton *btn_history;
     QWidget *page2;
+    QGridLayout *gridLayout;
+    QLabel *label_3;
+    QLineEdit *lineEdit_oldPwd;
+    QLabel *label_4;
+    QLineEdit *lineEdit_newPwd;
+    QLabel *label_5;
+    QLineEdit *lineEdit_Conform;
+    QPushButton *btn_confirm;
     QPushButton *pushButton_6;
-    QPushButton *pushButton_7;
 
     void setupUi(QWidget *MainMenuWidget)
     {
@@ -116,7 +125,7 @@ public:
 
         stackedWidget = new QStackedWidget(MainMenuWidget);
         stackedWidget->setObjectName("stackedWidget");
-        stackedWidget->setGeometry(QRect(20, 10, 471, 371));
+        stackedWidget->setGeometry(QRect(20, 10, 461, 401));
         page1 = new QWidget();
         page1->setObjectName("page1");
         pushButton_3 = new QPushButton(page1);
@@ -140,20 +149,59 @@ public:
         pushButton_5 = new QPushButton(page4);
         pushButton_5->setObjectName("pushButton_5");
         pushButton_5->setGeometry(QRect(60, 200, 68, 21));
+        btn_history = new QPushButton(page4);
+        btn_history->setObjectName("btn_history");
+        btn_history->setGeometry(QRect(10, 10, 68, 21));
         stackedWidget->addWidget(page4);
         page2 = new QWidget();
         page2->setObjectName("page2");
+        gridLayout = new QGridLayout(page2);
+        gridLayout->setObjectName("gridLayout");
+        label_3 = new QLabel(page2);
+        label_3->setObjectName("label_3");
+
+        gridLayout->addWidget(label_3, 0, 0, 1, 1);
+
+        lineEdit_oldPwd = new QLineEdit(page2);
+        lineEdit_oldPwd->setObjectName("lineEdit_oldPwd");
+
+        gridLayout->addWidget(lineEdit_oldPwd, 0, 1, 1, 1);
+
+        label_4 = new QLabel(page2);
+        label_4->setObjectName("label_4");
+
+        gridLayout->addWidget(label_4, 1, 0, 1, 1);
+
+        lineEdit_newPwd = new QLineEdit(page2);
+        lineEdit_newPwd->setObjectName("lineEdit_newPwd");
+
+        gridLayout->addWidget(lineEdit_newPwd, 1, 1, 1, 1);
+
+        label_5 = new QLabel(page2);
+        label_5->setObjectName("label_5");
+
+        gridLayout->addWidget(label_5, 2, 0, 1, 1);
+
+        lineEdit_Conform = new QLineEdit(page2);
+        lineEdit_Conform->setObjectName("lineEdit_Conform");
+
+        gridLayout->addWidget(lineEdit_Conform, 2, 1, 1, 1);
+
+        btn_confirm = new QPushButton(page2);
+        btn_confirm->setObjectName("btn_confirm");
+
+        gridLayout->addWidget(btn_confirm, 3, 1, 1, 1);
+
         pushButton_6 = new QPushButton(page2);
         pushButton_6->setObjectName("pushButton_6");
-        pushButton_6->setGeometry(QRect(400, 340, 68, 21));
-        pushButton_7 = new QPushButton(page2);
-        pushButton_7->setObjectName("pushButton_7");
-        pushButton_7->setGeometry(QRect(20, 10, 68, 21));
+
+        gridLayout->addWidget(pushButton_6, 4, 2, 1, 1);
+
         stackedWidget->addWidget(page2);
 
         retranslateUi(MainMenuWidget);
 
-        stackedWidget->setCurrentIndex(0);
+        stackedWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainMenuWidget);
@@ -187,8 +235,12 @@ public:
         lineEdit_examCode->setPlaceholderText(QCoreApplication::translate("MainMenuWidget", "\350\257\267\350\276\223\345\205\245\350\200\203\350\257\225\347\240\201", nullptr));
         pushButton_4->setText(QCoreApplication::translate("MainMenuWidget", "page2", nullptr));
         pushButton_5->setText(QCoreApplication::translate("MainMenuWidget", "page3", nullptr));
+        btn_history->setText(QCoreApplication::translate("MainMenuWidget", "\346\237\245\350\257\242\346\210\220\347\273\251", nullptr));
+        label_3->setText(QCoreApplication::translate("MainMenuWidget", "\345\216\237\345\257\206\347\240\201\357\274\232", nullptr));
+        label_4->setText(QCoreApplication::translate("MainMenuWidget", "\346\226\260\345\257\206\347\240\201\357\274\232", nullptr));
+        label_5->setText(QCoreApplication::translate("MainMenuWidget", "\347\241\256\350\256\244\345\257\206\347\240\201\357\274\232", nullptr));
+        btn_confirm->setText(QCoreApplication::translate("MainMenuWidget", "\344\277\256\346\224\271\345\257\206\347\240\201", nullptr));
         pushButton_6->setText(QCoreApplication::translate("MainMenuWidget", "page4", nullptr));
-        pushButton_7->setText(QCoreApplication::translate("MainMenuWidget", "\344\277\256\346\224\271\345\257\206\347\240\201", nullptr));
     } // retranslateUi
 
 };

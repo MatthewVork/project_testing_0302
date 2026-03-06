@@ -118,14 +118,17 @@ void TcpServer::read_data() {
 
         switch(msgType)
         {
-            case NetProtocol::MSG_LOGIN: handleLogin(msocket, rootObj["data"].toObject()); break;
-            case NetProtocol::MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
-            case NetProtocol::MSG_JOIN_EXAM: handleJoinExam(msocket, rootObj["data"].toObject()); break;
-            case NetProtocol::MSG_LOGOUT: break;
-            case NetProtocol::MSG_ADD_QUESTION: break;
-            case NetProtocol::MSG_GET_QUESTION: break;
-            case NetProtocol::MSG_SUBMIT_EXAM: break;
-            case NetProtocol::MSG_GET_PAPER: handleGetPaper(msocket, rootObj["data"].toObject()); break;
+            case MSG_LOGIN: handleLogin(msocket, rootObj["data"].toObject()); break;
+            case MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
+            case MSG_JOIN_EXAM: handleJoinExam(msocket, rootObj["data"].toObject()); break;
+            case MSG_LOGOUT: handleLogout(msocket, rootObj["data"].toObject()); break;
+            case MSG_ADD_QUESTION: break;
+            case MSG_GET_QUESTION: break;
+            case MSG_SUBMIT_EXAM: handleSubmitExam(msocket, rootObj["data"].toObject()); break;
+            case MSG_GET_PAPER: handleGetPaper(msocket, rootObj["data"].toObject()); break;
+            case MSG_GET_SCORES: handleGetScores(msocket, rootObj["data"].toObject()); break;
+            case MSG_CHANGE_PWD: handleChangePwd(msocket, rootObj["data"].toObject()); break;
+
         }
     }
 }
@@ -239,6 +242,20 @@ bool TcpServer::init_Database() {
 
         qDebug() << "题库初始化完成！考试码 888888 已成功录入 3 道测试题。";
     }
+
+    // ==========================================
+    // 创建成绩表 (scores)
+    // ==========================================
+    QString sqlScore = "CREATE TABLE IF NOT EXISTS scores ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                       "username TEXT NOT NULL, "
+                       "exam_code TEXT NOT NULL, "
+                       "score INTEGER NOT NULL)";
+
+    if(!query.exec(sqlScore)) {
+        qDebug() << "成绩表建表失败：" << query.lastError().text();
+    }
+
     return true;
 }
 
@@ -260,7 +277,7 @@ void TcpServer::handleRegister(QTcpSocket* msocket, const QJsonObject &data) {
     resData["message"] = message;
 
     QJsonObject root;
-    root["type"] = NetProtocol::MSG_REGISTER; // 保持 1002 不变
+    root["type"] = MSG_REGISTER; // 保持 1002 不变
     root["data"] = resData;
 
     // 打包、加密、发送
@@ -317,7 +334,7 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
     res["message"] = message;
 
     QJsonObject root;
-    root["type"] = NetProtocol::MSG_LOGIN; // 1001
+    root["type"] = MSG_LOGIN; // 1001
     root["data"] = res;
 
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
@@ -343,7 +360,7 @@ void TcpServer::handleJoinExam(QTcpSocket* socket, const QJsonObject &data) {
     }
 
     QJsonObject root;
-    root["type"] = NetProtocol::MSG_JOIN_EXAM;
+    root["type"] = MSG_JOIN_EXAM;
     root["data"] = resData;
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }
@@ -373,9 +390,125 @@ void TcpServer::handleGetPaper(QTcpSocket* socket, const QJsonObject &data) {
     resData["questions"] = questionArray; // 先把题目装进内层信封
 
     QJsonObject root;
-    root["type"] = NetProtocol::MSG_GET_PAPER;
+    root["type"] = MSG_GET_PAPER;
     root["data"] = resData; // 再把内层信封塞进外层包裹
 
     // 加密发回
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleSubmitExam(QTcpSocket* socket, const QJsonObject &data) {
+    // 之前登录时，我们用 setProperty 在 socket 上绑定了用户名
+    QString user = socket->property("login_user").toString();
+
+    QString code = data["exam_code"].toString();
+    int score = data["score"].toInt();
+
+    QSqlQuery query;
+    // 插入数据库
+    query.prepare("INSERT INTO scores (username, exam_code, score) VALUES (:user, :code, :score)");
+    query.bindValue(":user", user);
+    query.bindValue(":code", code);
+    query.bindValue(":score", score);
+
+    if(query.exec()) {
+        qDebug() << "✅ 交卷入库成功！考生：" << user << " | 考试码：" << code << " | 分数：" << score;
+    } else {
+        qDebug() << "❌ 交卷入库失败：" << query.lastError().text();
+    }
+}
+
+void TcpServer::handleGetScores(QTcpSocket* socket, const QJsonObject &data) {
+    // 1. 获取是谁在查成绩
+    QString user = socket->property("login_user").toString();
+    QJsonArray scoresArray;
+    QSqlQuery query;
+
+    // 2. 联合查询：从 scores 表拿分数，从 exams 表拿科目名称
+    query.prepare("SELECT s.exam_code, e.subject, s.score "
+                  "FROM scores s "
+                  "LEFT JOIN exams e ON s.exam_code = e.exam_code "
+                  "WHERE s.username = :user");
+    query.bindValue(":user", user);
+    query.exec();
+
+    // 3. 把查到的所有成绩塞进 JSON 数组
+    while(query.next()) {
+        QJsonObject obj;
+        obj["exam_code"] = query.value(0).toString();
+        obj["subject"] = query.value(1).toString();
+        obj["score"] = query.value(2).toInt();
+        scoresArray.append(obj);
+    }
+
+    // 4. 打包发回给客户端
+    QJsonObject resData;
+    resData["scores"] = scoresArray;
+
+    QJsonObject root;
+    root["type"] = 3001;
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleChangePwd(QTcpSocket* socket, const QJsonObject &data) {
+    // 1. 之前登录时，我们用 setProperty 在 socket 上绑定了用户名
+    QString user = socket->property("login_user").toString();
+
+    QString oldPwd = data["old_pwd"].toString();
+    QString newPwd = data["new_pwd"].toString();
+
+    QSqlQuery query;
+    bool success = false;
+    QString msg = "原密码错误，修改失败！";
+
+    // 2. 先去 users 表里查一下旧密码对不对
+    query.prepare("SELECT password FROM users WHERE username = :user");
+    query.bindValue(":user", user);
+    query.exec();
+
+    // 3. 如果查到了该用户，且旧密码匹配得上
+    if (query.next() && query.value(0).toString() == oldPwd) {
+        // 4. 执行更新操作
+        QSqlQuery updateQuery;
+        updateQuery.prepare("UPDATE users SET password = :newPwd WHERE username = :user");
+        updateQuery.bindValue(":newPwd", newPwd);
+        updateQuery.bindValue(":user", user);
+
+        if (updateQuery.exec()) {
+            success = true;
+            msg = "密码修改成功！请使用新密码重新登录。";
+            qDebug() << "✅ 玩家" << user << "成功修改了密码！";
+        }
+    }
+
+    // 5. 打包回执，发回给客户端
+    QJsonObject resData;
+    resData["success"] = success;
+    resData["message"] = msg;
+
+    QJsonObject root;
+    root["type"] = MSG_CHANGE_PWD; // 或者写 1008
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleLogout(QTcpSocket* socket, const QJsonObject &data) {
+    // 拿到当前正在通信的用户名
+    QString user = socket->property("login_user").toString();
+
+    if (!user.isEmpty()) {
+        QSqlQuery query;
+        // 1. 把数据库里的在线状态改成 0
+        query.prepare("UPDATE users SET is_online = 0 WHERE username = :user");
+        query.bindValue(":user", user);
+
+        if (query.exec()) {
+            // 2. 把当前 socket 绑定的名字清空（防止串号）
+            socket->setProperty("login_user", "");
+            qDebug() << "✅ 玩家" << user << "已正常注销，在线状态清零！";
+        }
+    }
 }

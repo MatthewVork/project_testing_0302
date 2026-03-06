@@ -69,6 +69,10 @@ MainWindow::MainWindow(QWidget *parent)
         testPage->requestPaper("888888");
     });
 
+    connect(testPage, &TestingRoom::signal_examFinished, this, [this](){
+        ui->stackedWidget->setCurrentIndex(2);
+    });
+
     connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
     connect(this, &MainWindow::signal_loginResult, loginPage, &LoginWidget::handleLoginResult);
     connect(loginPage, &LoginWidget::signal_RecordUsername, menuPage, &MainMenuWidget::updateUserName); //用户名更新函数
@@ -96,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(menuPage, &MainMenuWidget::signal_joinExamReq, this, [=](QString code){
 
         // 1. 打包（调用咱们刚加的函数）
-        QByteArray plainData = NetProtocol::packExamCode(NetProtocol::MSG_JOIN_EXAM, code);
+        QByteArray plainData = NetProtocol::packExamCode(MSG_JOIN_EXAM, code);
 
         // 2. 加密
         QByteArray cipherData = NetProtocol::encrypt(plainData);
@@ -104,6 +108,37 @@ MainWindow::MainWindow(QWidget *parent)
         // 3. 发送（msocket 是你客户端的套接字对象）
         NetProtocol::sendSecureData(this->tcpSocket, cipherData);
 
+    });
+
+    // 监听大厅发出的查成绩请求，打包发给服务器
+    connect(menuPage, &MainMenuWidget::signal_getScoresReq, this, [this](){
+        QJsonObject root;
+        root["type"] = 3001;
+        root["data"] = QJsonObject(); // 空数据就行，服务器凭 socket 就能认出你是谁
+
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 监听大厅发出的修改密码请求，打包发给服务器
+    connect(menuPage, &MainMenuWidget::signal_changePwdReq, this, [this](QString oldPwd, QString newPwd){
+        QJsonObject reqData;
+        reqData["old_pwd"] = oldPwd;
+        reqData["new_pwd"] = newPwd;
+
+        QJsonObject root;
+        root["type"] = MSG_CHANGE_PWD; // 确保你的 NetProtocol.h 里加了 MSG_CHANGE_PWD = 1008
+        root["data"] = reqData;
+
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 监听大厅发出的“注销”请求，打包发给服务器
+    connect(menuPage, &MainMenuWidget::signal_LogoutData, this, [this](){
+        QJsonObject root;
+        root["type"] = MSG_LOGOUT; // 确保 NetProtocol 里有这个枚举 (比如 1003)
+        root["data"] = QJsonObject(); // 空包就行，服务器认得 socket
+
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
     });
 }
 
@@ -132,18 +167,18 @@ void MainWindow::on_clientReadData() {
 
     // 4. 根据类型发射不同的信号（即你说的分发）
     switch (type) {
-    case NetProtocol::MSG_LOGIN: // 1001
+    case MSG_LOGIN: // 1001
         emit signal_loginResult(success, msg);
         break;
 
-    case NetProtocol::MSG_REGISTER: // 1002
+    case MSG_REGISTER: // 1002
         emit signal_registerResult(success, msg);
         break;
 
-    case NetProtocol::MSG_LOGOUT:
+    case MSG_LOGOUT:
         emit signal_logoutResult(success, msg);
 
-    case NetProtocol::MSG_JOIN_EXAM: {
+    case MSG_JOIN_EXAM: {
         // 从 data 里把多余的科目和时长单独抽出来
         QString subject = data["subject"].toString();
         int duration = data["duration"].toInt();
@@ -152,8 +187,16 @@ void MainWindow::on_clientReadData() {
         emit signal_joinExamResult(success, msg, subject, duration);
         break;}
 
-    case NetProtocol::MSG_GET_PAPER:
+    case MSG_GET_PAPER:
         testPage->handlePaperResult(data);
+        break;
+
+    case MSG_GET_SCORES:
+        menuPage->handleScoresResult(data);
+        break;
+
+    case MSG_CHANGE_PWD:
+        menuPage->handleChangePwdResult(success, msg);
         break;
 
     default:

@@ -28,8 +28,8 @@ public:
 
 private:
     Ui::TestingRoom *ui;
+    QString m_currentExamCode;
 
-private:
     // 动态生成答题卡，参数为题目总数
     void initAnswerCard(int totalCount);
 
@@ -60,5 +60,6 @@ private slots:
 
 signals:
     void signal_sendData(const QByteArray &data);
+    void signal_examFinished();
 };
 #endif // TESTINGROOM_H

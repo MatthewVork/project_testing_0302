@@ -9,29 +9,33 @@
 #include <QTimer>
 #include <QDebug>
 
+
+enum NetDataType
+{
+    MSG_LOGIN    = 1001,
+    MSG_REGISTER = 1002,
+    MSG_LOGOUT   = 1003,
+    MSG_JOIN_EXAM = 1004,
+    MSG_CHANGE_PWD  = 1008,
+
+    MSG_ADD_QUESTION = 2001,
+    MSG_GET_QUESTION = 2002,
+    MSG_SUBMIT_EXAM  = 2003,
+    MSG_GET_PAPER    = 2004,
+
+    MSG_GET_SCORES = 3001,
+    MSG_GET_FILE  = 3002,
+
+    MSG_RESULT_SUCCESS = 4001,
+    MSG_RESULT_FAILED  = 4002,
+    MSG_HEARTBEAT      = 4003,
+};
+
 class NetProtocol
 {
 public:
 
-    enum NetDataType
-    {
-        MSG_LOGIN    = 1001,
-        MSG_REGISTER = 1002,
-        MSG_LOGOUT   = 1003,
-        MSG_JOIN_EXAM = 1004,
 
-        MSG_ADD_QUESTION = 2001,
-        MSG_GET_QUESTION = 2002,
-        MSG_SUBMIT_EXAM  = 2003,
-        MSG_GET_PAPER    = 2004,
-
-        MSG_SEND_FILE = 3001,
-        MSG_GET_FILE  = 3002,
-
-        MSG_RESULT_SUCCESS = 4001,
-        MSG_RESULT_FAILED  = 4002,
-        MSG_HEARTBEAT      = 4003,
-    };
 
     // 1. 打包函数：将类型和数据组合成 JSON 字节流
     static QByteArray packUserAndPass(int msgtype, QString username, QString password) //做重载函数

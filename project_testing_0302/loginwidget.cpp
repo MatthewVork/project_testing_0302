@@ -47,7 +47,7 @@ void LoginWidget::on_loginBtn_clicked()
 
     QByteArray data = NetProtocol::encrypt(
     NetProtocol::packUserAndPass(
-    NetProtocol::MSG_LOGIN, ui->Username->text(), ui->Password->text()));
+    MSG_LOGIN, ui->Username->text(), ui->Password->text()));
 
     emit SecureData(data); // 发出信号，由 MainWindow 接收并发送
 }

@@ -140,12 +140,12 @@
     <rect>
      <x>20</x>
      <y>10</y>
-     <width>471</width>
-     <height>371</height>
+     <width>461</width>
+     <height>401</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="page1">
     <widget class="QPushButton" name="pushButton_3">
@@ -217,34 +217,67 @@
       <string>page3</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="page2">
-    <widget class="QPushButton" name="pushButton_6">
+    <widget class="QPushButton" name="btn_history">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>340</y>
-       <width>68</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>page4</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_7">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
+       <x>10</x>
        <y>10</y>
        <width>68</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>修改密码</string>
+      <string>查询成绩</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="page2">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>原密码：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit_oldPwd"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>新密码：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_newPwd"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>确认密码：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEdit_Conform"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="btn_confirm">
+       <property name="text">
+        <string>修改密码</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QPushButton" name="pushButton_6">
+       <property name="text">
+        <string>page4</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
  </widget>

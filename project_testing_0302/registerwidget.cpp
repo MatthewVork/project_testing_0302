@@ -26,7 +26,7 @@ void RegisterWidget::on_registerBtn_clicked() {
     }
 
     // 2. 打包并加密数据
-    QByteArray data = NetProtocol::packUserAndPass(NetProtocol::MSG_REGISTER, user, pwd);
+    QByteArray data = NetProtocol::packUserAndPass(MSG_REGISTER, user, pwd);
     QByteArray safeData = NetProtocol::encrypt(data);
 
     // 3. 发射信号给 MainWindow，让它通过 Socket 发送出去

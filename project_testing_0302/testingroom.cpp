@@ -59,8 +59,10 @@ void TestingRoom::initAnswerCard(int totalCount) {
 
 
 void TestingRoom::requestPaper(QString examCode) {
+
+    m_currentExamCode = examCode;   //保存考试码
     // 1. 打包请求（使用你 NetProtocol 里的打包工具）
-    QByteArray plainData = NetProtocol::packExamCode(NetProtocol::MSG_GET_PAPER, examCode);
+    QByteArray plainData = NetProtocol::packExamCode(MSG_GET_PAPER, examCode);
 
     // 2. 加密并发射信号给 MainWindow（假设你已经在大厅拿到了考试码）
     emit signal_sendData(NetProtocol::encrypt(plainData));
@@ -255,11 +257,22 @@ void TestingRoom::on_btn_submit_clicked() {
     // 5. 弹出最终成绩单
     QMessageBox::information(this, "考试结束", QString("批改完成！\n你的最终得分是：%1 分").arg(score));
 
+    // 👇 新增：把成绩打包发给服务器
+    QJsonObject submitData;
+    submitData["exam_code"] = m_currentExamCode;
+    submitData["score"] = score;
+
+    QJsonObject root;
+    root["type"] = MSG_SUBMIT_EXAM;
+    root["data"] = submitData;
+
+    emit signal_sendData(NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+
     // 6. 退出考场，清理战场（方便下一次进考场）
     m_userAnswers.clear();
 
     // 可选：发射一个信号给 MainWindow，让它把界面切回“大厅”
-    // emit signal_examFinished();
+    emit signal_examFinished();
 }
 
 void TestingRoom::on_option_clicked() {
