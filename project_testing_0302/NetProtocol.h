@@ -15,6 +15,7 @@ public:
         MSG_LOGIN    = 1001,
         MSG_REGISTER = 1002,
         MSG_LOGOUT   = 1003,
+        MSG_JOIN_EXAM = 1004,
 
         MSG_ADD_QUESTION = 2001,
         MSG_GET_QUESTION = 2002,
@@ -43,6 +44,20 @@ public:
         QJsonDocument doc(rootObj);
 
         qDebug()<<doc.toJson(QJsonDocument::Compact);
+        return doc.toJson(QJsonDocument::Compact);
+    }
+
+    //打包函数---打包考试码信息
+    static QByteArray packExamCode(int msgtype, QString examCode)
+    {
+        QJsonObject dataObj;
+        dataObj["exam_code"] = examCode;
+
+        QJsonObject rootObj;
+        rootObj["type"] = msgtype;
+        rootObj["data"] = dataObj;
+
+        QJsonDocument doc(rootObj);
         return doc.toJson(QJsonDocument::Compact);
     }
 
@@ -89,6 +104,8 @@ public:
         }
         return QJsonObject();
     }
+
+
 };
 
 #endif // NETPROTOCOL_H

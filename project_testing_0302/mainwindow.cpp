@@ -12,6 +12,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // 在构造函数里设置时间函数
+    QTimer *globalTimer = new QTimer(this);
+    connect(globalTimer, &QTimer::timeout, this, [this](){
+        QString currentTime = QDateTime::currentDateTime().toString("hh:mm");
+
+        // 核心：把时间“喊”出去，谁想听谁就接
+        emit signal_broadcastTime(currentTime);
+    });
+    globalTimer->start(1000);
+
+
+
     // 1. 创建套接字对象
     tcpSocket = new QTcpSocket(this);
     tcpSocket->connectToHost("192.168.172.26", 9999);
@@ -59,11 +71,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::signal_registerResult, regPage, &RegisterWidget::handleRegisterResult);
     connect(this, &MainWindow::signal_loginResult, loginPage, &LoginWidget::handleLoginResult);
-    connect(loginPage, &LoginWidget::signal_RecordUsername, menuPage, &MainMenuWidget::updateUserName);
-
+    connect(loginPage, &LoginWidget::signal_RecordUsername, menuPage, &MainMenuWidget::updateUserName); //用户名更新函数
+    connect(this, &MainWindow::signal_broadcastTime, menuPage, &MainMenuWidget::updateTimeLabel);   //更新时间函数
     connect(menuPage, &MainMenuWidget::signal_callbackLoginMenu, this, [this](){
         ui->stackedWidget->setCurrentIndex(0);
     });
+
+    connect(this, &MainWindow::signal_joinExamResult, menuPage, &MainMenuWidget::handleJoinExamResult);
 
     //-----------------------传输数据到服务器-----------------------------//
     connect(loginPage, &LoginWidget::SecureData, this, [this](const QByteArray &data){
@@ -74,7 +88,19 @@ MainWindow::MainWindow(QWidget *parent)
         NetProtocol::sendSecureData(this->tcpSocket, data);
     });
 
-    //connect(menuPage, &MainMenuWidget::signal_LogoutData, this [this]())
+    // 在 MainWindow 构造函数，new 完 menuPage 之后连线：
+    connect(menuPage, &MainMenuWidget::signal_joinExamReq, this, [=](QString code){
+
+        // 1. 打包（调用咱们刚加的函数）
+        QByteArray plainData = NetProtocol::packExamCode(NetProtocol::MSG_JOIN_EXAM, code);
+
+        // 2. 加密
+        QByteArray cipherData = NetProtocol::encrypt(plainData);
+
+        // 3. 发送（msocket 是你客户端的套接字对象）
+        NetProtocol::sendSecureData(this->tcpSocket, cipherData);
+
+    });
 }
 
 MainWindow::~MainWindow() {
@@ -112,6 +138,15 @@ void MainWindow::on_clientReadData() {
 
     case NetProtocol::MSG_LOGOUT:
         emit signal_logoutResult(success, msg);
+
+    case NetProtocol::MSG_JOIN_EXAM: {
+        // 从 data 里把多余的科目和时长单独抽出来
+        QString subject = data["subject"].toString();
+        int duration = data["duration"].toInt();
+
+        // 按照你的规矩，发射信号给 menuPage
+        emit signal_joinExamResult(success, msg, subject, duration);
+        break;}
 
     default:
         qDebug() << "收到未知业务类型的回执：" << type;

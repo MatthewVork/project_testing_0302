@@ -19,6 +19,7 @@ public:
     TcpServer(QWidget *parent = nullptr);
     ~TcpServer();
 
+
 protected slots:
     void new_client();
     void read_data();
@@ -30,6 +31,7 @@ private slots:
     void on_sendBtn_clicked();
     void handleRegister(QTcpSocket* socket, const QJsonObject &data);
     void handleLogin(QTcpSocket *socket, const QJsonObject &data);
+    void handleJoinExam(QTcpSocket *socket, const QJsonObject &data);
 
     bool init_Database();
 private:

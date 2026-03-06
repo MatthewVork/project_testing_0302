@@ -42,9 +42,17 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         "signal_callbackLoginMenu",
         "",
         "signal_LogoutData",
+        "signal_joinExamReq",
+        "code",
         "on_logoutBtn_clicked",
         "updateUserName",
-        "name"
+        "name",
+        "on_btn_joinExam_clicked",
+        "handleJoinExamResult",
+        "success",
+        "msg",
+        "subject",
+        "duration"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -52,11 +60,21 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'signal_LogoutData'
         QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'signal_joinExamReq'
+        QtMocHelpers::SignalData<void(QString)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
+        }}),
         // Slot 'on_logoutBtn_clicked'
-        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'updateUserName'
-        QtMocHelpers::SlotData<void(QString)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 6 },
+        QtMocHelpers::SlotData<void(QString)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 8 },
+        }}),
+        // Slot 'on_btn_joinExam_clicked'
+        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'handleJoinExamResult'
+        QtMocHelpers::SlotData<void(bool, QString, QString, int)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 11 }, { QMetaType::QString, 12 }, { QMetaType::QString, 13 }, { QMetaType::Int, 14 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -83,8 +101,11 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         switch (_id) {
         case 0: _t->signal_callbackLoginMenu(); break;
         case 1: _t->signal_LogoutData(); break;
-        case 2: _t->on_logoutBtn_clicked(); break;
-        case 3: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 2: _t->signal_joinExamReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 3: _t->on_logoutBtn_clicked(); break;
+        case 4: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 5: _t->on_btn_joinExam_clicked(); break;
+        case 6: _t->handleJoinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
         default: ;
         }
     }
@@ -92,6 +113,8 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_callbackLoginMenu, 0))
             return;
         if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_LogoutData, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)(QString )>(_a, &MainMenuWidget::signal_joinExamReq, 2))
             return;
     }
 }
@@ -115,14 +138,14 @@ int MainMenuWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 7;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 7)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 7;
     }
     return _id;
 }
@@ -137,5 +160,11 @@ void MainMenuWidget::signal_callbackLoginMenu()
 void MainMenuWidget::signal_LogoutData()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
+}
+
+// SIGNAL 2
+void MainMenuWidget::signal_joinExamReq(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1);
 }
 QT_WARNING_POP

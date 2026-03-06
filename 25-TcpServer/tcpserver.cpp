@@ -74,6 +74,14 @@ void TcpServer::new_client()
     connect(msocket, &QTcpSocket::disconnected,this, [&](){
         qDebug()<<"客户端离线";
         QTcpSocket* msocket = (QTcpSocket*)sender(); //获取离线对象
+
+        QString user = msocket->property("login_user").toString();
+        if (!user.isEmpty()) {
+            QSqlQuery q;
+            q.prepare("UPDATE users SET is_online = 0 WHERE username = :user");
+            q.bindValue(":user", user);
+            q.exec();
+        }
         //查找下msocket在clients里面的位置，
         int row = clients.indexOf(msocket);
         qDebug()<<row;
@@ -112,6 +120,7 @@ void TcpServer::read_data() {
         {
             case NetProtocol::MSG_LOGIN: handleLogin(msocket, rootObj["data"].toObject()); break;
             case NetProtocol::MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
+            case NetProtocol::MSG_JOIN_EXAM: handleJoinExam(msocket, rootObj["data"].toObject()); break;
             case NetProtocol::MSG_LOGOUT: break;
             case NetProtocol::MSG_ADD_QUESTION: break;
             case NetProtocol::MSG_GET_QUESTION: break;
@@ -160,23 +169,44 @@ bool TcpServer::init_Database() {
         return false;
     }
 
-    // username 设置为 UNIQUE，这样同名用户注册就会报错，非常省心
     QSqlQuery query;
-    QString sql = "CREATE TABLE IF NOT EXISTS users ("
-                  "username TEXT PRIMARY KEY, "
-                  "password TEXT NOT NULL, "  // <--- 这里必须是逗号，不能有反括号
-                  "is_online INTEGER DEFAULT 0)"; // <--- 只有这最后一行才有反括号
 
-    if(!query.exec(sql)) {
-        // 打印出最详细的报错信息，如果还失败，看这里打印的是什么
-        qDebug() << "建表失败，原因：" << query.lastError().text();
+    // ==========================================
+    // 第一部分：初始化用户表 (Users)
+    // ==========================================
+    QString sqlUser = "CREATE TABLE IF NOT EXISTS users ("
+                      "username TEXT PRIMARY KEY, "
+                      "password TEXT NOT NULL, "
+                      "is_online INTEGER DEFAULT 0)";
+
+    if(!query.exec(sqlUser)) {
+        qDebug() << "用户表建表失败，原因：" << query.lastError().text();
         return false;
+    } else {
+        query.exec("UPDATE users SET is_online = 0");   // 所有在线状态清零
     }
-    else
-    {
-        query.exec("UPDATE users SET is_online = 0");   //所有在线状态清零
-        qDebug() << "数据库准备就绪！"; return true;
+
+    // ==========================================
+    // 第二部分：初始化考试表 (Exams) - 新增！
+    // ==========================================
+    QString sqlExam = "CREATE TABLE IF NOT EXISTS exams ("
+                      "exam_code TEXT PRIMARY KEY, " // 考试码作为主键（例如 "888888"）
+                      "subject TEXT NOT NULL, "      // 科目名称
+                      "duration INTEGER)";           // 考试时长（分钟）
+
+    if(!query.exec(sqlExam)) {
+        qDebug() << "考试表建表失败，原因：" << query.lastError().text();
+        return false;
+    } else {
+        // 插入一条测试数据，供客户端大厅测试输入使用
+        // 使用 INSERT OR IGNORE 防止每次重启服务器都重复插入报错
+        query.exec("INSERT OR IGNORE INTO exams (exam_code, subject, duration) "
+                   "VALUES ('888888', 'C++基础摸底考试', 60)");
     }
+
+    // 两张表都准备完毕
+    qDebug() << "数据库准备就绪！(已加载 users 表 和 exams 表)";
+    return true;
 }
 
 void TcpServer::handleRegister(QTcpSocket* msocket, const QJsonObject &data) {
@@ -231,6 +261,15 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
         {
             success = (is_online == 0);
             message = success ? "登录成功" : "登录失败：该账号已在别处登录！";
+
+            if (success) {
+                QSqlQuery updateQuery;
+                updateQuery.prepare("UPDATE users SET is_online = 1 WHERE username = :user");
+                updateQuery.bindValue(":user", user);
+                updateQuery.exec();
+
+                socket->setProperty("login_user", user); // 极其重要：记住是谁用的这个 socket
+            }
         }
         else
         {
@@ -248,5 +287,30 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
     root["type"] = NetProtocol::MSG_LOGIN; // 1001
     root["data"] = res;
 
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleJoinExam(QTcpSocket* socket, const QJsonObject &data) {
+    QString code = data["exam_code"].toString();
+
+    QSqlQuery query;
+    query.prepare("SELECT subject, duration FROM exams WHERE exam_code = :code");
+    query.bindValue(":code", code);
+    query.exec();
+
+    QJsonObject resData;
+    if (query.next()) {
+        resData["success"] = true;
+        resData["subject"] = query.value(0).toString();
+        resData["duration"] = query.value(1).toInt();
+        resData["message"] = "考试码验证成功！";
+    } else {
+        resData["success"] = false;
+        resData["message"] = "考试码不存在，请重新输入！";
+    }
+
+    QJsonObject root;
+    root["type"] = NetProtocol::MSG_JOIN_EXAM;
+    root["data"] = resData;
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }
