@@ -37,6 +37,7 @@ private slots:
     void handleGetScores(QTcpSocket* socket, const QJsonObject &data);
     void handleChangePwd(QTcpSocket* socket, const QJsonObject &data);
     void handleLogout(QTcpSocket* socket, const QJsonObject &data);
+    void handleCreateClass(QTcpSocket* socket, const QJsonObject &data);
 
     bool init_Database();
 private:

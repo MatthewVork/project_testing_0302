@@ -6,13 +6,209 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>800</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>20</y>
+     <width>621</width>
+     <height>451</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="page0">
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>49</width>
+       <height>14</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>创建班级</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page1">
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>49</width>
+       <height>14</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>学生名单</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page2">
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>49</width>
+       <height>14</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>录入题目</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page3">
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>组卷与发布</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page4">
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>班级成绩总榜</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page5">
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>49</width>
+       <height>14</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>修改密码</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QTreeWidget" name="treeWidget_nav">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>121</width>
+     <height>421</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>管理系统</string>
+    </property>
+   </column>
+   <item>
+    <property name="text">
+     <string>班级管理</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>创建班级</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>学生名单</string>
+     </property>
+    </item>
+   </item>
+   <item>
+    <property name="text">
+     <string>考试与题库</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>录入题目</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>组卷与发布</string>
+     </property>
+    </item>
+   </item>
+   <item>
+    <property name="text">
+     <string>数据中心</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>班级成绩总榜</string>
+     </property>
+    </item>
+   </item>
+   <item>
+    <property name="text">
+     <string>系统设置</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>修改密码</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>安全退出</string>
+     </property>
+    </item>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>450</y>
+     <width>49</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>当前时间</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>450</y>
+     <width>49</width>
+     <height>14</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>10:00</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

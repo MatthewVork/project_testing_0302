@@ -29,6 +29,11 @@ enum NetDataType
     MSG_RESULT_SUCCESS = 4001,
     MSG_RESULT_FAILED  = 4002,
     MSG_HEARTBEAT      = 4003,
+
+    MSG_CREATE_CLASS = 5001,       // 老师请求创建班级
+    MSG_GET_CLASSES  = 5002,       // 拉取班级列表
+    MSG_GET_CLASS_STUDENTS = 5003, // 拉取某个班级的学生名单 (提前备好)
+    MSG_ADD_STUDENT  = 5004        // 老师拉学生进班 (提前备好)
 };
 
 class NetProtocol

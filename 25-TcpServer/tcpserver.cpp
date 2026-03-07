@@ -128,7 +128,7 @@ void TcpServer::read_data() {
             case MSG_GET_PAPER: handleGetPaper(msocket, rootObj["data"].toObject()); break;
             case MSG_GET_SCORES: handleGetScores(msocket, rootObj["data"].toObject()); break;
             case MSG_CHANGE_PWD: handleChangePwd(msocket, rootObj["data"].toObject()); break;
-
+            case MSG_CREATE_CLASS: handleCreateClass(msocket, rootObj["data"].toObject()); break;
         }
     }
 }
@@ -258,6 +258,17 @@ bool TcpServer::init_Database() {
 
     if(!query.exec(sqlScore)) {
         qDebug() << "成绩表建表失败：" << query.lastError().text();
+    }
+
+    // ==========================================
+    // 新增：创建班级表 (classes)
+    // ==========================================
+    QString sqlClass = "CREATE TABLE IF NOT EXISTS classes ("
+                       "class_name TEXT PRIMARY KEY, "
+                       "teacher_name TEXT NOT NULL)";
+
+    if(!query.exec(sqlClass)) {
+        qDebug() << "班级表建表失败：" << query.lastError().text();
     }
 
     return true;
@@ -536,4 +547,32 @@ void TcpServer::handleLogout(QTcpSocket* socket, const QJsonObject &data) {
             qDebug() << "✅ 玩家" << user << "已正常注销，在线状态清零！";
         }
     }
+}
+
+void TcpServer::handleCreateClass(QTcpSocket* socket, const QJsonObject &data) {
+    QString className = data["class_name"].toString();
+    // 拿到当前登录的老师账号（上帝视角发挥作用了！）
+    QString teacher = socket->property("login_user").toString();
+
+    QSqlQuery query;
+    // 插入数据库
+    query.prepare("INSERT INTO classes (class_name, teacher_name) VALUES (:name, :teacher)");
+    query.bindValue(":name", className);
+    query.bindValue(":teacher", teacher);
+
+    bool success = query.exec(); // 如果班级重名，主键冲突会自动变 false
+    QString msg = success ? "班级创建成功！" : "创建失败，该班级名称已存在！";
+
+    // 打包回执发给客户端
+    QJsonObject resData;
+    resData["success"] = success;
+    resData["message"] = msg;
+
+    QJsonObject root;
+    root["type"] = MSG_CREATE_CLASS; // 咱们刚加的 5001
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+
+    if (success) qDebug() << "✅ 老师" << teacher << "成功创建了班级：" << className;
 }
