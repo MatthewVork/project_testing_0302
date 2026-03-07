@@ -179,6 +179,7 @@ bool TcpServer::init_Database() {
     QString sqlUser = "CREATE TABLE IF NOT EXISTS users ("
                       "username TEXT PRIMARY KEY, "
                       "password TEXT NOT NULL, "
+                      "role INTEGER DEFAULT 0, " //0 代表学生，1 代表老师
                       "is_online INTEGER DEFAULT 0)";
 
     if(!query.exec(sqlUser)) {
@@ -186,6 +187,8 @@ bool TcpServer::init_Database() {
         return false;
     } else {
         query.exec("UPDATE users SET is_online = 0");   // 所有在线状态清零
+        query.exec("INSERT OR IGNORE INTO users (username, password, role, is_online) "
+                   "VALUES ('admin', '123456', 1, 0)");
     }
 
     // ==========================================
@@ -250,7 +253,8 @@ bool TcpServer::init_Database() {
                        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                        "username TEXT NOT NULL, "
                        "exam_code TEXT NOT NULL, "
-                       "score INTEGER NOT NULL)";
+                       "score INTEGER NOT NULL, "
+                       "submit_time TEXT)";
 
     if(!query.exec(sqlScore)) {
         qDebug() << "成绩表建表失败：" << query.lastError().text();
@@ -294,12 +298,13 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
 
     QSqlQuery query;
     // 第一步：只根据用户名查找
-    query.prepare("SELECT password, is_online FROM users WHERE username = :user");
+    query.prepare("SELECT password, is_online, role FROM users WHERE username = :user");
     query.bindValue(":user", user);
     query.exec();
 
     bool success = false;
     QString message;
+    int role = 0;   //老师学生身份
 
     if (!query.next()) { success = false; message = "该账号不存在，请先注册"; }
     else
@@ -311,6 +316,7 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
         {
             success = (is_online == 0);
             message = success ? "登录成功" : "登录失败：该账号已在别处登录！";
+            role = query.value(2).toInt();
 
             if (success) {
                 QSqlQuery updateQuery;
@@ -332,6 +338,7 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
     QJsonObject res;
     res["success"] = success;
     res["message"] = message;
+    res["role"] = role;
 
     QJsonObject root;
     root["type"] = MSG_LOGIN; // 1001
@@ -341,22 +348,38 @@ void TcpServer::handleLogin(QTcpSocket* socket, const QJsonObject &data)
 }
 
 void TcpServer::handleJoinExam(QTcpSocket* socket, const QJsonObject &data) {
+    // 获取当前登录的用户名
+    QString user = socket->property("login_user").toString();
     QString code = data["exam_code"].toString();
 
+    QJsonObject resData;
     QSqlQuery query;
-    query.prepare("SELECT subject, duration FROM exams WHERE exam_code = :code");
+
+    // 🌟 第一道防线：检查是否已经考过这门课了
+    query.prepare("SELECT id FROM scores WHERE username = :user AND exam_code = :code");
+    query.bindValue(":user", user);
     query.bindValue(":code", code);
     query.exec();
 
-    QJsonObject resData;
     if (query.next()) {
-        resData["success"] = true;
-        resData["subject"] = query.value(0).toString();
-        resData["duration"] = query.value(1).toInt();
-        resData["message"] = "考试码验证成功！";
-    } else {
+        // 查到了记录，说明他考过了！直接拦截！
         resData["success"] = false;
-        resData["message"] = "考试码不存在，请重新输入！";
+        resData["message"] = "您已参加过该科目的考试，系统不允许重复作答！";
+    } else {
+        // 🌟 第二道防线：没考过，再去查查有没有这个考试码
+        query.prepare("SELECT subject, duration FROM exams WHERE exam_code = :code");
+        query.bindValue(":code", code);
+        query.exec();
+
+        if (query.next()) {
+            resData["success"] = true;
+            resData["subject"] = query.value(0).toString();
+            resData["duration"] = query.value(1).toInt();
+            resData["message"] = "考试码验证成功！";
+        } else {
+            resData["success"] = false;
+            resData["message"] = "考试码不存在，请重新输入！";
+        }
     }
 
     QJsonObject root;
@@ -398,23 +421,23 @@ void TcpServer::handleGetPaper(QTcpSocket* socket, const QJsonObject &data) {
 }
 
 void TcpServer::handleSubmitExam(QTcpSocket* socket, const QJsonObject &data) {
-    // 之前登录时，我们用 setProperty 在 socket 上绑定了用户名
     QString user = socket->property("login_user").toString();
-
     QString code = data["exam_code"].toString();
     int score = data["score"].toInt();
 
+    // 👈 新增：由服务器获取绝对安全的当前时间
+    QString submitTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+
     QSqlQuery query;
-    // 插入数据库
-    query.prepare("INSERT INTO scores (username, exam_code, score) VALUES (:user, :code, :score)");
+    // 插入语句加上 submit_time
+    query.prepare("INSERT INTO scores (username, exam_code, score, submit_time) VALUES (:user, :code, :score, :time)");
     query.bindValue(":user", user);
     query.bindValue(":code", code);
     query.bindValue(":score", score);
+    query.bindValue(":time", submitTime); // 👈 绑定时间
 
     if(query.exec()) {
-        qDebug() << "✅ 交卷入库成功！考生：" << user << " | 考试码：" << code << " | 分数：" << score;
-    } else {
-        qDebug() << "❌ 交卷入库失败：" << query.lastError().text();
+        qDebug() << "✅ 交卷入库成功！考生：" << user << " | 分数：" << score << " | 时间：" << submitTime;
     }
 }
 
@@ -425,7 +448,7 @@ void TcpServer::handleGetScores(QTcpSocket* socket, const QJsonObject &data) {
     QSqlQuery query;
 
     // 2. 联合查询：从 scores 表拿分数，从 exams 表拿科目名称
-    query.prepare("SELECT s.exam_code, e.subject, s.score "
+    query.prepare("SELECT s.exam_code, e.subject, s.score, s.submit_time "
                   "FROM scores s "
                   "LEFT JOIN exams e ON s.exam_code = e.exam_code "
                   "WHERE s.username = :user");
@@ -438,6 +461,8 @@ void TcpServer::handleGetScores(QTcpSocket* socket, const QJsonObject &data) {
         obj["exam_code"] = query.value(0).toString();
         obj["subject"] = query.value(1).toString();
         obj["score"] = query.value(2).toInt();
+        obj["submit_time"] = query.value(3).toString();
+
         scoresArray.append(obj);
     }
 

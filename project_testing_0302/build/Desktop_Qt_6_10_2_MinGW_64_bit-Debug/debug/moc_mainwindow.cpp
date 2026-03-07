@@ -45,6 +45,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "signal_loginResult",
         "success",
         "msg",
+        "role",
         "signal_logoutResult",
         "signal_registerResult",
         "signal_joinExamResult",
@@ -59,23 +60,23 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
             { QMetaType::QString, 3 },
         }}),
         // Signal 'signal_loginResult'
-        QtMocHelpers::SignalData<void(bool, QString)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 },
+        QtMocHelpers::SignalData<void(bool, QString, int)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 }, { QMetaType::Int, 7 },
         }}),
         // Signal 'signal_logoutResult'
-        QtMocHelpers::SignalData<void(bool, QString)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 },
-        }}),
-        // Signal 'signal_registerResult'
         QtMocHelpers::SignalData<void(bool, QString)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::Bool, 5 }, { QMetaType::QString, 6 },
         }}),
+        // Signal 'signal_registerResult'
+        QtMocHelpers::SignalData<void(bool, QString)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 },
+        }}),
         // Signal 'signal_joinExamResult'
-        QtMocHelpers::SignalData<void(bool, QString, QString, int)>(9, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 }, { QMetaType::QString, 10 }, { QMetaType::Int, 11 },
+        QtMocHelpers::SignalData<void(bool, QString, QString, int)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 5 }, { QMetaType::QString, 6 }, { QMetaType::QString, 11 }, { QMetaType::Int, 12 },
         }}),
         // Slot 'on_clientReadData'
-        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -100,7 +101,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->signal_broadcastTime((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 1: _t->signal_loginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 1: _t->signal_loginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[3]))); break;
         case 2: _t->signal_logoutResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
         case 3: _t->signal_registerResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
         case 4: _t->signal_joinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
@@ -111,7 +112,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (MainWindow::*)(QString )>(_a, &MainWindow::signal_broadcastTime, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (MainWindow::*)(bool , QString )>(_a, &MainWindow::signal_loginResult, 1))
+        if (QtMocHelpers::indexOfMethod<void (MainWindow::*)(bool , QString , int )>(_a, &MainWindow::signal_loginResult, 1))
             return;
         if (QtMocHelpers::indexOfMethod<void (MainWindow::*)(bool , QString )>(_a, &MainWindow::signal_logoutResult, 2))
             return;
@@ -160,9 +161,9 @@ void MainWindow::signal_broadcastTime(QString _t1)
 }
 
 // SIGNAL 1
-void MainWindow::signal_loginResult(bool _t1, QString _t2)
+void MainWindow::signal_loginResult(bool _t1, QString _t2, int _t3)
 {
-    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1, _t2);
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1, _t2, _t3);
 }
 
 // SIGNAL 2

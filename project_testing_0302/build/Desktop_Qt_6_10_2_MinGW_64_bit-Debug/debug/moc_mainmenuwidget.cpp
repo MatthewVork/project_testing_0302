@@ -54,7 +54,6 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         "updateUserName",
         "name",
         "on_btn_joinExam_clicked",
-        "on_btn_history_clicked",
         "on_btn_confirm_clicked",
         "handleJoinExamResult",
         "success",
@@ -90,13 +89,11 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         }}),
         // Slot 'on_btn_joinExam_clicked'
         QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPublic, QMetaType::Void),
-        // Slot 'on_btn_history_clicked'
-        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'on_btn_confirm_clicked'
-        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'handleJoinExamResult'
-        QtMocHelpers::SlotData<void(bool, QString, QString, int)>(18, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 19 }, { QMetaType::QString, 20 }, { QMetaType::QString, 21 }, { QMetaType::Int, 22 },
+        QtMocHelpers::SlotData<void(bool, QString, QString, int)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 18 }, { QMetaType::QString, 19 }, { QMetaType::QString, 20 }, { QMetaType::Int, 21 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -131,9 +128,8 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 7: _t->on_logoutBtn_clicked(); break;
         case 8: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
         case 9: _t->on_btn_joinExam_clicked(); break;
-        case 10: _t->on_btn_history_clicked(); break;
-        case 11: _t->on_btn_confirm_clicked(); break;
-        case 12: _t->handleJoinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
+        case 10: _t->on_btn_confirm_clicked(); break;
+        case 11: _t->handleJoinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
         default: ;
         }
     }
@@ -174,14 +170,14 @@ int MainMenuWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 12;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 13;
+        _id -= 12;
     }
     return _id;
 }

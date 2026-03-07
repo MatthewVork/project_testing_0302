@@ -14,11 +14,13 @@
 #include <QtWidgets/QCalendarWidget>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -49,6 +51,7 @@ public:
     QWidget *page4;
     QPushButton *pushButton_5;
     QPushButton *btn_history;
+    QTableWidget *tableWidget_scores;
     QWidget *page2;
     QGridLayout *gridLayout;
     QLabel *label_3;
@@ -148,10 +151,13 @@ public:
         page4->setObjectName("page4");
         pushButton_5 = new QPushButton(page4);
         pushButton_5->setObjectName("pushButton_5");
-        pushButton_5->setGeometry(QRect(60, 200, 68, 21));
+        pushButton_5->setGeometry(QRect(10, 370, 68, 21));
         btn_history = new QPushButton(page4);
         btn_history->setObjectName("btn_history");
-        btn_history->setGeometry(QRect(10, 10, 68, 21));
+        btn_history->setGeometry(QRect(10, 340, 68, 21));
+        tableWidget_scores = new QTableWidget(page4);
+        tableWidget_scores->setObjectName("tableWidget_scores");
+        tableWidget_scores->setGeometry(QRect(25, 21, 391, 311));
         stackedWidget->addWidget(page4);
         page2 = new QWidget();
         page2->setObjectName("page2");
@@ -201,7 +207,7 @@ public:
 
         retranslateUi(MainMenuWidget);
 
-        stackedWidget->setCurrentIndex(3);
+        stackedWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainMenuWidget);

@@ -2,12 +2,12 @@ debug/loginwidget.o
 debug/main.o
 debug/mainmenuwidget.o
 debug/mainwindow.o
+debug/menu_teacher.o
 debug/registerwidget.o
-debug/scorereport.o
 debug/testingroom.o
 debug/moc_loginwidget.o
 debug/moc_mainmenuwidget.o
 debug/moc_mainwindow.o
+debug/moc_menu_teacher.o
 debug/moc_registerwidget.o
-debug/moc_scorereport.o
 debug/moc_testingroom.o

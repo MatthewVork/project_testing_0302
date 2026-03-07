@@ -17,7 +17,7 @@ LoginWidget::~LoginWidget()
     delete ui;
 }
 
-void LoginWidget::handleLoginResult(bool success, QString msg)
+void LoginWidget::handleLoginResult(bool success, QString msg, int role)
 {
     if (success)
     {
@@ -30,10 +30,10 @@ void LoginWidget::handleLoginResult(bool success, QString msg)
 
         emit signal_RecordUsername(ui->Username->text());   //将用户名记录下来
 
-        QTimer::singleShot(1000, autoCloseBox, [autoCloseBox, this]() { //指向autoCloseBox
+        QTimer::singleShot(1000, autoCloseBox, [autoCloseBox, this, role]() { //指向autoCloseBox
             autoCloseBox->close();
             autoCloseBox->deleteLater();
-            emit signal_LoginSuccess();
+            emit signal_LoginSuccess(role);
             ui->Username->clear();
             ui->Password->clear(); return; //发送信号通知主窗口切换屏幕
         });

@@ -24,7 +24,6 @@ public slots:
     void on_logoutBtn_clicked();
     void updateUserName(QString name);
     void on_btn_joinExam_clicked();
-    void on_btn_history_clicked();
     void on_btn_confirm_clicked();
     void handleJoinExamResult(bool success, QString msg, QString subject, int duration);
 signals:

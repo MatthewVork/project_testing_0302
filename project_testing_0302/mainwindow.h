@@ -8,6 +8,7 @@
 #include "registerwidget.h"
 #include "mainmenuwidget.h"
 #include "testingroom.h"
+#include "menu_teacher.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,10 +31,11 @@ private:
     MainMenuWidget *menuPage;
     TestingRoom *testPage;
     QTcpSocket *tcpSocket;
+    menu_Teacher *menuteach;
 
 signals:    //存放各个窗口内的信号
     void signal_broadcastTime(QString timeStr);
-    void signal_loginResult(bool success, QString msg);
+    void signal_loginResult(bool success, QString msg, int role);
     void signal_logoutResult(bool success, QString msg);
     void signal_registerResult(bool success, QString msg);
     void signal_joinExamResult(bool success, QString msg, QString subject, int duration);

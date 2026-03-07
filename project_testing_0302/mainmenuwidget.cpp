@@ -10,6 +10,14 @@ MainMenuWidget::MainMenuWidget(QWidget *parent)
     connect(ui->listWidget, &QListWidget::currentRowChanged,
             ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
+    connect(ui->listWidget, &QListWidget::currentRowChanged, this, [this](int row){
+        // ⚠️ 注意：这里的 row 是左侧列表的索引（从 0 开始算）
+        // 按照你截图里的顺序："考试大厅"(0), "我的考试"(1), "成绩查询"(2)
+        // 如果你的“成绩查询”排在第 3 位，那它的索引就是 2。你可以根据实际情况调整这个数字！
+        if (row == 2) {
+            emit signal_getScoresReq(); // 发现切到了成绩页，瞬间自动发信号去拉取成绩！
+        }
+    });
 
 }
 
@@ -65,34 +73,53 @@ void MainMenuWidget::handleJoinExamResult(bool success, QString msg, QString sub
     }
 }
 
-// 考生点击“查询历史成绩”按钮
-void MainMenuWidget::on_btn_history_clicked() {
-    emit signal_getScoresReq(); // 发信号给大管家，让他去跑腿
-}
-
 // 接收到服务器发来的成绩单后，弹窗展示
+// 接收到服务器发来的成绩单后，填入表格展示
 void MainMenuWidget::handleScoresResult(const QJsonObject &data) {
     QJsonArray array = data["scores"].toArray();
 
+    // 1. 初始化表格的列数和表头文字
+    ui->tableWidget_scores->setColumnCount(4);
+    ui->tableWidget_scores->setHorizontalHeaderLabels(QStringList() << "考试科目" << "考试码" << "最终得分" << "交卷时间");
+
+    // 让表格的列宽自动拉伸填满空白
+    ui->tableWidget_scores->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    // 2. 根据服务器发来的成绩数量，动态设置表格有多少行
+    ui->tableWidget_scores->setRowCount(array.size());
+
     if (array.isEmpty()) {
-        QMessageBox::information(this, "历史成绩", "你还没有参加过任何考试哦！快去考一场吧！");
+        QMessageBox::information(this, "提示", "你还没有参加过任何考试哦！快去考一场吧！");
         return;
     }
 
-    // 拼接成绩单文本
-    QString msg = "你的历史考试成绩如下：\n\n";
+    // 3. 循环遍历，把成绩一行一行填进表格里
     for(int i = 0; i < array.size(); ++i) {
         QJsonObject obj = array[i].toObject();
         QString subject = obj["subject"].toString();
         if(subject.isEmpty()) subject = "未知科目"; // 防御性处理
 
-        msg += QString("📚 科目：%1 (代码:%2)\n   🏆 得分：%3 分\n\n")
-                   .arg(subject)
-                   .arg(obj["exam_code"].toString())
-                   .arg(obj["score"].toInt());
-    }
+        QString code = obj["exam_code"].toString();
+        QString scoreStr = QString::number(obj["score"].toInt());
+        QString timeStr = obj["submit_time"].toString();
 
-    QMessageBox::information(this, "历史成绩", msg);
+        // 生成每一格的数据
+        QTableWidgetItem *itemSubject = new QTableWidgetItem(subject);
+        QTableWidgetItem *itemCode = new QTableWidgetItem(code);
+        QTableWidgetItem *itemScore = new QTableWidgetItem(scoreStr);
+        QTableWidgetItem *itemTime = new QTableWidgetItem(timeStr);
+
+        // 让文字居中显示（强迫症福音）
+        itemSubject->setTextAlignment(Qt::AlignCenter);
+        itemCode->setTextAlignment(Qt::AlignCenter);
+        itemScore->setTextAlignment(Qt::AlignCenter);
+
+        // 塞进第 i 行对应的列里 (0列:科目, 1列:考试码, 2列:分数)
+        ui->tableWidget_scores->setItem(i, 0, itemSubject);
+        ui->tableWidget_scores->setItem(i, 1, itemCode);
+        ui->tableWidget_scores->setItem(i, 2, itemScore);
+        ui->tableWidget_scores->setItem(i, 3, itemTime);
+    }
 }
 
 // 玩家点击大厅 page2 里的“修改密码”按钮

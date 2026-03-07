@@ -13,8 +13,8 @@ SOURCES += \
     main.cpp \
     mainmenuwidget.cpp \
     mainwindow.cpp \
+    menu_teacher.cpp \
     registerwidget.cpp \
-    scorereport.cpp \
     testingroom.cpp
 
 HEADERS += \
@@ -22,16 +22,16 @@ HEADERS += \
     loginwidget.h \
     mainmenuwidget.h \
     mainwindow.h \
+    menu_teacher.h \
     registerwidget.h \
-    scorereport.h \
     testingroom.h
 
 FORMS += \
     loginwidget.ui \
     mainmenuwidget.ui \
     mainwindow.ui \
+    menu_teacher.ui \
     registerwidget.ui \
-    scorereport.ui \
     testingroom.ui
 
 # Default rules for deployment.

@@ -16,13 +16,13 @@ public:
     ~LoginWidget();
 
 public slots:
-    void handleLoginResult(bool success, QString msg);
+    void handleLoginResult(bool success, QString msg, int role);
     void on_loginBtn_clicked();
     void on_registerBtn_clicked();
 
 signals:
     void signal_showRegister();
-    void signal_LoginSuccess();
+    void signal_LoginSuccess(int role);
     void SecureData(const QByteArray &data);
     void signal_RecordUsername(QString data);
 

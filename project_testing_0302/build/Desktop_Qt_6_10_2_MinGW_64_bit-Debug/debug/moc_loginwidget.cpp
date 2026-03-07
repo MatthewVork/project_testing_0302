@@ -42,6 +42,7 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         "signal_showRegister",
         "",
         "signal_LoginSuccess",
+        "role",
         "SecureData",
         "data",
         "signal_RecordUsername",
@@ -56,23 +57,25 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
         // Signal 'signal_showRegister'
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'signal_LoginSuccess'
-        QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SignalData<void(int)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 4 },
+        }}),
         // Signal 'SecureData'
-        QtMocHelpers::SignalData<void(const QByteArray &)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QByteArray, 5 },
+        QtMocHelpers::SignalData<void(const QByteArray &)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QByteArray, 6 },
         }}),
         // Signal 'signal_RecordUsername'
-        QtMocHelpers::SignalData<void(QString)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 5 },
+        QtMocHelpers::SignalData<void(QString)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 6 },
         }}),
         // Slot 'handleLoginResult'
-        QtMocHelpers::SlotData<void(bool, QString)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 8 }, { QMetaType::QString, 9 },
+        QtMocHelpers::SlotData<void(bool, QString, int)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 9 }, { QMetaType::QString, 10 }, { QMetaType::Int, 4 },
         }}),
         // Slot 'on_loginBtn_clicked'
-        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPublic, QMetaType::Void),
-        // Slot 'on_registerBtn_clicked'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_registerBtn_clicked'
+        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -97,10 +100,10 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->signal_showRegister(); break;
-        case 1: _t->signal_LoginSuccess(); break;
+        case 1: _t->signal_LoginSuccess((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 2: _t->SecureData((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
         case 3: _t->signal_RecordUsername((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 4: _t->handleLoginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 4: _t->handleLoginResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[3]))); break;
         case 5: _t->on_loginBtn_clicked(); break;
         case 6: _t->on_registerBtn_clicked(); break;
         default: ;
@@ -109,7 +112,7 @@ void LoginWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)()>(_a, &LoginWidget::signal_showRegister, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)()>(_a, &LoginWidget::signal_LoginSuccess, 1))
+        if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)(int )>(_a, &LoginWidget::signal_LoginSuccess, 1))
             return;
         if (QtMocHelpers::indexOfMethod<void (LoginWidget::*)(const QByteArray & )>(_a, &LoginWidget::SecureData, 2))
             return;
@@ -156,9 +159,9 @@ void LoginWidget::signal_showRegister()
 }
 
 // SIGNAL 1
-void LoginWidget::signal_LoginSuccess()
+void LoginWidget::signal_LoginSuccess(int _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 
 // SIGNAL 2

@@ -2,12 +2,12 @@ release/loginwidget.o
 release/main.o
 release/mainmenuwidget.o
 release/mainwindow.o
+release/menu_teacher.o
 release/registerwidget.o
-release/scorereport.o
 release/testingroom.o
 release/moc_loginwidget.o
 release/moc_mainmenuwidget.o
 release/moc_mainwindow.o
+release/moc_menu_teacher.o
 release/moc_registerwidget.o
-release/moc_scorereport.o
 release/moc_testingroom.o

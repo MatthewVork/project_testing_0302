@@ -40,12 +40,14 @@ MainWindow::MainWindow(QWidget *parent)
     regPage = new RegisterWidget(this);
     menuPage = new MainMenuWidget(this);
     testPage =  new TestingRoom(this);
+    menuteach = new menu_Teacher(this);
 
     // 2. 塞进 Stacked Widget
     ui->stackedWidget->addWidget(loginPage); // 索引为 0
     ui->stackedWidget->addWidget(regPage);   // 索引为 1
     ui->stackedWidget->addWidget(menuPage);  // 索引为 2
-    ui->stackedWidget->addWidget (testPage); // 索引为 3
+    ui->stackedWidget->addWidget(testPage);  // 索引为 3
+    ui->stackedWidget->addWidget(menuteach); // 索引为 4
 
     // 3. 设置初始页
     ui->stackedWidget->setCurrentIndex(0);
@@ -56,8 +58,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(1);
     });
 
-    connect(loginPage, &LoginWidget::signal_LoginSuccess, this, [this](){
-        ui->stackedWidget->setCurrentIndex(2);
+    connect(loginPage, &LoginWidget::signal_LoginSuccess, this, [this](int role){
+        if(role == 0) {ui->stackedWidget->setCurrentIndex(2);}
+        if(role == 1) {ui->stackedWidget->setCurrentIndex(4);};
     });
 
     connect(regPage, &RegisterWidget::signal_CallbackLoginwidget, this, [this](){
@@ -168,7 +171,7 @@ void MainWindow::on_clientReadData() {
     // 4. 根据类型发射不同的信号（即你说的分发）
     switch (type) {
     case MSG_LOGIN: // 1001
-        emit signal_loginResult(success, msg);
+        emit signal_loginResult(success, msg, data["role"].toInt());
         break;
 
     case MSG_REGISTER: // 1002
