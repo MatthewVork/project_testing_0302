@@ -58,6 +58,10 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         "handleGetScores",
         "handleChangePwd",
         "handleLogout",
+        "handleCreateClass",
+        "handleGetClasses",
+        "handleJoinClass",
+        "handleGetMyClasses",
         "init_Database"
     };
 
@@ -106,8 +110,24 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(19, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
         }}),
+        // Slot 'handleCreateClass'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(20, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleGetClasses'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(21, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleJoinClass'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(22, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleGetMyClasses'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(23, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
         // Slot 'init_Database'
-        QtMocHelpers::SlotData<bool()>(20, 2, QMC::AccessPrivate, QMetaType::Bool),
+        QtMocHelpers::SlotData<bool()>(24, 2, QMC::AccessPrivate, QMetaType::Bool),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -145,7 +165,11 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 11: _t->handleGetScores((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
         case 12: _t->handleChangePwd((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
         case 13: _t->handleLogout((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
-        case 14: { bool _r = _t->init_Database();
+        case 14: _t->handleCreateClass((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 15: _t->handleGetClasses((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 16: _t->handleJoinClass((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 17: _t->handleGetMyClasses((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 18: { bool _r = _t->init_Database();
             if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
@@ -209,6 +233,34 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
             }
             break;
+        case 14:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 15:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 16:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 17:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
         }
     }
 }
@@ -232,14 +284,14 @@ int TcpServer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 19;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 19;
     }
     return _id;
 }

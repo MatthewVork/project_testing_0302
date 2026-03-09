@@ -19,6 +19,11 @@ MainMenuWidget::MainMenuWidget(QWidget *parent)
         }
     });
 
+    // 强制初始化学生班级表格的列数和表头
+    ui->tableWidget_myClasses->setColumnCount(3);
+    ui->tableWidget_myClasses->setHorizontalHeaderLabels(QStringList() << "班级名称" << "指导教师" << "班级代码");
+    ui->tableWidget_myClasses->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
 }
 
 MainMenuWidget::~MainMenuWidget()
@@ -159,5 +164,46 @@ void MainMenuWidget::handleChangePwdResult(bool success, QString msg) {
         emit signal_callbackLoginMenu();
     } else {
         QMessageBox::warning(this, "修改失败", msg);
+    }
+}
+
+void MainMenuWidget::on_btn_joinClass_clicked()
+{
+    // 拿到输入的邀请码
+    QString code = ui->lineEdit_classCode->text().trimmed();
+
+    if (code.isEmpty()) {
+        QMessageBox::warning(this, "提示", "班级邀请码不能为空！");
+        return;
+    }
+
+    // 把码扔给大管家
+    emit signal_joinClassReq(code);
+}
+
+// 在文件最底下（或者空白处），贴上处理结果的弹窗逻辑：
+void MainMenuWidget::handleJoinClassResult(bool success, QString msg) {
+    if (success) {
+        QMessageBox::information(this, "加入成功", msg);
+        ui->lineEdit_classCode->clear(); // 成功后清空输入框
+        emit signal_getMyClassesReq();
+
+        // （剧透：咱们下一站就在这里自动刷新下面那个学生班级表格！）
+    } else {
+        QMessageBox::warning(this, "加入失败", msg);
+    }
+}
+
+void MainMenuWidget::handleGetMyClassesResult(QJsonArray classes) {
+    ui->tableWidget_myClasses->setRowCount(0); // 清空旧数据
+
+    for(int i = 0; i < classes.size(); ++i) {
+        QJsonObject obj = classes[i].toObject();
+        int row = ui->tableWidget_myClasses->rowCount();
+        ui->tableWidget_myClasses->insertRow(row);
+
+        ui->tableWidget_myClasses->setItem(row, 0, new QTableWidgetItem(obj["class_name"].toString()));
+        ui->tableWidget_myClasses->setItem(row, 1, new QTableWidgetItem(obj["teacher_name"].toString()));
+        ui->tableWidget_myClasses->setItem(row, 2, new QTableWidgetItem(obj["class_code"].toString()));
     }
 }

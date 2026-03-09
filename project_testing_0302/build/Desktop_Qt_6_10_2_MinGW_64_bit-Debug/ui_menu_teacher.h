@@ -11,9 +11,13 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QWidget>
 
@@ -25,8 +29,14 @@ public:
     QStackedWidget *stackedWidget;
     QWidget *page0;
     QLabel *label_4;
+    QPushButton *btn_createClass;
+    QLineEdit *lineEdit_className;
+    QTableWidget *tableWidget_classes;
     QWidget *page1;
     QLabel *label_5;
+    QComboBox *comboBox_myClasses;
+    QPushButton *btn_searchStudents;
+    QTableWidget *tableWidget_students;
     QWidget *page2;
     QLabel *label_6;
     QWidget *page3;
@@ -52,12 +62,30 @@ public:
         label_4 = new QLabel(page0);
         label_4->setObjectName("label_4");
         label_4->setGeometry(QRect(20, 20, 49, 14));
+        btn_createClass = new QPushButton(page0);
+        btn_createClass->setObjectName("btn_createClass");
+        btn_createClass->setGeometry(QRect(150, 60, 68, 21));
+        lineEdit_className = new QLineEdit(page0);
+        lineEdit_className->setObjectName("lineEdit_className");
+        lineEdit_className->setGeometry(QRect(30, 60, 113, 20));
+        tableWidget_classes = new QTableWidget(page0);
+        tableWidget_classes->setObjectName("tableWidget_classes");
+        tableWidget_classes->setGeometry(QRect(30, 100, 551, 301));
         stackedWidget->addWidget(page0);
         page1 = new QWidget();
         page1->setObjectName("page1");
         label_5 = new QLabel(page1);
         label_5->setObjectName("label_5");
         label_5->setGeometry(QRect(20, 10, 49, 14));
+        comboBox_myClasses = new QComboBox(page1);
+        comboBox_myClasses->setObjectName("comboBox_myClasses");
+        comboBox_myClasses->setGeometry(QRect(20, 30, 67, 22));
+        btn_searchStudents = new QPushButton(page1);
+        btn_searchStudents->setObjectName("btn_searchStudents");
+        btn_searchStudents->setGeometry(QRect(20, 70, 68, 21));
+        tableWidget_students = new QTableWidget(page1);
+        tableWidget_students->setObjectName("tableWidget_students");
+        tableWidget_students->setGeometry(QRect(100, 20, 491, 401));
         stackedWidget->addWidget(page1);
         page2 = new QWidget();
         page2->setObjectName("page2");
@@ -106,6 +134,9 @@ public:
 
         retranslateUi(menu_Teacher);
 
+        stackedWidget->setCurrentIndex(1);
+
+
         QMetaObject::connectSlotsByName(menu_Teacher);
     } // setupUi
 
@@ -113,7 +144,9 @@ public:
     {
         menu_Teacher->setWindowTitle(QCoreApplication::translate("menu_Teacher", "Form", nullptr));
         label_4->setText(QCoreApplication::translate("menu_Teacher", "\345\210\233\345\273\272\347\217\255\347\272\247", nullptr));
+        btn_createClass->setText(QCoreApplication::translate("menu_Teacher", "\345\210\233\345\273\272\347\217\255\347\272\247", nullptr));
         label_5->setText(QCoreApplication::translate("menu_Teacher", "\345\255\246\347\224\237\345\220\215\345\215\225", nullptr));
+        btn_searchStudents->setText(QCoreApplication::translate("menu_Teacher", "PushButton", nullptr));
         label_6->setText(QCoreApplication::translate("menu_Teacher", "\345\275\225\345\205\245\351\242\230\347\233\256", nullptr));
         label_7->setText(QCoreApplication::translate("menu_Teacher", "\347\273\204\345\215\267\344\270\216\345\217\221\345\270\203", nullptr));
         label_8->setText(QCoreApplication::translate("menu_Teacher", "\347\217\255\347\272\247\346\210\220\347\273\251\346\200\273\346\246\234", nullptr));

@@ -38,7 +38,9 @@ private slots:
     void handleChangePwd(QTcpSocket* socket, const QJsonObject &data);
     void handleLogout(QTcpSocket* socket, const QJsonObject &data);
     void handleCreateClass(QTcpSocket* socket, const QJsonObject &data);
-
+    void handleGetClasses(QTcpSocket* socket, const QJsonObject &data);
+    void handleJoinClass(QTcpSocket* socket, const QJsonObject &data);
+    void handleGetMyClasses(QTcpSocket* socket, const QJsonObject &data);
     bool init_Database();
 private:
     Ui::TcpServer *ui;

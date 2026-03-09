@@ -17,6 +17,8 @@ public:
     void handleScoresResult(const QJsonObject &data);
     void handleChangePwdResult(bool success, QString msg);
     void handleResult(bool success, QString msg);
+    void handleJoinClassResult(bool success, QString msg);
+    void handleGetMyClassesResult(QJsonArray classes);
     ~MainMenuWidget();
 
 
@@ -26,6 +28,8 @@ public slots:
     void on_btn_joinExam_clicked();
     void on_btn_confirm_clicked();
     void handleJoinExamResult(bool success, QString msg, QString subject, int duration);
+
+    void on_btn_joinClass_clicked();
 signals:
     void signal_callbackLoginMenu();
     void signal_LogoutData();
@@ -34,6 +38,8 @@ signals:
     void signal_getScoresReq();
     void signal_changePwdReq(QString oldPwd, QString newPwd);
     void signal_changeSuccess();
+    void signal_joinClassReq(QString code);
+    void signal_getMyClassesReq();
 private:
     Ui::MainMenuWidget *ui;
 };

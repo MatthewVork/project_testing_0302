@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 1. 创建套接字对象
     tcpSocket = new QTcpSocket(this);
-    tcpSocket->connectToHost("192.168.172.26", 9999);
+    tcpSocket->connectToHost("192.168.172.25", 9999);
 
     connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
         qDebug() << "连接出错：" << tcpSocket->errorString();
@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(loginPage, &LoginWidget::signal_LoginSuccess, this, [this](int role){
-        if(role == 0) {ui->stackedWidget->setCurrentIndex(2);}
+        if(role == 0) {ui->stackedWidget->setCurrentIndex(2);emit menuPage->signal_getMyClassesReq();}
         if(role == 1) {ui->stackedWidget->setCurrentIndex(4);};
     });
 
@@ -143,6 +143,67 @@ MainWindow::MainWindow(QWidget *parent)
 
         NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
     });
+
+    // 监听教师大厅的建班请求，打包发给服务器
+    connect(menuteach, &menu_Teacher::signal_createClassReq, this, [this](QString className){
+        QJsonObject reqData;
+        reqData["class_name"] = className;
+
+        QJsonObject root;
+        root["type"] = MSG_CREATE_CLASS; // 咱们刚加的 5001 暗号
+        root["data"] = reqData;
+
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 把大管家收到的建班结果，传给教师大厅去弹窗
+    connect(this, &MainWindow::signal_createClassResult, menuteach, &menu_Teacher::handleCreateClassResult);
+
+    // 1. 监听大厅要数据的请求，打包发给服务器 (5002)
+    connect(menuteach, &menu_Teacher::signal_getClassesReq, this, [this](){
+        QJsonObject root;
+        root["type"] = MSG_GET_CLASSES; // 5002
+        root["data"] = QJsonObject(); // 空包裹就行
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 2. 把服务器传回来的班级数组，交给教师大厅去填表格
+    connect(this, &MainWindow::signal_getClassesResult, menuteach, &menu_Teacher::handleGetClassesResult);
+
+    connect(loginPage, &LoginWidget::signal_LoginSuccess, this, [this](int role){
+        if(role == 0) { ui->stackedWidget->setCurrentIndex(2); }
+        if(role == 1) {
+            ui->stackedWidget->setCurrentIndex(4);
+            // 👇 加上这一句！老师一登录进来，立刻自动去拉取班级列表！
+            emit menuteach->signal_getClassesReq();
+        }
+    });
+
+    // 1. 监听学生大厅的加群请求，打包发给服务器
+    connect(menuPage, &MainMenuWidget::signal_joinClassReq, this, [this](QString code){
+        QJsonObject reqData;
+        reqData["class_code"] = code;
+
+        QJsonObject root;
+        root["type"] = MSG_JOIN_CLASS; // 咱们刚加的 5005 暗号
+        root["data"] = reqData;
+
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 2. 把服务器传回来的加群结果，交给学生大厅去弹窗
+    connect(this, &MainWindow::signal_joinClassResult, menuPage, &MainMenuWidget::handleJoinClassResult);
+
+    // 监听学生拉取班级列表的请求
+    connect(menuPage, &MainMenuWidget::signal_getMyClassesReq, this, [this](){
+        QJsonObject root;
+        root["type"] = MSG_GET_MY_CLASSES; // 5006
+        root["data"] = QJsonObject();
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 把查到的结果传给学生大厅填表
+    connect(this, &MainWindow::signal_getMyClassesResult, menuPage, &MainMenuWidget::handleGetMyClassesResult);
 }
 
 MainWindow::~MainWindow() {
@@ -181,7 +242,7 @@ void MainWindow::on_clientReadData() {
     case MSG_LOGOUT:
         emit signal_logoutResult(success, msg);
 
-    case MSG_JOIN_EXAM: {
+    case MSG_JOIN_EXAM:{
         // 从 data 里把多余的科目和时长单独抽出来
         QString subject = data["subject"].toString();
         int duration = data["duration"].toInt();
@@ -200,6 +261,22 @@ void MainWindow::on_clientReadData() {
 
     case MSG_CHANGE_PWD:
         menuPage->handleChangePwdResult(success, msg);
+        break;
+
+    case MSG_CREATE_CLASS: // 5001
+        emit signal_createClassResult(success, msg);
+        break;
+
+    case MSG_GET_CLASSES: // 5002
+        emit signal_getClassesResult(data["classes"].toArray());
+        break;
+
+    case MSG_JOIN_CLASS: // 5005
+        emit signal_joinClassResult(success, msg);
+        break;
+
+    case MSG_GET_MY_CLASSES: // 5006
+        emit signal_getMyClassesResult(data["classes"].toArray());
         break;
 
     default:

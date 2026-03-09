@@ -9,6 +9,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QRandomGenerator>
 
 TcpServer::TcpServer(QWidget *parent)
     : QWidget(parent)
@@ -129,6 +130,9 @@ void TcpServer::read_data() {
             case MSG_GET_SCORES: handleGetScores(msocket, rootObj["data"].toObject()); break;
             case MSG_CHANGE_PWD: handleChangePwd(msocket, rootObj["data"].toObject()); break;
             case MSG_CREATE_CLASS: handleCreateClass(msocket, rootObj["data"].toObject()); break;
+            case MSG_GET_CLASSES: handleGetClasses(msocket, rootObj["data"].toObject()); break;
+            case MSG_JOIN_CLASS: handleJoinClass(msocket, rootObj["data"].toObject()); break; // 5005 专属接线员
+            case MSG_GET_MY_CLASSES: handleGetMyClasses(msocket, rootObj["data"].toObject()); break; // 5006
         }
     }
 }
@@ -261,14 +265,28 @@ bool TcpServer::init_Database() {
     }
 
     // ==========================================
-    // 新增：创建班级表 (classes)
+    // 升级版：创建班级表 (classes) - 增加班级码
     // ==========================================
+    // 这次我们用 class_code 作为主键，因为每个班的邀请码必须是全网唯一的！
     QString sqlClass = "CREATE TABLE IF NOT EXISTS classes ("
-                       "class_name TEXT PRIMARY KEY, "
+                       "class_code TEXT PRIMARY KEY, " // 👈 核心：6位班级码
+                       "class_name TEXT NOT NULL, "    // 班级名称（允许同名，比如好几个老师都建了“软工1班”）
                        "teacher_name TEXT NOT NULL)";
 
     if(!query.exec(sqlClass)) {
         qDebug() << "班级表建表失败：" << query.lastError().text();
+    }
+
+    // ==========================================
+    // 新增：创建分班表 (class_students) - 记录谁在哪个班
+    // ==========================================
+    QString sqlClassStudent = "CREATE TABLE IF NOT EXISTS class_students ("
+                              "class_code TEXT NOT NULL, "
+                              "username TEXT NOT NULL, "
+                              "PRIMARY KEY (class_code, username))"; // 联合主键，防止同一个学生加两次
+
+    if(!query.exec(sqlClassStudent)) {
+        qDebug() << "分班表建表失败：" << query.lastError().text();
     }
 
     return true;
@@ -551,28 +569,145 @@ void TcpServer::handleLogout(QTcpSocket* socket, const QJsonObject &data) {
 
 void TcpServer::handleCreateClass(QTcpSocket* socket, const QJsonObject &data) {
     QString className = data["class_name"].toString();
-    // 拿到当前登录的老师账号（上帝视角发挥作用了！）
     QString teacher = socket->property("login_user").toString();
 
+    // 👇 1. 核心绝招：随机生成 6 位班级邀请码 (A-Z, 0-9)
+    QString classCode;
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    for(int i = 0; i < 6; ++i) {
+        int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
+        classCode.append(possibleCharacters.at(index));
+    }
+
+    // 2. 存入数据库
     QSqlQuery query;
-    // 插入数据库
-    query.prepare("INSERT INTO classes (class_name, teacher_name) VALUES (:name, :teacher)");
+    query.prepare("INSERT INTO classes (class_code, class_name, teacher_name) VALUES (:code, :name, :teacher)");
+    query.bindValue(":code", classCode);
     query.bindValue(":name", className);
     query.bindValue(":teacher", teacher);
 
-    bool success = query.exec(); // 如果班级重名，主键冲突会自动变 false
-    QString msg = success ? "班级创建成功！" : "创建失败，该班级名称已存在！";
+    bool success = query.exec();
+    QString msg = success ? QString("创建成功！\n请将班级码发给学生：%1").arg(classCode) : "创建失败，数据库异常！";
 
-    // 打包回执发给客户端
+    // 3. 打包发回给客户端
     QJsonObject resData;
     resData["success"] = success;
     resData["message"] = msg;
+    // 顺便把生成的码也发给客户端，方便它显示在表格里
+    resData["class_code"] = classCode;
 
     QJsonObject root;
-    root["type"] = MSG_CREATE_CLASS; // 咱们刚加的 5001
+    root["type"] = MSG_CREATE_CLASS;
     root["data"] = resData;
 
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 
-    if (success) qDebug() << "✅ 老师" << teacher << "成功创建了班级：" << className;
+    if (success) qDebug() << "✅ 老师" << teacher << "建班成功：" << className << " | 班级码：" << classCode;
+}
+
+void TcpServer::handleGetClasses(QTcpSocket* socket, const QJsonObject &data) {
+    // 拿到当前老师的名字
+    QString teacher = socket->property("login_user").toString();
+    QJsonArray classArray;
+    QSqlQuery query;
+
+    // 去数据库查属于这个老师的所有班级
+    query.prepare("SELECT class_name, class_code FROM classes WHERE teacher_name = :teacher");
+    query.bindValue(":teacher", teacher);
+    query.exec();
+
+    // 把查到的结果一个个塞进 JSON 数组
+    while(query.next()) {
+        QJsonObject obj;
+        obj["class_name"] = query.value(0).toString();
+        obj["class_code"] = query.value(1).toString();
+        classArray.append(obj);
+    }
+
+    // 打包发回给客户端
+    QJsonObject resData;
+    resData["classes"] = classArray;
+
+    QJsonObject root;
+    root["type"] = MSG_GET_CLASSES; // 5002
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleJoinClass(QTcpSocket* socket, const QJsonObject &data) {
+    QString classCode = data["class_code"].toString();
+    // 拿到当前正在操作的学生账号
+    QString student = socket->property("login_user").toString();
+
+    QSqlQuery query;
+    QJsonObject resData;
+    bool success = false;
+    QString msg;
+
+    // 1. 第一道防线：去 classes 表里查，有没有这把“钥匙”对应的房间
+    query.prepare("SELECT class_name FROM classes WHERE class_code = :code");
+    query.bindValue(":code", classCode);
+    query.exec();
+
+    if (!query.next()) {
+        msg = "班级码不存在，请找老师确认后重试！";
+    } else {
+        QString className = query.value(0).toString();
+
+        // 2. 第二道防线：钥匙是对的，尝试把学生写进 class_students (分班表)
+        query.prepare("INSERT INTO class_students (class_code, username) VALUES (:code, :student)");
+        query.bindValue(":code", classCode);
+        query.bindValue(":student", student);
+
+        if (query.exec()) {
+            success = true;
+            msg = "成功加入班级：" + className;
+            qDebug() << "✅ 学生" << student << "成功加入了班级" << className;
+        } else {
+            // 因为咱们建表时用了 (class_code, username) 做联合主键，重复插入会自动报错拦截！
+            msg = "你已经在这个班级里啦，不需要重复加入！";
+        }
+    }
+
+    // 3. 打包发回给客户端
+    resData["success"] = success;
+    resData["message"] = msg;
+
+    QJsonObject root;
+    root["type"] = MSG_JOIN_CLASS; // 5005
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleGetMyClasses(QTcpSocket* socket, const QJsonObject &data) {
+    QString student = socket->property("login_user").toString();
+    QJsonArray classArray;
+    QSqlQuery query;
+
+    // 联合查询：通过 class_students 找到学生加了哪些班，再从 classes 表拿到班级名和老师名
+    query.prepare("SELECT c.class_name, c.teacher_name, c.class_code "
+                  "FROM classes c "
+                  "INNER JOIN class_students cs ON c.class_code = cs.class_code "
+                  "WHERE cs.username = :student");
+    query.bindValue(":student", student);
+    query.exec();
+
+    while(query.next()) {
+        QJsonObject obj;
+        obj["class_name"] = query.value(0).toString();
+        obj["teacher_name"] = query.value(1).toString();
+        obj["class_code"] = query.value(2).toString();
+        classArray.append(obj);
+    }
+
+    QJsonObject resData;
+    resData["classes"] = classArray;
+
+    QJsonObject root;
+    root["type"] = MSG_GET_MY_CLASSES; // 5006
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }

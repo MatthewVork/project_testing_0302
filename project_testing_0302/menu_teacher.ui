@@ -22,6 +22,9 @@
      <height>451</height>
     </rect>
    </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
    <widget class="QWidget" name="page0">
     <widget class="QLabel" name="label_4">
      <property name="geometry">
@@ -34,6 +37,39 @@
      </property>
      <property name="text">
       <string>创建班级</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_createClass">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>68</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>创建班级</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_className">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tableWidget_classes">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>100</y>
+       <width>551</width>
+       <height>301</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -49,6 +85,39 @@
      </property>
      <property name="text">
       <string>学生名单</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_myClasses">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>67</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_searchStudents">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>68</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PushButton</string>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tableWidget_students">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>491</width>
+       <height>401</height>
+      </rect>
      </property>
     </widget>
    </widget>

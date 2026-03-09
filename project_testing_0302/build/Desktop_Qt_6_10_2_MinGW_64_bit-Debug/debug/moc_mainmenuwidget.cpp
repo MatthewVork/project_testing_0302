@@ -50,6 +50,8 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         "oldPwd",
         "newPwd",
         "signal_changeSuccess",
+        "signal_joinClassReq",
+        "signal_getMyClassesReq",
         "on_logoutBtn_clicked",
         "updateUserName",
         "name",
@@ -59,7 +61,8 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         "success",
         "msg",
         "subject",
-        "duration"
+        "duration",
+        "on_btn_joinClass_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -81,20 +84,28 @@ template <> constexpr inline auto MainMenuWidget::qt_create_metaobjectdata<qt_me
         }}),
         // Signal 'signal_changeSuccess'
         QtMocHelpers::SignalData<void()>(11, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'signal_joinClassReq'
+        QtMocHelpers::SignalData<void(QString)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
+        }}),
+        // Signal 'signal_getMyClassesReq'
+        QtMocHelpers::SignalData<void()>(13, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'on_logoutBtn_clicked'
-        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'updateUserName'
-        QtMocHelpers::SlotData<void(QString)>(13, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::QString, 14 },
+        QtMocHelpers::SlotData<void(QString)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 16 },
         }}),
         // Slot 'on_btn_joinExam_clicked'
-        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'on_btn_confirm_clicked'
-        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'handleJoinExamResult'
-        QtMocHelpers::SlotData<void(bool, QString, QString, int)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { QMetaType::Bool, 18 }, { QMetaType::QString, 19 }, { QMetaType::QString, 20 }, { QMetaType::Int, 21 },
+        QtMocHelpers::SlotData<void(bool, QString, QString, int)>(19, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Bool, 20 }, { QMetaType::QString, 21 }, { QMetaType::QString, 22 }, { QMetaType::Int, 23 },
         }}),
+        // Slot 'on_btn_joinClass_clicked'
+        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -125,11 +136,14 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 4: _t->signal_getScoresReq(); break;
         case 5: _t->signal_changePwdReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
         case 6: _t->signal_changeSuccess(); break;
-        case 7: _t->on_logoutBtn_clicked(); break;
-        case 8: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 9: _t->on_btn_joinExam_clicked(); break;
-        case 10: _t->on_btn_confirm_clicked(); break;
-        case 11: _t->handleJoinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
+        case 7: _t->signal_joinClassReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 8: _t->signal_getMyClassesReq(); break;
+        case 9: _t->on_logoutBtn_clicked(); break;
+        case 10: _t->updateUserName((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 11: _t->on_btn_joinExam_clicked(); break;
+        case 12: _t->on_btn_confirm_clicked(); break;
+        case 13: _t->handleJoinExamResult((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[4]))); break;
+        case 14: _t->on_btn_joinClass_clicked(); break;
         default: ;
         }
     }
@@ -147,6 +161,10 @@ void MainMenuWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)(QString , QString )>(_a, &MainMenuWidget::signal_changePwdReq, 5))
             return;
         if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_changeSuccess, 6))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)(QString )>(_a, &MainMenuWidget::signal_joinClassReq, 7))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (MainMenuWidget::*)()>(_a, &MainMenuWidget::signal_getMyClassesReq, 8))
             return;
     }
 }
@@ -170,14 +188,14 @@ int MainMenuWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 15;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 15)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 12;
+        _id -= 15;
     }
     return _id;
 }
@@ -222,5 +240,17 @@ void MainMenuWidget::signal_changePwdReq(QString _t1, QString _t2)
 void MainMenuWidget::signal_changeSuccess()
 {
     QMetaObject::activate(this, &staticMetaObject, 6, nullptr);
+}
+
+// SIGNAL 7
+void MainMenuWidget::signal_joinClassReq(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 7, nullptr, _t1);
+}
+
+// SIGNAL 8
+void MainMenuWidget::signal_getMyClassesReq()
+{
+    QMetaObject::activate(this, &staticMetaObject, 8, nullptr);
 }
 QT_WARNING_POP

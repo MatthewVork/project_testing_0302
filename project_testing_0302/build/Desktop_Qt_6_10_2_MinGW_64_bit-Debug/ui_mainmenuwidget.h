@@ -48,6 +48,10 @@ public:
     QLineEdit *lineEdit_examCode;
     QWidget *page3;
     QPushButton *pushButton_4;
+    QLabel *label_6;
+    QLineEdit *lineEdit_classCode;
+    QPushButton *btn_joinClass;
+    QTableWidget *tableWidget_myClasses;
     QWidget *page4;
     QPushButton *pushButton_5;
     QPushButton *btn_history;
@@ -145,7 +149,19 @@ public:
         page3->setObjectName("page3");
         pushButton_4 = new QPushButton(page3);
         pushButton_4->setObjectName("pushButton_4");
-        pushButton_4->setGeometry(QRect(90, 130, 68, 21));
+        pushButton_4->setGeometry(QRect(10, 370, 68, 21));
+        label_6 = new QLabel(page3);
+        label_6->setObjectName("label_6");
+        label_6->setGeometry(QRect(10, 10, 49, 14));
+        lineEdit_classCode = new QLineEdit(page3);
+        lineEdit_classCode->setObjectName("lineEdit_classCode");
+        lineEdit_classCode->setGeometry(QRect(10, 30, 113, 20));
+        btn_joinClass = new QPushButton(page3);
+        btn_joinClass->setObjectName("btn_joinClass");
+        btn_joinClass->setGeometry(QRect(130, 30, 68, 21));
+        tableWidget_myClasses = new QTableWidget(page3);
+        tableWidget_myClasses->setObjectName("tableWidget_myClasses");
+        tableWidget_myClasses->setGeometry(QRect(10, 60, 431, 301));
         stackedWidget->addWidget(page3);
         page4 = new QWidget();
         page4->setObjectName("page4");
@@ -207,7 +223,7 @@ public:
 
         retranslateUi(MainMenuWidget);
 
-        stackedWidget->setCurrentIndex(2);
+        stackedWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainMenuWidget);
@@ -224,7 +240,7 @@ public:
         QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
         ___qlistwidgetitem->setText(QCoreApplication::translate("MainMenuWidget", "\350\200\203\350\257\225\345\244\247\345\216\205", nullptr));
         QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
-        ___qlistwidgetitem1->setText(QCoreApplication::translate("MainMenuWidget", "\346\210\221\347\232\204\350\200\203\350\257\225", nullptr));
+        ___qlistwidgetitem1->setText(QCoreApplication::translate("MainMenuWidget", "\346\210\221\347\232\204\347\217\255\347\272\247", nullptr));
         QListWidgetItem *___qlistwidgetitem2 = listWidget->item(2);
         ___qlistwidgetitem2->setText(QCoreApplication::translate("MainMenuWidget", "\346\210\220\347\273\251\346\237\245\350\257\242", nullptr));
         QListWidgetItem *___qlistwidgetitem3 = listWidget->item(3);
@@ -240,6 +256,8 @@ public:
         btn_joinExam->setText(QCoreApplication::translate("MainMenuWidget", "\350\277\233\345\205\245\350\200\203\350\257\225", nullptr));
         lineEdit_examCode->setPlaceholderText(QCoreApplication::translate("MainMenuWidget", "\350\257\267\350\276\223\345\205\245\350\200\203\350\257\225\347\240\201", nullptr));
         pushButton_4->setText(QCoreApplication::translate("MainMenuWidget", "page2", nullptr));
+        label_6->setText(QCoreApplication::translate("MainMenuWidget", "\346\210\221\347\232\204\347\217\255\347\272\247", nullptr));
+        btn_joinClass->setText(QCoreApplication::translate("MainMenuWidget", "\345\212\240\345\205\245\347\217\255\347\272\247", nullptr));
         pushButton_5->setText(QCoreApplication::translate("MainMenuWidget", "page3", nullptr));
         btn_history->setText(QCoreApplication::translate("MainMenuWidget", "\346\237\245\350\257\242\346\210\220\347\273\251", nullptr));
         label_3->setText(QCoreApplication::translate("MainMenuWidget", "\345\216\237\345\257\206\347\240\201\357\274\232", nullptr));

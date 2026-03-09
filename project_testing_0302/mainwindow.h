@@ -39,5 +39,13 @@ signals:    //存放各个窗口内的信号
     void signal_logoutResult(bool success, QString msg);
     void signal_registerResult(bool success, QString msg);
     void signal_joinExamResult(bool success, QString msg, QString subject, int duration);
+    void signal_createClassResult(bool success, QString msg);
+    void signal_getClassesResult(QJsonArray classes);
+    void signal_getClassesReq();
+    void signal_joinClassResult(bool success, QString msg); // 👈 告诉学生大厅加群结果
+    void signal_getMyClassesResult(QJsonArray classes);
+
+public:
+    void handleGetClassesResult(QJsonArray classes); // 👈 填表格的函数
 };
 #endif

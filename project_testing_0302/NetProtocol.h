@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
+#include <QHeaderView>
 
 
 enum NetDataType
@@ -33,7 +34,9 @@ enum NetDataType
     MSG_CREATE_CLASS = 5001,       // 老师请求创建班级
     MSG_GET_CLASSES  = 5002,       // 拉取班级列表
     MSG_GET_CLASS_STUDENTS = 5003, // 拉取某个班级的学生名单 (提前备好)
-    MSG_ADD_STUDENT  = 5004        // 老师拉学生进班 (提前备好)
+    MSG_ADD_STUDENT  = 5004,       // 老师拉学生进班 (提前备好)
+    MSG_JOIN_CLASS   = 5005,       // 学生通过邀请码加入班级
+    MSG_GET_MY_CLASSES = 5006      // 学生拉取自己已加入的班级列表
 };
 
 class NetProtocol
