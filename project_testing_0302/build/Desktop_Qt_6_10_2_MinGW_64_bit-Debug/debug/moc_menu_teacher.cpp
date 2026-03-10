@@ -42,11 +42,24 @@ template <> constexpr inline auto menu_Teacher::qt_create_metaobjectdata<qt_meta
         "signal_createClassReq",
         "",
         "className",
+        "signal_getClassStudentsReq",
+        "classCode",
         "signal_getClassesReq",
+        "signal_addQuestionReq",
+        "QJsonObject",
+        "data",
+        "signal_publishExamReq",
+        "signal_getClassExamsReq",
+        "signal_getExamScoresReq",
+        "examCode",
+        "signal_logoutReq",
         "on_btn_createClass_clicked",
-        "handleGetClassesResult",
-        "QJsonArray",
-        "classes"
+        "on_btn_searchStudents_clicked",
+        "on_btn_addQuestion_clicked",
+        "on_btn_generateExam_clicked",
+        "on_comboBox_scoreClass_currentIndexChanged",
+        "index",
+        "on_btn_searchScores_clicked"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -54,14 +67,44 @@ template <> constexpr inline auto menu_Teacher::qt_create_metaobjectdata<qt_meta
         QtMocHelpers::SignalData<void(QString)>(1, 2, QMC::AccessPublic, QMetaType::Void, {{
             { QMetaType::QString, 3 },
         }}),
-        // Signal 'signal_getClassesReq'
-        QtMocHelpers::SignalData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
-        // Slot 'on_btn_createClass_clicked'
-        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'handleGetClassesResult'
-        QtMocHelpers::SlotData<void(QJsonArray)>(6, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 7, 8 },
+        // Signal 'signal_getClassStudentsReq'
+        QtMocHelpers::SignalData<void(QString)>(4, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
         }}),
+        // Signal 'signal_getClassesReq'
+        QtMocHelpers::SignalData<void()>(6, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'signal_addQuestionReq'
+        QtMocHelpers::SignalData<void(QJsonObject)>(7, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 8, 9 },
+        }}),
+        // Signal 'signal_publishExamReq'
+        QtMocHelpers::SignalData<void(QJsonObject)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 8, 9 },
+        }}),
+        // Signal 'signal_getClassExamsReq'
+        QtMocHelpers::SignalData<void(QString)>(11, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 5 },
+        }}),
+        // Signal 'signal_getExamScoresReq'
+        QtMocHelpers::SignalData<void(QString)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::QString, 13 },
+        }}),
+        // Signal 'signal_logoutReq'
+        QtMocHelpers::SignalData<void()>(14, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_btn_createClass_clicked'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_btn_searchStudents_clicked'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_btn_addQuestion_clicked'
+        QtMocHelpers::SlotData<void()>(17, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_btn_generateExam_clicked'
+        QtMocHelpers::SlotData<void()>(18, 2, QMC::AccessPublic, QMetaType::Void),
+        // Slot 'on_comboBox_scoreClass_currentIndexChanged'
+        QtMocHelpers::SlotData<void(int)>(19, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 20 },
+        }}),
+        // Slot 'on_btn_searchScores_clicked'
+        QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -86,16 +129,38 @@ void menu_Teacher::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->signal_createClassReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 1: _t->signal_getClassesReq(); break;
-        case 2: _t->on_btn_createClass_clicked(); break;
-        case 3: _t->handleGetClassesResult((*reinterpret_cast<std::add_pointer_t<QJsonArray>>(_a[1]))); break;
+        case 1: _t->signal_getClassStudentsReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 2: _t->signal_getClassesReq(); break;
+        case 3: _t->signal_addQuestionReq((*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[1]))); break;
+        case 4: _t->signal_publishExamReq((*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[1]))); break;
+        case 5: _t->signal_getClassExamsReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 6: _t->signal_getExamScoresReq((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 7: _t->signal_logoutReq(); break;
+        case 8: _t->on_btn_createClass_clicked(); break;
+        case 9: _t->on_btn_searchStudents_clicked(); break;
+        case 10: _t->on_btn_addQuestion_clicked(); break;
+        case 11: _t->on_btn_generateExam_clicked(); break;
+        case 12: _t->on_comboBox_scoreClass_currentIndexChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 13: _t->on_btn_searchScores_clicked(); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QString )>(_a, &menu_Teacher::signal_createClassReq, 0))
             return;
-        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)()>(_a, &menu_Teacher::signal_getClassesReq, 1))
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QString )>(_a, &menu_Teacher::signal_getClassStudentsReq, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)()>(_a, &menu_Teacher::signal_getClassesReq, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QJsonObject )>(_a, &menu_Teacher::signal_addQuestionReq, 3))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QJsonObject )>(_a, &menu_Teacher::signal_publishExamReq, 4))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QString )>(_a, &menu_Teacher::signal_getClassExamsReq, 5))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)(QString )>(_a, &menu_Teacher::signal_getExamScoresReq, 6))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (menu_Teacher::*)()>(_a, &menu_Teacher::signal_logoutReq, 7))
             return;
     }
 }
@@ -119,14 +184,14 @@ int menu_Teacher::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 14;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 14)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 14;
     }
     return _id;
 }
@@ -138,8 +203,44 @@ void menu_Teacher::signal_createClassReq(QString _t1)
 }
 
 // SIGNAL 1
+void menu_Teacher::signal_getClassStudentsReq(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
+}
+
+// SIGNAL 2
 void menu_Teacher::signal_getClassesReq()
 {
-    QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
+}
+
+// SIGNAL 3
+void menu_Teacher::signal_addQuestionReq(QJsonObject _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
+}
+
+// SIGNAL 4
+void menu_Teacher::signal_publishExamReq(QJsonObject _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 4, nullptr, _t1);
+}
+
+// SIGNAL 5
+void menu_Teacher::signal_getClassExamsReq(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 5, nullptr, _t1);
+}
+
+// SIGNAL 6
+void menu_Teacher::signal_getExamScoresReq(QString _t1)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 6, nullptr, _t1);
+}
+
+// SIGNAL 7
+void menu_Teacher::signal_logoutReq()
+{
+    QMetaObject::activate(this, &staticMetaObject, 7, nullptr);
 }
 QT_WARNING_POP

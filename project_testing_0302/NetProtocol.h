@@ -23,6 +23,9 @@ enum NetDataType
     MSG_GET_QUESTION = 2002,
     MSG_SUBMIT_EXAM  = 2003,
     MSG_GET_PAPER    = 2004,
+    MSG_PUBLISH_EXAM = 2005,
+    MSG_GET_CLASS_EXAMS = 2006,
+    MSG_GET_EXAM_SCORES = 2007,
 
     MSG_GET_SCORES = 3001,
     MSG_GET_FILE  = 3002,
@@ -36,7 +39,7 @@ enum NetDataType
     MSG_GET_CLASS_STUDENTS = 5003, // 拉取某个班级的学生名单 (提前备好)
     MSG_ADD_STUDENT  = 5004,       // 老师拉学生进班 (提前备好)
     MSG_JOIN_CLASS   = 5005,       // 学生通过邀请码加入班级
-    MSG_GET_MY_CLASSES = 5006      // 学生拉取自己已加入的班级列表
+    MSG_GET_MY_CLASSES = 5006,      // 学生拉取自己已加入的班级列表
 };
 
 class NetProtocol

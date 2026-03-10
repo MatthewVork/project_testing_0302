@@ -44,6 +44,11 @@ signals:    //存放各个窗口内的信号
     void signal_getClassesReq();
     void signal_joinClassResult(bool success, QString msg); // 👈 告诉学生大厅加群结果
     void signal_getMyClassesResult(QJsonArray classes);
+    void signal_getClassStudentsResult(QJsonArray students); // 👈 告诉大厅查询结果
+    void signal_addQuestionResult(bool success, QString msg);
+    void signal_publishExamResult(bool success, QString msg, QString examCode);
+    void signal_getClassExamsResult(QJsonArray exams);
+    void signal_getExamScoresResult(QJsonArray scores);
 
 public:
     void handleGetClassesResult(QJsonArray classes); // 👈 填表格的函数

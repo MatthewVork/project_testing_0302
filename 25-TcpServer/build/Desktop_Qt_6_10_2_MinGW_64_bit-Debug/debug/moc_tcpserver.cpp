@@ -62,6 +62,11 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         "handleGetClasses",
         "handleJoinClass",
         "handleGetMyClasses",
+        "handleGetClassStudents",
+        "handleAddQuestion",
+        "handlePublishExam",
+        "handleGetClassExams",
+        "handleGetExamScores",
         "init_Database"
     };
 
@@ -126,8 +131,28 @@ template <> constexpr inline auto TcpServer::qt_create_metaobjectdata<qt_meta_ta
         QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(23, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
         }}),
+        // Slot 'handleGetClassStudents'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(24, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleAddQuestion'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(25, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handlePublishExam'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(26, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleGetClassExams'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(27, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
+        // Slot 'handleGetExamScores'
+        QtMocHelpers::SlotData<void(QTcpSocket *, const QJsonObject &)>(28, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 9, 10 }, { 0x80000000 | 11, 12 },
+        }}),
         // Slot 'init_Database'
-        QtMocHelpers::SlotData<bool()>(24, 2, QMC::AccessPrivate, QMetaType::Bool),
+        QtMocHelpers::SlotData<bool()>(29, 2, QMC::AccessPrivate, QMetaType::Bool),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -169,7 +194,12 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 15: _t->handleGetClasses((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
         case 16: _t->handleJoinClass((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
         case 17: _t->handleGetMyClasses((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
-        case 18: { bool _r = _t->init_Database();
+        case 18: _t->handleGetClassStudents((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 19: _t->handleAddQuestion((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 20: _t->handlePublishExam((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 21: _t->handleGetClassExams((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 22: _t->handleGetExamScores((*reinterpret_cast<std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QJsonObject>>(_a[2]))); break;
+        case 23: { bool _r = _t->init_Database();
             if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
@@ -261,6 +291,41 @@ void TcpServer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
             }
             break;
+        case 18:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 19:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 20:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 21:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
+        case 22:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
+            }
+            break;
         }
     }
 }
@@ -284,14 +349,14 @@ int TcpServer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 19)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 19;
+        _id -= 24;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 19)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 19;
+        _id -= 24;
     }
     return _id;
 }

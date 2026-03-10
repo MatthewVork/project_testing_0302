@@ -19,7 +19,6 @@ public:
     TcpServer(QWidget *parent = nullptr);
     ~TcpServer();
 
-
 protected slots:
     void new_client();
     void read_data();
@@ -41,6 +40,11 @@ private slots:
     void handleGetClasses(QTcpSocket* socket, const QJsonObject &data);
     void handleJoinClass(QTcpSocket* socket, const QJsonObject &data);
     void handleGetMyClasses(QTcpSocket* socket, const QJsonObject &data);
+    void handleGetClassStudents(QTcpSocket* socket, const QJsonObject &data);
+    void handleAddQuestion(QTcpSocket* socket, const QJsonObject &data);
+    void handlePublishExam(QTcpSocket* socket, const QJsonObject &data);
+    void handleGetClassExams(QTcpSocket* socket, const QJsonObject &data);
+    void handleGetExamScores(QTcpSocket *socket, const QJsonObject &data);
     bool init_Database();
 private:
     Ui::TcpServer *ui;

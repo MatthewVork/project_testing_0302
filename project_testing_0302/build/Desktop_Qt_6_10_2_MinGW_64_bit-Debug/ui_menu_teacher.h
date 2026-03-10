@@ -16,8 +16,10 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QWidget>
 
@@ -39,10 +41,39 @@ public:
     QTableWidget *tableWidget_students;
     QWidget *page2;
     QLabel *label_6;
+    QLabel *label_9;
+    QLineEdit *lineEdit_examCode;
+    QTextEdit *textEdit_question;
+    QLabel *label_10;
+    QLabel *label_11;
+    QLabel *label_12;
+    QLabel *label_13;
+    QLabel *label_14;
+    QLineEdit *lineEdit_optA;
+    QLineEdit *lineEdit_optB;
+    QLineEdit *lineEdit_optC;
+    QLineEdit *lineEdit_optD;
+    QComboBox *comboBox_answer;
+    QLabel *label_15;
+    QPushButton *btn_addQuestion;
     QWidget *page3;
     QLabel *label_7;
+    QLabel *label_16;
+    QComboBox *comboBox_examClass;
+    QLabel *label_17;
+    QLineEdit *lineEdit_subject;
+    QLabel *label_18;
+    QSpinBox *spinBox_duration;
+    QPushButton *btn_generateExam;
+    QLabel *label_examCodeDisplay;
     QWidget *page4;
     QLabel *label_8;
+    QComboBox *comboBox_scoreClass;
+    QLabel *label_19;
+    QLabel *label_20;
+    QComboBox *comboBox_scoreExam;
+    QPushButton *btn_searchScores;
+    QTableWidget *tableWidget_scores;
     QWidget *page5;
     QLabel *label_3;
     QTreeWidget *treeWidget_nav;
@@ -56,7 +87,7 @@ public:
         menu_Teacher->resize(800, 500);
         stackedWidget = new QStackedWidget(menu_Teacher);
         stackedWidget->setObjectName("stackedWidget");
-        stackedWidget->setGeometry(QRect(160, 20, 621, 451));
+        stackedWidget->setGeometry(QRect(140, 10, 641, 471));
         page0 = new QWidget();
         page0->setObjectName("page0");
         label_4 = new QLabel(page0);
@@ -91,19 +122,110 @@ public:
         page2->setObjectName("page2");
         label_6 = new QLabel(page2);
         label_6->setObjectName("label_6");
-        label_6->setGeometry(QRect(10, 10, 49, 14));
+        label_6->setGeometry(QRect(20, 20, 49, 14));
+        label_9 = new QLabel(page2);
+        label_9->setObjectName("label_9");
+        label_9->setGeometry(QRect(20, 50, 71, 16));
+        lineEdit_examCode = new QLineEdit(page2);
+        lineEdit_examCode->setObjectName("lineEdit_examCode");
+        lineEdit_examCode->setGeometry(QRect(90, 50, 113, 20));
+        textEdit_question = new QTextEdit(page2);
+        textEdit_question->setObjectName("textEdit_question");
+        textEdit_question->setGeometry(QRect(80, 100, 271, 68));
+        label_10 = new QLabel(page2);
+        label_10->setObjectName("label_10");
+        label_10->setGeometry(QRect(20, 100, 49, 14));
+        label_11 = new QLabel(page2);
+        label_11->setObjectName("label_11");
+        label_11->setGeometry(QRect(20, 180, 49, 14));
+        label_12 = new QLabel(page2);
+        label_12->setObjectName("label_12");
+        label_12->setGeometry(QRect(20, 210, 49, 14));
+        label_13 = new QLabel(page2);
+        label_13->setObjectName("label_13");
+        label_13->setGeometry(QRect(20, 240, 49, 14));
+        label_14 = new QLabel(page2);
+        label_14->setObjectName("label_14");
+        label_14->setGeometry(QRect(20, 270, 49, 14));
+        lineEdit_optA = new QLineEdit(page2);
+        lineEdit_optA->setObjectName("lineEdit_optA");
+        lineEdit_optA->setGeometry(QRect(80, 180, 271, 20));
+        lineEdit_optB = new QLineEdit(page2);
+        lineEdit_optB->setObjectName("lineEdit_optB");
+        lineEdit_optB->setGeometry(QRect(80, 210, 271, 20));
+        lineEdit_optC = new QLineEdit(page2);
+        lineEdit_optC->setObjectName("lineEdit_optC");
+        lineEdit_optC->setGeometry(QRect(80, 240, 271, 20));
+        lineEdit_optD = new QLineEdit(page2);
+        lineEdit_optD->setObjectName("lineEdit_optD");
+        lineEdit_optD->setGeometry(QRect(80, 270, 271, 20));
+        comboBox_answer = new QComboBox(page2);
+        comboBox_answer->addItem(QString());
+        comboBox_answer->addItem(QString());
+        comboBox_answer->addItem(QString());
+        comboBox_answer->addItem(QString());
+        comboBox_answer->setObjectName("comboBox_answer");
+        comboBox_answer->setGeometry(QRect(86, 310, 91, 22));
+        label_15 = new QLabel(page2);
+        label_15->setObjectName("label_15");
+        label_15->setGeometry(QRect(20, 310, 49, 14));
+        btn_addQuestion = new QPushButton(page2);
+        btn_addQuestion->setObjectName("btn_addQuestion");
+        btn_addQuestion->setGeometry(QRect(190, 310, 161, 21));
         stackedWidget->addWidget(page2);
         page3 = new QWidget();
         page3->setObjectName("page3");
         label_7 = new QLabel(page3);
         label_7->setObjectName("label_7");
         label_7->setGeometry(QRect(30, 20, 91, 16));
+        label_16 = new QLabel(page3);
+        label_16->setObjectName("label_16");
+        label_16->setGeometry(QRect(40, 50, 49, 14));
+        comboBox_examClass = new QComboBox(page3);
+        comboBox_examClass->setObjectName("comboBox_examClass");
+        comboBox_examClass->setGeometry(QRect(100, 50, 111, 22));
+        label_17 = new QLabel(page3);
+        label_17->setObjectName("label_17");
+        label_17->setGeometry(QRect(40, 80, 49, 14));
+        lineEdit_subject = new QLineEdit(page3);
+        lineEdit_subject->setObjectName("lineEdit_subject");
+        lineEdit_subject->setGeometry(QRect(100, 80, 113, 20));
+        label_18 = new QLabel(page3);
+        label_18->setObjectName("label_18");
+        label_18->setGeometry(QRect(40, 110, 49, 14));
+        spinBox_duration = new QSpinBox(page3);
+        spinBox_duration->setObjectName("spinBox_duration");
+        spinBox_duration->setGeometry(QRect(100, 110, 111, 22));
+        btn_generateExam = new QPushButton(page3);
+        btn_generateExam->setObjectName("btn_generateExam");
+        btn_generateExam->setGeometry(QRect(90, 150, 121, 21));
+        label_examCodeDisplay = new QLabel(page3);
+        label_examCodeDisplay->setObjectName("label_examCodeDisplay");
+        label_examCodeDisplay->setGeometry(QRect(100, 180, 171, 41));
         stackedWidget->addWidget(page3);
         page4 = new QWidget();
         page4->setObjectName("page4");
         label_8 = new QLabel(page4);
         label_8->setObjectName("label_8");
         label_8->setGeometry(QRect(20, 20, 71, 16));
+        comboBox_scoreClass = new QComboBox(page4);
+        comboBox_scoreClass->setObjectName("comboBox_scoreClass");
+        comboBox_scoreClass->setGeometry(QRect(66, 50, 91, 22));
+        label_19 = new QLabel(page4);
+        label_19->setObjectName("label_19");
+        label_19->setGeometry(QRect(10, 50, 49, 14));
+        label_20 = new QLabel(page4);
+        label_20->setObjectName("label_20");
+        label_20->setGeometry(QRect(10, 80, 49, 14));
+        comboBox_scoreExam = new QComboBox(page4);
+        comboBox_scoreExam->setObjectName("comboBox_scoreExam");
+        comboBox_scoreExam->setGeometry(QRect(66, 80, 91, 22));
+        btn_searchScores = new QPushButton(page4);
+        btn_searchScores->setObjectName("btn_searchScores");
+        btn_searchScores->setGeometry(QRect(20, 120, 131, 21));
+        tableWidget_scores = new QTableWidget(page4);
+        tableWidget_scores->setObjectName("tableWidget_scores");
+        tableWidget_scores->setGeometry(QRect(170, 40, 411, 351));
         stackedWidget->addWidget(page4);
         page5 = new QWidget();
         page5->setObjectName("page5");
@@ -134,7 +256,7 @@ public:
 
         retranslateUi(menu_Teacher);
 
-        stackedWidget->setCurrentIndex(1);
+        stackedWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(menu_Teacher);
@@ -148,8 +270,29 @@ public:
         label_5->setText(QCoreApplication::translate("menu_Teacher", "\345\255\246\347\224\237\345\220\215\345\215\225", nullptr));
         btn_searchStudents->setText(QCoreApplication::translate("menu_Teacher", "PushButton", nullptr));
         label_6->setText(QCoreApplication::translate("menu_Teacher", "\345\275\225\345\205\245\351\242\230\347\233\256", nullptr));
+        label_9->setText(QCoreApplication::translate("menu_Teacher", "\350\257\267\350\276\223\345\205\245\350\200\203\350\257\225\347\240\201", nullptr));
+        label_10->setText(QCoreApplication::translate("menu_Teacher", "\350\200\203\350\257\225\351\242\230\347\233\256", nullptr));
+        label_11->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\351\241\271 A:", nullptr));
+        label_12->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\351\241\271 B:", nullptr));
+        label_13->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\351\241\271 C:", nullptr));
+        label_14->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\351\241\271 D:", nullptr));
+        comboBox_answer->setItemText(0, QCoreApplication::translate("menu_Teacher", "A", nullptr));
+        comboBox_answer->setItemText(1, QCoreApplication::translate("menu_Teacher", "B", nullptr));
+        comboBox_answer->setItemText(2, QCoreApplication::translate("menu_Teacher", "C", nullptr));
+        comboBox_answer->setItemText(3, QCoreApplication::translate("menu_Teacher", "D", nullptr));
+
+        label_15->setText(QCoreApplication::translate("menu_Teacher", "\346\255\243\347\241\256\347\255\224\346\241\210:", nullptr));
+        btn_addQuestion->setText(QCoreApplication::translate("menu_Teacher", "\344\277\235\345\255\230\351\242\230\347\233\256\345\271\266\347\273\247\347\273\255\345\275\225\345\205\245", nullptr));
         label_7->setText(QCoreApplication::translate("menu_Teacher", "\347\273\204\345\215\267\344\270\216\345\217\221\345\270\203", nullptr));
+        label_16->setText(QCoreApplication::translate("menu_Teacher", "\345\217\221\345\270\203\350\214\203\345\233\264", nullptr));
+        label_17->setText(QCoreApplication::translate("menu_Teacher", "\350\200\203\350\257\225\347\247\221\347\233\256", nullptr));
+        label_18->setText(QCoreApplication::translate("menu_Teacher", "\350\200\203\350\257\225\346\227\266\351\227\264", nullptr));
+        btn_generateExam->setText(QCoreApplication::translate("menu_Teacher", "\347\224\237\346\210\220\344\270\223\345\261\236\350\200\203\350\257\225\347\240\201", nullptr));
+        label_examCodeDisplay->setText(QCoreApplication::translate("menu_Teacher", "\347\255\211\345\276\205\347\224\237\346\210\220...", nullptr));
         label_8->setText(QCoreApplication::translate("menu_Teacher", "\347\217\255\347\272\247\346\210\220\347\273\251\346\200\273\346\246\234", nullptr));
+        label_19->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\346\213\251\347\217\255\347\272\247", nullptr));
+        label_20->setText(QCoreApplication::translate("menu_Teacher", "\351\200\211\346\213\251\350\200\203\350\257\225", nullptr));
+        btn_searchScores->setText(QCoreApplication::translate("menu_Teacher", "\346\237\245\350\257\242\350\257\245\345\234\272\350\200\203\350\257\225\346\210\220\347\273\251", nullptr));
         label_3->setText(QCoreApplication::translate("menu_Teacher", "\344\277\256\346\224\271\345\257\206\347\240\201", nullptr));
         QTreeWidgetItem *___qtreewidgetitem = treeWidget_nav->headerItem();
         ___qtreewidgetitem->setText(0, QCoreApplication::translate("menu_Teacher", "\347\256\241\347\220\206\347\263\273\347\273\237", nullptr));

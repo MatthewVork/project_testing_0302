@@ -123,7 +123,7 @@ void TcpServer::read_data() {
             case MSG_REGISTER: handleRegister(msocket, rootObj["data"].toObject()); break;
             case MSG_JOIN_EXAM: handleJoinExam(msocket, rootObj["data"].toObject()); break;
             case MSG_LOGOUT: handleLogout(msocket, rootObj["data"].toObject()); break;
-            case MSG_ADD_QUESTION: break;
+            case MSG_ADD_QUESTION: handleAddQuestion(msocket, rootObj["data"].toObject()); break; // 2001
             case MSG_GET_QUESTION: break;
             case MSG_SUBMIT_EXAM: handleSubmitExam(msocket, rootObj["data"].toObject()); break;
             case MSG_GET_PAPER: handleGetPaper(msocket, rootObj["data"].toObject()); break;
@@ -133,6 +133,10 @@ void TcpServer::read_data() {
             case MSG_GET_CLASSES: handleGetClasses(msocket, rootObj["data"].toObject()); break;
             case MSG_JOIN_CLASS: handleJoinClass(msocket, rootObj["data"].toObject()); break; // 5005 专属接线员
             case MSG_GET_MY_CLASSES: handleGetMyClasses(msocket, rootObj["data"].toObject()); break; // 5006
+            case MSG_GET_CLASS_STUDENTS: handleGetClassStudents(msocket, rootObj["data"].toObject()); break; // 5003
+            case MSG_PUBLISH_EXAM: handlePublishExam(msocket, rootObj["data"].toObject()); break; // 2002
+            case MSG_GET_CLASS_EXAMS: handleGetClassExams(msocket, rootObj["data"].toObject()); break; // 2003
+            case MSG_GET_EXAM_SCORES: handleGetExamScores(msocket, rootObj["data"].toObject()); break; // 2004
         }
     }
 }
@@ -196,17 +200,20 @@ bool TcpServer::init_Database() {
     }
 
     // ==========================================
-    // 第二部分：初始化考试表 (Exams) - 新增！
+    // 第二部分：初始化考试表 (Exams) - 升级版！
     // ==========================================
     QString sqlExam = "CREATE TABLE IF NOT EXISTS exams ("
-                      "exam_code TEXT PRIMARY KEY, " // 考试码作为主键（例如 "888888"）
-                      "subject TEXT NOT NULL, "      // 科目名称
-                      "duration INTEGER)";           // 考试时长（分钟）
+                      "exam_code TEXT PRIMARY KEY, "
+                      "subject TEXT NOT NULL, "
+                      "duration INTEGER, "
+                      "class_code TEXT)"; // 👈 新增这一列！如果为空就是全网公开，如果有值就是班级专属！
 
     if(!query.exec(sqlExam)) {
         qDebug() << "考试表建表失败，原因：" << query.lastError().text();
         return false;
-    } else {
+    }
+    // (下面那个插入 888888 的测试数据代码保留即可)
+    else {
         // 插入一条测试数据，供客户端大厅测试输入使用
         // 使用 INSERT OR IGNORE 防止每次重启服务器都重复插入报错
         query.exec("INSERT OR IGNORE INTO exams (exam_code, subject, duration) "
@@ -384,27 +391,51 @@ void TcpServer::handleJoinExam(QTcpSocket* socket, const QJsonObject &data) {
     QJsonObject resData;
     QSqlQuery query;
 
-    // 🌟 第一道防线：检查是否已经考过这门课了
+    // 🌟 第一道防线：检查是否已经考过
     query.prepare("SELECT id FROM scores WHERE username = :user AND exam_code = :code");
     query.bindValue(":user", user);
     query.bindValue(":code", code);
     query.exec();
 
     if (query.next()) {
-        // 查到了记录，说明他考过了！直接拦截！
         resData["success"] = false;
         resData["message"] = "您已参加过该科目的考试，系统不允许重复作答！";
     } else {
-        // 🌟 第二道防线：没考过，再去查查有没有这个考试码
-        query.prepare("SELECT subject, duration FROM exams WHERE exam_code = :code");
+        // 🌟 第二道防线：检查考试码是否存在，并拿出 class_code
+        query.prepare("SELECT subject, duration, class_code FROM exams WHERE exam_code = :code");
         query.bindValue(":code", code);
         query.exec();
 
         if (query.next()) {
-            resData["success"] = true;
-            resData["subject"] = query.value(0).toString();
-            resData["duration"] = query.value(1).toInt();
-            resData["message"] = "考试码验证成功！";
+            QString subject = query.value(0).toString();
+            int duration = query.value(1).toInt();
+            QString targetClassCode = query.value(2).toString(); // 拿到绑定的班级码
+
+            // 🌟 第三道防线（终极防作弊）：如果是班级专属考试，查验学生身份！
+            bool canJoin = true;
+            if (!targetClassCode.isEmpty()) {
+                // 去分班表里查这个学生在不在这个班
+                QSqlQuery checkClassQuery;
+                checkClassQuery.prepare("SELECT 1 FROM class_students WHERE class_code = :classCode AND username = :user");
+                checkClassQuery.bindValue(":classCode", targetClassCode);
+                checkClassQuery.bindValue(":user", user);
+                checkClassQuery.exec();
+
+                if (!checkClassQuery.next()) {
+                    canJoin = false; // 查无此人，直接拦截！
+                }
+            }
+
+            if (canJoin) {
+                resData["success"] = true;
+                resData["subject"] = subject;
+                resData["duration"] = duration;
+                resData["message"] = "身份验证通过！即将进入考场...";
+            } else {
+                resData["success"] = false;
+                resData["message"] = "抱歉拦截：这是一场班级专属考试，您不在该班级的名单中！";
+            }
+
         } else {
             resData["success"] = false;
             resData["message"] = "考试码不存在，请重新输入！";
@@ -709,5 +740,168 @@ void TcpServer::handleGetMyClasses(QTcpSocket* socket, const QJsonObject &data) 
     root["type"] = MSG_GET_MY_CLASSES; // 5006
     root["data"] = resData;
 
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleGetClassStudents(QTcpSocket* socket, const QJsonObject &data) {
+    // 拿到老师发来的班级码
+    QString classCode = data["class_code"].toString();
+    QJsonArray studentArray;
+    QSqlQuery query;
+
+    // 去分班表 (class_students) 里，把拥有这个码的学生全揪出来
+    query.prepare("SELECT username FROM class_students WHERE class_code = :code");
+    query.bindValue(":code", classCode);
+    query.exec();
+
+    // 塞进数组
+    while(query.next()) {
+        QJsonObject obj;
+        obj["username"] = query.value(0).toString();
+        studentArray.append(obj);
+    }
+
+    // 打包发回给客户端
+    QJsonObject resData;
+    resData["students"] = studentArray;
+
+    QJsonObject root;
+    root["type"] = MSG_GET_CLASS_STUDENTS; // 5003
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleAddQuestion(QTcpSocket* socket, const QJsonObject &data) {
+    QString code = data["exam_code"].toString(); // 提取出考试码
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO questions (exam_code, question_text, option_A, option_B, option_C, option_D, correct_answer) "
+                  "VALUES (:code, :question, :A, :B, :C, :D, :answer)");
+    query.bindValue(":code", code);
+    query.bindValue(":question", data["question_text"].toString());
+    query.bindValue(":A", data["option_A"].toString());
+    query.bindValue(":B", data["option_B"].toString());
+    query.bindValue(":C", data["option_C"].toString());
+    query.bindValue(":D", data["option_D"].toString());
+    query.bindValue(":answer", data["correct_answer"].toString());
+
+    bool success = query.exec();
+    QString msg;
+
+    if (success) {
+        // 👇 核心修复：去数据库查一下，这个考试码底下现在一共存了多少道题？
+        QSqlQuery countQuery;
+        countQuery.prepare("SELECT COUNT(*) FROM questions WHERE exam_code = :code");
+        countQuery.bindValue(":code", code);
+        countQuery.exec();
+
+        int totalQuestions = 1; // 默认值
+        if (countQuery.next()) {
+            totalQuestions = countQuery.value(0).toInt(); // 拿到真实的总题数
+        }
+
+        // 动态拼接提示语
+        msg = QString("第 %1 题录入成功！请继续录入下一题。").arg(totalQuestions);
+    } else {
+        msg = "保存失败，数据库异常！";
+    }
+
+    QJsonObject resData;
+    resData["success"] = success;
+    resData["message"] = msg;
+
+    QJsonObject root;
+    root["type"] = MSG_ADD_QUESTION; // 2001
+    root["data"] = resData;
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handlePublishExam(QTcpSocket* socket, const QJsonObject &data) {
+    QString subject = data["subject"].toString();
+    int duration = data["duration"].toInt();
+    QString classCode = data["class_code"].toString(); // 如果是全网公开，这里就是空字符串 ""
+
+    // 1. 随机生成 6 位考试码 (A-Z, 0-9)
+    QString examCode;
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    for(int i = 0; i < 6; ++i) {
+        int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
+        examCode.append(possibleCharacters.at(index));
+    }
+
+    // 2. 存入 exams 表
+    QSqlQuery query;
+    query.prepare("INSERT INTO exams (exam_code, subject, duration, class_code) VALUES (:examCode, :subject, :duration, :classCode)");
+    query.bindValue(":examCode", examCode);
+    query.bindValue(":subject", subject);
+    query.bindValue(":duration", duration);
+    query.bindValue(":classCode", classCode);
+
+    bool success = query.exec();
+    QString msg = success ? "生成成功！" : "生成失败，数据库异常！";
+
+    // 3. 打包发回给客户端
+    QJsonObject resData;
+    resData["success"] = success;
+    resData["message"] = msg;
+    if (success) resData["exam_code"] = examCode; // 把生成的码发回去显示
+
+    QJsonObject root;
+    root["type"] = MSG_PUBLISH_EXAM; // 2002
+    root["data"] = resData;
+
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleGetClassExams(QTcpSocket* socket, const QJsonObject &data) {
+    QString classCode = data["class_code"].toString();
+    QJsonArray examArray;
+    QSqlQuery query;
+
+    // 查出这个班级（或全网公开）的所有历史考试
+    query.prepare("SELECT exam_code, subject FROM exams WHERE class_code = :code");
+    query.bindValue(":code", classCode);
+    query.exec();
+
+    while(query.next()) {
+        QJsonObject obj;
+        obj["exam_code"] = query.value(0).toString();
+        obj["subject"] = query.value(1).toString();
+        examArray.append(obj);
+    }
+
+    QJsonObject resData;
+    resData["exams"] = examArray;
+
+    QJsonObject root;
+    root["type"] = MSG_GET_CLASS_EXAMS; // 2003
+    root["data"] = resData;
+    NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+}
+
+void TcpServer::handleGetExamScores(QTcpSocket* socket, const QJsonObject &data) {
+    QString examCode = data["exam_code"].toString();
+    QJsonArray scoreArray;
+    QSqlQuery query;
+
+    // 🌟 终极 SQL：查出这门考试的所有成绩，并且用 DESC 让分数从高到低自动排好名次！
+    query.prepare("SELECT username, score FROM scores WHERE exam_code = :code ORDER BY score DESC");
+    query.bindValue(":code", examCode);
+    query.exec();
+
+    while(query.next()) {
+        QJsonObject obj;
+        obj["username"] = query.value(0).toString();
+        obj["score"] = query.value(1).toInt();
+        scoreArray.append(obj);
+    }
+
+    QJsonObject resData;
+    resData["scores"] = scoreArray;
+
+    QJsonObject root;
+    root["type"] = MSG_GET_EXAM_SCORES; // 2004
+    root["data"] = resData;
     NetProtocol::sendSecureData(socket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
 }

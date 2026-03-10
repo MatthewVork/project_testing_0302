@@ -204,6 +204,72 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 把查到的结果传给学生大厅填表
     connect(this, &MainWindow::signal_getMyClassesResult, menuPage, &MainMenuWidget::handleGetMyClassesResult);
+
+    // 监听老师查名单的请求
+    connect(menuteach, &menu_Teacher::signal_getClassStudentsReq, this, [this](QString code){
+        QJsonObject reqData;
+        reqData["class_code"] = code;
+
+        QJsonObject root;
+        root["type"] = MSG_GET_CLASS_STUDENTS; // 5003
+        root["data"] = reqData;
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 把查到的学生名单传给教师大厅填表
+    connect(this, &MainWindow::signal_getClassStudentsResult, menuteach, &menu_Teacher::handleGetClassStudentsResult);
+
+    connect(menuteach, &menu_Teacher::signal_addQuestionReq, this, [this](QJsonObject data){
+        QJsonObject root;
+        root["type"] = MSG_ADD_QUESTION; // 2001
+        root["data"] = data;
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    connect(this, &MainWindow::signal_addQuestionResult, menuteach, &menu_Teacher::handleAddQuestionResult);
+
+    // 监听大厅的发卷请求
+    connect(menuteach, &menu_Teacher::signal_publishExamReq, this, [this](QJsonObject data){
+        QJsonObject root;
+        root["type"] = MSG_PUBLISH_EXAM; // 2002
+        root["data"] = data;
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    // 把生成的码交给大厅去显示
+    connect(this, &MainWindow::signal_publishExamResult, menuteach, &menu_Teacher::handlePublishExamResult);
+
+    connect(menuteach, &menu_Teacher::signal_getClassExamsReq, this, [this](QString code){
+        QJsonObject reqData;
+        reqData["class_code"] = code;
+        QJsonObject root;
+        root["type"] = MSG_GET_CLASS_EXAMS; // 2003
+        root["data"] = reqData;
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    connect(this, &MainWindow::signal_getClassExamsResult, menuteach, &menu_Teacher::handleGetClassExamsResult);
+
+    connect(menuteach, &menu_Teacher::signal_getExamScoresReq, this, [this](QString examCode){
+        QJsonObject reqData;
+        reqData["exam_code"] = examCode;
+        QJsonObject root;
+        root["type"] = MSG_GET_EXAM_SCORES; // 2004
+        root["data"] = reqData;
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
+    });
+
+    connect(this, &MainWindow::signal_getExamScoresResult, menuteach, &menu_Teacher::handleGetExamScoresResult);
+
+    // 监听教师大厅传来的“退出”信号
+    connect(menuteach, &menu_Teacher::signal_logoutReq, this, [this](){
+        // 1. 极其干脆地把界面切回第 0 页（登录界面）
+        ui->stackedWidget->setCurrentIndex(0);
+
+        // 2. 顺手把登录密码框给清空，保护老师隐私！
+        // (💡 注意：把 lineEdit_password 换成你登录页实际的密码框名字)
+        //ui->lineEdit_password->clear();
+    });
 }
 
 MainWindow::~MainWindow() {
@@ -277,6 +343,26 @@ void MainWindow::on_clientReadData() {
 
     case MSG_GET_MY_CLASSES: // 5006
         emit signal_getMyClassesResult(data["classes"].toArray());
+        break;
+
+    case MSG_GET_CLASS_STUDENTS: // 5003
+        emit signal_getClassStudentsResult(data["students"].toArray());
+        break;
+
+    case MSG_ADD_QUESTION: // 2001
+        emit signal_addQuestionResult(success, msg);
+        break;
+
+    case MSG_PUBLISH_EXAM: // 2002
+        emit signal_publishExamResult(success, msg, data["exam_code"].toString());
+        break;
+
+    case MSG_GET_CLASS_EXAMS: // 2003
+        emit signal_getClassExamsResult(data["exams"].toArray());
+        break;
+
+    case MSG_GET_EXAM_SCORES: // 2004
+        emit signal_getExamScoresResult(data["scores"].toArray());
         break;
 
     default:
