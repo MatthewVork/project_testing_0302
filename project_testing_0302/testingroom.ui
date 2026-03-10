@@ -14,37 +14,99 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">/* ================= 1. 全局背景与字体 ================= */
+QWidget {
+    background-color: #F3F4F6;
+    color: #333333;
+    font-family: &quot;Microsoft YaHei&quot;;
+}
+
+/* ================= 2. 极其丝滑的扁平化按钮 ================= */
+QPushButton {
+    background-color: #0078D4; 
+    color: white;
+    border: none;
+    border-radius: 6px; 
+    padding: 8px 16px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #106EBE; 
+}
+QPushButton:pressed {
+    background-color: #005A9E; 
+}
+QPushButton:disabled {
+    background-color: #CCCCCC; 
+    color: #888888;
+}
+
+/* ================= 3. 输入框的现代感 ================= */
+QLineEdit, QTextEdit {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 6px 10px;
+    background-color: #FFFFFF;
+    selection-background-color: #0078D4;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border: 2px solid #0078D4; 
+    background-color: #FAFCFF;
+}
+
+/* ================= 4. 左侧高级导航栏 ================= */
+QListWidget, QTreeWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    outline: none; 
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 2px 4px; 
+}
+QListWidget::item:hover, QTreeWidget::item:hover {
+    background-color: #F3F4F6; 
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #0078D4; 
+    color: white;
+}
+
+/* ================= 5. 表格极其干净的视觉 ================= */
+QTableWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    gridline-color: #F3F4F6; 
+    selection-background-color: #E1F0FF; 
+    selection-color: #000000;
+}
+QHeaderView::section {
+    background-color: #F9FAFB;
+    border: none;
+    border-bottom: 2px solid #0078D4; 
+    padding: 8px;
+    font-weight: bold;
+    color: #4B5563;
+}
+
+/* ================= 6. 下拉框与标签 ================= */
+QComboBox {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 4px 8px;
+    background-color: #FFFFFF;
+}
+QComboBox:hover {
+    border: 1px solid #0078D4;
+}
+QLabel {
+    background-color: transparent; 
+    color: #374151;
+}</string>
   </property>
-  <widget class="QFrame" name="frame_2">
-   <property name="geometry">
-    <rect>
-     <x>690</x>
-     <y>20</y>
-     <width>101</width>
-     <height>191</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
-   </property>
-   <widget class="QPushButton" name="pushButton_26">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>130</y>
-      <width>101</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-  </widget>
   <widget class="QTextBrowser" name="textBrowser_question">
    <property name="geometry">
     <rect>
@@ -107,7 +169,7 @@
     <rect>
      <x>220</x>
      <y>210</y>
-     <width>85</width>
+     <width>431</width>
      <height>18</height>
     </rect>
    </property>
@@ -123,7 +185,7 @@
     <rect>
      <x>220</x>
      <y>250</y>
-     <width>85</width>
+     <width>431</width>
      <height>18</height>
     </rect>
    </property>
@@ -139,7 +201,7 @@
     <rect>
      <x>220</x>
      <y>290</y>
-     <width>85</width>
+     <width>431</width>
      <height>18</height>
     </rect>
    </property>
@@ -155,7 +217,7 @@
     <rect>
      <x>220</x>
      <y>330</y>
-     <width>85</width>
+     <width>431</width>
      <height>18</height>
     </rect>
    </property>
@@ -170,13 +232,13 @@
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>240</y>
+     <y>430</y>
      <width>49</width>
      <height>14</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>10:00</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
@@ -211,6 +273,19 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>390</y>
+     <width>53</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>剩余时间</string>
+   </property>
   </widget>
  </widget>
  <resources/>

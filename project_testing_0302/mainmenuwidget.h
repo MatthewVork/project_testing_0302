@@ -2,7 +2,7 @@
 #define MAINMENUWIDGET_H
 
 #include <QWidget>
-
+#include <QFont>
 namespace Ui {
 class MainMenuWidget;
 }
@@ -19,6 +19,7 @@ public:
     void handleResult(bool success, QString msg);
     void handleJoinClassResult(bool success, QString msg);
     void handleGetMyClassesResult(QJsonArray classes);
+
     ~MainMenuWidget();
 
 
@@ -34,7 +35,7 @@ signals:
     void signal_callbackLoginMenu();
     void signal_LogoutData();
     void signal_joinExamReq(QString code);
-    void signal_gotoTestPage();
+    void signal_gotoTestPage(QString code);
     void signal_getScoresReq();
     void signal_changePwdReq(QString oldPwd, QString newPwd);
     void signal_changeSuccess();

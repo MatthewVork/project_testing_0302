@@ -301,3 +301,20 @@ void menu_Teacher::handleGetExamScoresResult(QJsonArray scores) {
         ui->tableWidget_scores->setItem(row, 2, new QTableWidgetItem(submitTime));
     }
 }
+
+void menu_Teacher::on_btn_finishExam_clicked()
+{
+    // 1. 极其无情地把顶部的“考试码”输入框清空！
+    ui->lineEdit_examCode->clear();
+
+    // 2. 弹窗宣告封卷成功，并引导老师去拿新码
+    QMessageBox::information(this, "封卷成功",
+                             "本套试卷已成功锁定！\n\n如需出新卷子，请前往左侧【组卷与发布】生成全新的考试码。");
+}
+
+void menu_Teacher::updateTimeLabel(QString time) {
+    // 基础防呆：防止 ui 还没加载完就收到时间导致崩溃
+    if (ui->label_time) {
+        ui->label_time->setText(time);
+    }
+}

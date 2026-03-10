@@ -20,6 +20,7 @@ public:
     void handlePublishExamResult(bool success, QString msg, QString examCode); // 👈 接收结果，准备亮牌
     void handleGetClassExamsResult(QJsonArray exams);
     void handleGetExamScoresResult(QJsonArray scores);
+    void updateTimeLabel(QString time);
     ~menu_Teacher();
 
 signals:
@@ -34,6 +35,8 @@ signals:
 
 private slots:
     void on_btn_createClass_clicked();
+
+    void on_btn_finishExam_clicked();
 
 private:
     Ui::menu_Teacher *ui;

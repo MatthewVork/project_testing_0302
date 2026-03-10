@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 1. 创建套接字对象
     tcpSocket = new QTcpSocket(this);
-    tcpSocket->connectToHost("192.168.172.25", 9999);
+    tcpSocket->connectToHost("127.0.0.1", 9999);
 
     connect(tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError) {
         qDebug() << "连接出错：" << tcpSocket->errorString();
@@ -67,9 +67,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentIndex(0);
     });
 
-    connect(menuPage, &MainMenuWidget::signal_gotoTestPage, this, [this](){
+    connect(menuPage, &MainMenuWidget::signal_gotoTestPage, this, [this](QString code){
         ui->stackedWidget->setCurrentIndex(3);
-        testPage->requestPaper("888888");
+        testPage->requestPaper(code);
     });
 
     connect(testPage, &TestingRoom::signal_examFinished, this, [this](){
@@ -266,9 +266,14 @@ MainWindow::MainWindow(QWidget *parent)
         // 1. 极其干脆地把界面切回第 0 页（登录界面）
         ui->stackedWidget->setCurrentIndex(0);
 
-        // 2. 顺手把登录密码框给清空，保护老师隐私！
-        // (💡 注意：把 lineEdit_password 换成你登录页实际的密码框名字)
-        //ui->lineEdit_password->clear();
+        // 2. 顺手把登录密码框给清空，保护老师隐私！(这句你之前注释掉了，其实可以加上，换成真实的密码框名字)
+        // ui->lineEdit_password->clear();
+
+        // 3. 👇 核心修复：给服务器发一个极其正式的注销包，让服务器把 is_online 清零！
+        QJsonObject root;
+        root["type"] = MSG_LOGOUT; // 使用 1003 注销暗号
+        root["data"] = QJsonObject(); // 空包就行，服务器凭 socket 就能认出你是谁
+        NetProtocol::sendSecureData(this->tcpSocket, NetProtocol::encrypt(QJsonDocument(root).toJson(QJsonDocument::Compact)));
     });
 }
 

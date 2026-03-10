@@ -7,6 +7,7 @@ MainMenuWidget::MainMenuWidget(QWidget *parent)
     , ui(new Ui::MainMenuWidget)
 {
     ui->setupUi(this);
+
     connect(ui->listWidget, &QListWidget::currentRowChanged,
             ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
@@ -38,8 +39,14 @@ void MainMenuWidget::updateUserName(QString name)
 
 void MainMenuWidget::on_logoutBtn_clicked()
 {
-    emit signal_LogoutData();
-    emit signal_callbackLoginMenu();
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "退出确认", "确定要注销并退出当前账号吗？",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        emit signal_LogoutData();         // 发给服务器：我下线了，清空 is_online
+        emit signal_callbackLoginMenu();  // 发给大管家：帮我把界面切回登录页
+    }
 }
 
 void MainMenuWidget::updateTimeLabel(QString time) {
@@ -66,14 +73,14 @@ void MainMenuWidget::on_btn_joinExam_clicked()
 
 void MainMenuWidget::handleJoinExamResult(bool success, QString msg, QString subject, int duration) {
     if (success) {
-        // 验证成功！弹窗提示
         QMessageBox::information(this, "进入考场",
                                  msg + "\n科目：" + subject + "\n考试时长：" + QString::number(duration) + "分钟");
 
-        // 以后就在这里发射一个信号给 MainWindow，让它把 StackedWidget 切到第 3 页（答题页）
-        emit signal_gotoTestPage();
+        // 👇 核心修复：把刚才界面上输入的真实考试码，塞进信号里发给大管家！
+        QString realCode = ui->lineEdit_examCode->text().trimmed();
+        emit signal_gotoTestPage(realCode);
+
     } else {
-        // 验证失败（比如输错了考试码）
         QMessageBox::warning(this, "进场失败", msg);
     }
 }

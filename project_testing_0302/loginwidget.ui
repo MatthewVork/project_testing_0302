@@ -14,84 +14,97 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* --- 1. 全局基础设定 --- */
+   <string notr="true">/* ================= 1. 全局背景与字体 ================= */
 QWidget {
-    font-family: &quot;SF Pro Display&quot;, &quot;Helvetica Neue&quot;, &quot;Segoe UI&quot;, &quot;Microsoft YaHei&quot;;
-    color: #1d1d1f; /* 苹果标准深灰色文本 */
-    outline: none;  /* 去掉点击时的虚线框 */
+    background-color: #F3F4F6;
+    color: #333333;
+    font-family: &quot;Microsoft YaHei&quot;;
 }
 
-/* --- 2. 通用容器 (如你的 loginCard) --- */
-/* 只要是 QFrame 都会自动变成这种半透明磨砂质感 */
-QFrame {
-    background-color: rgba(255, 255, 255, 0.7); 
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 18px;
-}
-
-/* --- 3. 通用输入框 (QLineEdit, QTextEdit) --- */
-QLineEdit, QTextEdit {
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-/* 输入框聚焦效果：标志性的蓝色光晕 */
-QLineEdit:focus, QTextEdit:focus {
-    border: 2px solid #007AFF;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-/* --- 4. 通用按钮 (QPushButton) --- */
+/* ================= 2. 极其丝滑的扁平化按钮 ================= */
 QPushButton {
-    background-color: #007AFF; /* 苹果蓝 */
+    background-color: #0078D4; 
     color: white;
     border: none;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-weight: 600;
+    border-radius: 6px; 
+    padding: 8px 16px;
+    font-weight: bold;
 }
-
-/* 鼠标悬停：颜色略微加深 */
 QPushButton:hover {
-    background-color: #0063CC;
+    background-color: #106EBE; 
 }
-
-/* 按下：明显的反馈感 */
 QPushButton:pressed {
-    background-color: #0051A8;
+    background-color: #005A9E; 
 }
-
-/* 禁用状态：变灰 */
 QPushButton:disabled {
-    background-color: #d2d2d7;
-    color: #86868b;
+    background-color: #CCCCCC; 
+    color: #888888;
 }
 
-/* --- 5. 标签与文本 (QLabel) --- */
-QLabel {
-    background-color: transparent;
-    font-size: 14px;
+/* ================= 3. 输入框的现代感 ================= */
+QLineEdit, QTextEdit {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 6px 10px;
+    background-color: #FFFFFF;
+    selection-background-color: #0078D4;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border: 2px solid #0078D4; 
+    background-color: #FAFCFF;
 }
 
-/* --- 6. 滚动条美化 (QScrollBar) --- */
-/* 让滚动条像 iOS 一样简洁 */
-QScrollBar:vertical {
+/* ================= 4. 左侧高级导航栏 ================= */
+QListWidget, QTreeWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    outline: none; 
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 2px 4px; 
+}
+QListWidget::item:hover, QTreeWidget::item:hover {
+    background-color: #F3F4F6; 
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #0078D4; 
+    color: white;
+}
+
+/* ================= 5. 表格极其干净的视觉 ================= */
+QTableWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    gridline-color: #F3F4F6; 
+    selection-background-color: #E1F0FF; 
+    selection-color: #000000;
+}
+QHeaderView::section {
+    background-color: #F9FAFB;
     border: none;
-    background: rgba(0, 0, 0, 0.05);
-    width: 8px;
-    border-radius: 4px;
+    border-bottom: 2px solid #0078D4; 
+    padding: 8px;
+    font-weight: bold;
+    color: #4B5563;
 }
 
-QScrollBar::handle:vertical {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+/* ================= 6. 下拉框与标签 ================= */
+QComboBox {
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 4px 8px;
+    background-color: #FFFFFF;
 }
-
-QScrollBar::handle:vertical:hover {
-    background: rgba(0, 0, 0, 0.3);
+QComboBox:hover {
+    border: 1px solid #0078D4;
+}
+QLabel {
+    background-color: transparent; 
+    color: #374151;
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
