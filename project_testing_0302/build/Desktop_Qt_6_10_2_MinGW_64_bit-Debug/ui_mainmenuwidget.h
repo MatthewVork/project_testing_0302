@@ -223,7 +223,7 @@ public:
         pushButton_5->setGeometry(QRect(10, 370, 68, 21));
         btn_history = new QPushButton(page4);
         btn_history->setObjectName("btn_history");
-        btn_history->setGeometry(QRect(0, 0, 68, 21));
+        btn_history->setGeometry(QRect(0, 0, 91, 31));
         tableWidget_scores = new QTableWidget(page4);
         tableWidget_scores->setObjectName("tableWidget_scores");
         tableWidget_scores->setGeometry(QRect(5, 31, 541, 321));
@@ -329,7 +329,7 @@ public:
 
         retranslateUi(MainMenuWidget);
 
-        stackedWidget->setCurrentIndex(3);
+        stackedWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainMenuWidget);

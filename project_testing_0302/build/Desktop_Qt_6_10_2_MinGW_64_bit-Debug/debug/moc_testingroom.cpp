@@ -43,11 +43,12 @@ template <> constexpr inline auto TestingRoom::qt_create_metaobjectdata<qt_meta_
         "",
         "data",
         "signal_examFinished",
-        "on_timer_timeout",
         "on_btn_submit_clicked",
         "on_btn_next_clicked",
         "on_btn_prev_clicked",
-        "on_option_clicked"
+        "on_answerBtn_clicked",
+        "on_option_clicked",
+        "on_timer_timeout"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -57,16 +58,18 @@ template <> constexpr inline auto TestingRoom::qt_create_metaobjectdata<qt_meta_
         }}),
         // Signal 'signal_examFinished'
         QtMocHelpers::SignalData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
-        // Slot 'on_timer_timeout'
-        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_btn_submit_clicked'
-        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_btn_next_clicked'
-        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_btn_prev_clicked'
+        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_answerBtn_clicked'
         QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_option_clicked'
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_timer_timeout'
+        QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -92,11 +95,12 @@ void TestingRoom::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         switch (_id) {
         case 0: _t->signal_sendData((*reinterpret_cast<std::add_pointer_t<QByteArray>>(_a[1]))); break;
         case 1: _t->signal_examFinished(); break;
-        case 2: _t->on_timer_timeout(); break;
-        case 3: _t->on_btn_submit_clicked(); break;
-        case 4: _t->on_btn_next_clicked(); break;
-        case 5: _t->on_btn_prev_clicked(); break;
+        case 2: _t->on_btn_submit_clicked(); break;
+        case 3: _t->on_btn_next_clicked(); break;
+        case 4: _t->on_btn_prev_clicked(); break;
+        case 5: _t->on_answerBtn_clicked(); break;
         case 6: _t->on_option_clicked(); break;
+        case 7: _t->on_timer_timeout(); break;
         default: ;
         }
     }
@@ -127,14 +131,14 @@ int TestingRoom::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

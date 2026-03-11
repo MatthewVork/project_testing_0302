@@ -2,6 +2,8 @@
 #define LOGINWIDGET_H
 
 #include <QWidget>
+#include <QString>
+#include <QByteArray>
 
 namespace Ui {
 class LoginWidget;
@@ -16,15 +18,20 @@ public:
     ~LoginWidget();
 
 public slots:
+    // ================= 供大管家调用的外部接口 =================
     void handleLoginResult(bool success, QString msg, int role);
-    void on_loginBtn_clicked();
-    void on_registerBtn_clicked();
 
 signals:
-    void signal_showRegister();
-    void signal_LoginSuccess(int role);
-    void SecureData(const QByteArray &data);
-    void signal_RecordUsername(QString data);
+    // ================= 向外发射的信号 =================
+    void signal_showRegister();                  // 告诉大管家：切到注册页
+    void signal_LoginSuccess(int role);          // 告诉大管家：登录成功，准备进大厅 (附带身份)
+    void SecureData(const QByteArray &data);     // 将打包好的数据丢给大管家发送
+    void signal_RecordUsername(QString data);    // 告诉大厅：把左上角的用户名改了
+
+private slots:
+    // ================= UI 交互槽函数 =================
+    void on_loginBtn_clicked();                  // 点击登录
+    void on_registerBtn_clicked();               // 点击注册
 
 private:
     Ui::LoginWidget *ui;

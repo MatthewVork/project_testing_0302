@@ -3,7 +3,13 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QTimer>
+#include <QList>
+#include <QMap>
+#include <QJsonObject>
+#include <QByteArray>
 
+// 极其纯粹的题目数据结构
 struct Question {
     QString questionText;
     QString optA, optB, optC, optD;
@@ -20,46 +26,48 @@ class TestingRoom : public QWidget
 
 public:
     explicit TestingRoom(QWidget *parent = nullptr);
-
     ~TestingRoom();
 
-    void handlePaperResult(const QJsonObject &data);
-    void requestPaper(QString examCode);
+    // ================= 供大管家调用的外部接口 =================
+    void requestPaper(QString examCode);             // 申请获取卷子
+    void handlePaperResult(const QJsonObject &data); // 接收服务器下发的卷子
+
+signals:
+    // ================= 向外发射的信号 =================
+    void signal_sendData(const QByteArray &data);    // 把打包好的数据丢给大管家发送
+    void signal_examFinished();                      // 通知大管家：考完了，切回大厅！
+
+private slots:
+    // ================= UI 交互与定时器槽函数 =================
+    void on_btn_submit_clicked();                    // 玩家点击交卷
+    void on_btn_next_clicked();                      // 下一题
+    void on_btn_prev_clicked();                      // 上一题
+    void on_answerBtn_clicked();                     // 点击右侧答题卡题号
+    void on_option_clicked();                        // ABCD 选项点击
+
+    void on_timer_timeout();                         // 秒表的“滴答”事件
 
 private:
     Ui::TestingRoom *ui;
-    QString m_currentExamCode;
 
-    // 动态生成答题卡，参数为题目总数
-    void initAnswerCard(int totalCount);
+    // ================= 核心状态变量（数据中心） =================
+    QString m_currentExamCode;            // 当前考试码
+    QList<Question> m_questions;          // 本场考试的真实题库
+    QMap<int, QString> m_userAnswers;     // 答题记录簿 <题号, 选项>
+    QList<QPushButton*> m_btnList;        // 答题卡按钮全家桶
+    int m_currentIndex = 0;               // 当前正在做的题号索引
 
-    // 点击题号按钮后的处理槽函数
-    void on_answerBtn_clicked();
+    QTimer *m_timer;                      // 倒计时秒表
+    int m_remainSeconds;                  // 剩余总秒数
 
-    QList<Question> m_questions; // 存储所有题目
-    int m_currentIndex = 0;      // 当前正在做第几题
-    void showQuestion(int index); // 刷新界面显示题目的函数
-    QList<QPushButton*> m_btnList;
+    // ================= 内部辅助函数（脏活累活） =================
+    void initAnswerCard(int totalCount);  // 动态生成右侧的答题卡按钮
+    void showQuestion(int index);         // 将指定题目的文字渲染到界面
+    void saveCurrentAnswer();             // 保存当前屏幕上选中的答案
+    void updateRadioSelection(int index); // 翻页时，精准回显之前选过的答案
 
-    QMap<int, QString> m_userAnswers; // 存储用户的答案，格式为：<题号, 选项(A/B/C/D)>
-    void saveCurrentAnswer();         // 保存当前屏幕上选中的答案
-    void updateRadioSelection(int index); // 翻页时，恢复之前选中的答案
-//
-    QTimer *m_timer;         // 咱们的秒表
-    int m_remainSeconds;     // 剩下的总秒数
-
-    void startTimer(int minutes); // 启动倒计时的函数
-
-private slots:
-    void on_timer_timeout(); // 秒表每次“滴答”一下，就执行这个函数
-    void on_btn_submit_clicked();
-    void on_btn_next_clicked();
-    void on_btn_prev_clicked();
-    void on_option_clicked();
-
-
-signals:
-    void signal_sendData(const QByteArray &data);
-    void signal_examFinished();
+    void startTimer(int minutes);         // 启动倒计时引擎
+    void processSubmit();                 // 算分与强制交卷机器
 };
+
 #endif // TESTINGROOM_H

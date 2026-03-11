@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "mainmenuwidget.h"
 #include "ui_mainmenuwidget.h"
 #include "NetProtocol.h"
@@ -8,209 +9,165 @@ MainMenuWidget::MainMenuWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // 1. 左侧导航栏与右侧页面的丝滑联动
     connect(ui->listWidget, &QListWidget::currentRowChanged,
             ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
+    // 2. 智能刷新机制：切到成绩页(索引2)就自动发包要成绩
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, [this](int row){
-        // ⚠️ 注意：这里的 row 是左侧列表的索引（从 0 开始算）
-        // 按照你截图里的顺序："考试大厅"(0), "我的考试"(1), "成绩查询"(2)
-        // 如果你的“成绩查询”排在第 3 位，那它的索引就是 2。你可以根据实际情况调整这个数字！
-        if (row == 2) {
-            emit signal_getScoresReq(); // 发现切到了成绩页，瞬间自动发信号去拉取成绩！
-        }
+        if (row == 2) emit signal_getScoresReq();
     });
 
-    // 强制初始化学生班级表格的列数和表头
+    // 3. 集中初始化界面上所有的表格
+    initTables();
+}
+
+MainMenuWidget::~MainMenuWidget() {
+    delete ui;
+}
+
+// ==========================================
+// 🏢 1. UI 初始化与辅助神器模块
+// ==========================================
+void MainMenuWidget::initTables() {
+    // 初始化【我的班级】表格
     ui->tableWidget_myClasses->setColumnCount(3);
     ui->tableWidget_myClasses->setHorizontalHeaderLabels(QStringList() << "班级名称" << "指导教师" << "班级代码");
     ui->tableWidget_myClasses->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+    // 初始化【成绩查询】表格
+    ui->tableWidget_scores->setColumnCount(4);
+    ui->tableWidget_scores->setHorizontalHeaderLabels(QStringList() << "考试科目" << "考试码" << "最终得分" << "交卷时间");
+    ui->tableWidget_scores->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
-MainMenuWidget::~MainMenuWidget()
-{
-    delete ui;
+//自动填表函数
+void MainMenuWidget::appendTableRow(QTableWidget *table, const QStringList &texts) {
+    int row = table->rowCount();
+    table->insertRow(row);
+    for (int i = 0; i < texts.size(); ++i) {
+        QTableWidgetItem *item = new QTableWidgetItem(texts[i]);
+        item->setTextAlignment(Qt::AlignCenter);
+        table->setItem(row, i, item);
+    }
 }
 
-void MainMenuWidget::updateUserName(QString name)
-{
+// ==========================================
+// 🏢 2. 外部接口模块 (供大管家操控)
+// ==========================================
+void MainMenuWidget::updateUserName(QString name) {
     ui->Username->setText(name);
 }
 
-void MainMenuWidget::on_logoutBtn_clicked()
-{
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "退出确认", "确定要注销并退出当前账号吗？",
-                                  QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes) {
-        emit signal_LogoutData();         // 发给服务器：我下线了，清空 is_online
-        emit signal_callbackLoginMenu();  // 发给大管家：帮我把界面切回登录页
-    }
-}
-
 void MainMenuWidget::updateTimeLabel(QString time) {
-    if (ui->LabelTime) { //防止段错误
-        ui->LabelTime->setText(time);
-    } else {
-        qDebug() << "警告：找不到 LabelTime 组件！";
-    }
+    if (ui->LabelTime) ui->LabelTime->setText(time);
 }
 
-void MainMenuWidget::on_btn_joinExam_clicked()
-{
-    // 获取输入框里的内容，去掉首尾空格
+// ==========================================
+// 🏢 3. 玩家主动操作交互模块
+// ==========================================
+void MainMenuWidget::on_btn_joinExam_clicked() {
     QString code = ui->lineEdit_examCode->text().trimmed();
-
-    if (code.isEmpty()) {
-        QMessageBox::warning(this, "提示", "请输入考试码！");
-        return;
-    }
-
-    // 把考试码通过信号发给 MainWindow，让它去走网络发送
+    if (code.isEmpty()) { QMessageBox::warning(this, "提示", "请输入考试码！"); return; }
     emit signal_joinExamReq(code);
 }
 
+void MainMenuWidget::on_btn_joinClass_clicked() {
+    QString code = ui->lineEdit_classCode->text().trimmed();
+    if (code.isEmpty()) { QMessageBox::warning(this, "提示", "班级邀请码不能为空！"); return; }
+    emit signal_joinClassReq(code);
+}
+
+void MainMenuWidget::on_btn_confirm_clicked() {
+    QString oldPwd = ui->lineEdit_oldPwd->text();
+    QString newPwd = ui->lineEdit_newPwd->text();
+    QString confirmPwd = ui->lineEdit_Conform->text();
+
+    if (oldPwd.isEmpty() || newPwd.isEmpty() || confirmPwd.isEmpty()) {
+        QMessageBox::warning(this, "提示", "密码不能为空！"); return;
+    }
+    if (newPwd != confirmPwd) {
+        QMessageBox::warning(this, "提示", "两次输入的新密码不一致，请重新输入！"); return;
+    }
+    emit signal_changePwdReq(oldPwd, newPwd);
+}
+
+void MainMenuWidget::on_logoutBtn_clicked() {
+    if (QMessageBox::question(this, "退出确认", "确定要注销并退出当前账号吗？") == QMessageBox::Yes) {
+        emit signal_LogoutData();
+        emit signal_callbackLoginMenu();
+    }
+}
+
+// ==========================================
+// 🏢 4. 服务器回执被动响应模块
+// ==========================================
 void MainMenuWidget::handleJoinExamResult(bool success, QString msg, QString subject, int duration) {
     if (success) {
-        QMessageBox::information(this, "进入考场",
-                                 msg + "\n科目：" + subject + "\n考试时长：" + QString::number(duration) + "分钟");
-
-        // 👇 核心修复：把刚才界面上输入的真实考试码，塞进信号里发给大管家！
+        QMessageBox::information(this, "进入考场", msg + "\n科目：" + subject + "\n考试时长：" + QString::number(duration) + "分钟");
         QString realCode = ui->lineEdit_examCode->text().trimmed();
         emit signal_gotoTestPage(realCode);
 
+        ui->lineEdit_examCode->clear(); // UX优化：进考场后把大厅的输入框清空
     } else {
         QMessageBox::warning(this, "进场失败", msg);
     }
 }
 
-// 接收到服务器发来的成绩单后，弹窗展示
-// 接收到服务器发来的成绩单后，填入表格展示
 void MainMenuWidget::handleScoresResult(const QJsonObject &data) {
+    ui->tableWidget_scores->setRowCount(0); // 清空旧数据
     QJsonArray array = data["scores"].toArray();
-
-    // 1. 初始化表格的列数和表头文字
-    ui->tableWidget_scores->setColumnCount(4);
-    ui->tableWidget_scores->setHorizontalHeaderLabels(QStringList() << "考试科目" << "考试码" << "最终得分" << "交卷时间");
-
-    // 让表格的列宽自动拉伸填满空白
-    ui->tableWidget_scores->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-    // 2. 根据服务器发来的成绩数量，动态设置表格有多少行
-    ui->tableWidget_scores->setRowCount(array.size());
 
     if (array.isEmpty()) {
         QMessageBox::information(this, "提示", "你还没有参加过任何考试哦！快去考一场吧！");
         return;
     }
 
-    // 3. 循环遍历，把成绩一行一行填进表格里
-    for(int i = 0; i < array.size(); ++i) {
+    for (int i = 0; i < array.size(); ++i) {
         QJsonObject obj = array[i].toObject();
         QString subject = obj["subject"].toString();
-        if(subject.isEmpty()) subject = "未知科目"; // 防御性处理
+        if (subject.isEmpty()) subject = "未知科目";
 
-        QString code = obj["exam_code"].toString();
-        QString scoreStr = QString::number(obj["score"].toInt());
-        QString timeStr = obj["submit_time"].toString();
-
-        // 生成每一格的数据
-        QTableWidgetItem *itemSubject = new QTableWidgetItem(subject);
-        QTableWidgetItem *itemCode = new QTableWidgetItem(code);
-        QTableWidgetItem *itemScore = new QTableWidgetItem(scoreStr);
-        QTableWidgetItem *itemTime = new QTableWidgetItem(timeStr);
-
-        // 让文字居中显示（强迫症福音）
-        itemSubject->setTextAlignment(Qt::AlignCenter);
-        itemCode->setTextAlignment(Qt::AlignCenter);
-        itemScore->setTextAlignment(Qt::AlignCenter);
-
-        // 塞进第 i 行对应的列里 (0列:科目, 1列:考试码, 2列:分数)
-        ui->tableWidget_scores->setItem(i, 0, itemSubject);
-        ui->tableWidget_scores->setItem(i, 1, itemCode);
-        ui->tableWidget_scores->setItem(i, 2, itemScore);
-        ui->tableWidget_scores->setItem(i, 3, itemTime);
+        appendTableRow(ui->tableWidget_scores, QStringList()
+                                                   << subject
+                                                   << obj["exam_code"].toString()
+                                                   << QString::number(obj["score"].toInt())
+                                                   << obj["submit_time"].toString());
     }
 }
 
-// 玩家点击大厅 page2 里的“修改密码”按钮
-void MainMenuWidget::on_btn_confirm_clicked() {
-    // 1. 拿取你界面上三个输入框的值（严格匹配了你的 Conform 拼写）
-    QString oldPwd = ui->lineEdit_oldPwd->text();
-    QString newPwd = ui->lineEdit_newPwd->text();
-    QString confirmPwd = ui->lineEdit_Conform->text();
-
-    // 2. 基础防呆校验
-    if (oldPwd.isEmpty() || newPwd.isEmpty() || confirmPwd.isEmpty()) {
-        QMessageBox::warning(this, "提示", "密码不能为空！");
-        return;
-    }
-    if (newPwd != confirmPwd) {
-        QMessageBox::warning(this, "提示", "两次输入的新密码不一致，请重新输入！");
-        return;
-    }
-
-    // 3. 没问题了，把旧密码和新密码打包发出去
-    emit signal_changePwdReq(oldPwd, newPwd);
-}
-
-// 收到服务器修改结果后
-void MainMenuWidget::handleChangePwdResult(bool success, QString msg) {
-    if (success) {
-        QMessageBox::information(this, "修改成功", msg);
-
-        // 清空输入框的内容
-        ui->lineEdit_oldPwd->clear();
-        ui->lineEdit_newPwd->clear();
-        ui->lineEdit_Conform->clear();
-
-        //密码改完，强制发一个下线包给服务器，清空在线状态
-        emit signal_LogoutData();
-        // 密码改了，发信号让 MainWindow 强制切回登录页！
-        emit signal_callbackLoginMenu();
-    } else {
-        QMessageBox::warning(this, "修改失败", msg);
-    }
-}
-
-void MainMenuWidget::on_btn_joinClass_clicked()
-{
-    // 拿到输入的邀请码
-    QString code = ui->lineEdit_classCode->text().trimmed();
-
-    if (code.isEmpty()) {
-        QMessageBox::warning(this, "提示", "班级邀请码不能为空！");
-        return;
-    }
-
-    // 把码扔给大管家
-    emit signal_joinClassReq(code);
-}
-
-// 在文件最底下（或者空白处），贴上处理结果的弹窗逻辑：
 void MainMenuWidget::handleJoinClassResult(bool success, QString msg) {
     if (success) {
         QMessageBox::information(this, "加入成功", msg);
-        ui->lineEdit_classCode->clear(); // 成功后清空输入框
+        ui->lineEdit_classCode->clear();
         emit signal_getMyClassesReq();
-
-        // （剧透：咱们下一站就在这里自动刷新下面那个学生班级表格！）
     } else {
         QMessageBox::warning(this, "加入失败", msg);
     }
 }
 
 void MainMenuWidget::handleGetMyClassesResult(QJsonArray classes) {
-    ui->tableWidget_myClasses->setRowCount(0); // 清空旧数据
+    ui->tableWidget_myClasses->setRowCount(0);
 
-    for(int i = 0; i < classes.size(); ++i) {
+    for (int i = 0; i < classes.size(); ++i) {
         QJsonObject obj = classes[i].toObject();
-        int row = ui->tableWidget_myClasses->rowCount();
-        ui->tableWidget_myClasses->insertRow(row);
+        appendTableRow(ui->tableWidget_myClasses, QStringList()
+                                                      << obj["class_name"].toString()
+                                                      << obj["teacher_name"].toString()
+                                                      << obj["class_code"].toString());
+    }
+}
 
-        ui->tableWidget_myClasses->setItem(row, 0, new QTableWidgetItem(obj["class_name"].toString()));
-        ui->tableWidget_myClasses->setItem(row, 1, new QTableWidgetItem(obj["teacher_name"].toString()));
-        ui->tableWidget_myClasses->setItem(row, 2, new QTableWidgetItem(obj["class_code"].toString()));
+void MainMenuWidget::handleChangePwdResult(bool success, QString msg) {
+    if (success) {
+        QMessageBox::information(this, "修改成功", msg);
+        ui->lineEdit_oldPwd->clear();
+        ui->lineEdit_newPwd->clear();
+        ui->lineEdit_Conform->clear();
+
+        emit signal_LogoutData();
+        emit signal_callbackLoginMenu();
+    } else {
+        QMessageBox::warning(this, "修改失败", msg);
     }
 }

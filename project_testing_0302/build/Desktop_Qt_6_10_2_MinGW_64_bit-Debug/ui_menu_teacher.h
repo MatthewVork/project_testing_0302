@@ -345,7 +345,7 @@ public:
 
         retranslateUi(menu_Teacher);
 
-        stackedWidget->setCurrentIndex(4);
+        stackedWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(menu_Teacher);

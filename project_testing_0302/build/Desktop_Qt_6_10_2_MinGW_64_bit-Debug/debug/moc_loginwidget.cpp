@@ -73,9 +73,9 @@ template <> constexpr inline auto LoginWidget::qt_create_metaobjectdata<qt_meta_
             { QMetaType::Bool, 9 }, { QMetaType::QString, 10 }, { QMetaType::Int, 4 },
         }}),
         // Slot 'on_loginBtn_clicked'
-        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_registerBtn_clicked'
-        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPublic, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };

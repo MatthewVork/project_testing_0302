@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "registerwidget.h"
 #include "ui_registerwidget.h"
 #include "NetProtocol.h"
@@ -9,48 +10,49 @@ RegisterWidget::RegisterWidget(QWidget *parent)
     ui->setupUi(this);
 }
 
-RegisterWidget::~RegisterWidget() {delete ui;}
+RegisterWidget::~RegisterWidget() {
+    delete ui;
+}
 
-//处理注册事件，将信号与信息传递至发送JSON函数
+// ==========================================
+// 🏢 1. UI 按钮交互逻辑
+// ==========================================
 void RegisterWidget::on_registerBtn_clicked() {
-    QString user = ui->userEdit->text();
-    QString pwd = ui->pwdEdit->text();
-    QString pwdConfirm = ui->pwdConfirmEdit->text();
+    //去掉首尾的隐形空格
+    QString user = ui->userEdit->text().trimmed();
+    QString pwd = ui->pwdEdit->text().trimmed();
+    QString pwdConfirm = ui->pwdConfirmEdit->text().trimmed();
 
-    // 1. 本地校验：密码是否一致
-    if(user.isEmpty()||pwd.isEmpty()) { QMessageBox::warning(this, "错误", "请将信息填写完整"); return; }
-    if (pwd != pwdConfirm)
-    {
+    if(user.isEmpty() || pwd.isEmpty()) {
+        QMessageBox::warning(this, "错误", "请将信息填写完整");
+        return;
+    }
+    if (pwd != pwdConfirm) {
         QMessageBox::warning(this, "错误", "两次输入的密码不一致");
         return;
     }
 
-    // 2. 打包并加密数据
-    QByteArray data = NetProtocol::packUserAndPass(MSG_REGISTER, user, pwd);
-    QByteArray safeData = NetProtocol::encrypt(data);
-
-    // 3. 发射信号给 MainWindow，让它通过 Socket 发送出去
-    emit signal_RegisterData(safeData);
+    // 极其清爽的打包发射
+    QByteArray plainData = NetProtocol::packUserAndPass(MSG_REGISTER, user, pwd);
+    emit signal_RegisterData(NetProtocol::encrypt(plainData));
 }
 
-//退回登录界面
-void RegisterWidget::on_backBtn_clicked()
-{
-    //清除lineEdit内容
+void RegisterWidget::on_backBtn_clicked() {
+    // 清除内容并退回
     ui->userEdit->clear();
     ui->pwdEdit->clear();
     ui->pwdConfirmEdit->clear();
-
-    //发送信号
     emit signal_CallbackLoginwidget();
 }
 
-//处理登录信息
+// ==========================================
+// 🏢 2. 处理服务器结果
+// ==========================================
 void RegisterWidget::handleRegisterResult(bool success, QString msg) {
-    if (success)
-    {
-        QMessageBox::information(this, "注册成功", msg);// 注册成功后，可以发射信号让 MainWindow 切换回登录界面
-        emit signal_CallbackLoginwidget();
+    if (success) {
+        QMessageBox::information(this, "注册成功", msg);
+        on_backBtn_clicked(); //注册成功直接调用返回按钮的逻辑
+    } else {
+        QMessageBox::warning(this, "注册失败", msg);
     }
-    else QMessageBox::warning(this, "注册失败", msg);    // 比如：用户名已存在
 }
